@@ -1,0 +1,21 @@
+{
+  "name": "knect-server",
+  "version": "0.1.0",
+  "main": "server.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.11.4",
+    "socket.io": "^3.0.3",
+    "knect-common": "0.1.0",
+    "knect-client": "0.1.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "start": "npx nodemon index.js"
+  },
+  "type": "module"
+}
