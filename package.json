@@ -16,7 +16,8 @@
   },
   "scripts": {
     "start": "npx concurrently \"cd client && yarn start\" \"cd server && yarn start\"",
-    "build": "cd client && yarn run build"
+    "build": "cd client && yarn run build",
+    "deploy": "git push heroku main"
   },
   "private": true,
   "workspaces": ["common", "client", "server"],
