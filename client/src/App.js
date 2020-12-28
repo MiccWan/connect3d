@@ -1,6 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-import newLogger from 'knect-common/src/Logger';
+import newLogger from 'knect-common/src/Logger.js';
 import logo from './logo.svg';
 import './App.css';
 

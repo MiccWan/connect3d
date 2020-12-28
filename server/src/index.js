@@ -4,7 +4,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
-import newLogger from 'knect-common/src/Logger';
+import newLogger from 'knect-common/src/Logger.js';
 import Save from './models/save.js';
 
 const log = newLogger('index');
