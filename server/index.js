@@ -19,7 +19,7 @@ if (process.env.MONGO_URL) {
   mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-  })
+  });
 }
 else {
   throw new Error('proess.env.MONGO_URL does not exist');
@@ -28,11 +28,11 @@ else {
 const db = mongoose.connection;
 
 db.on('error', (error) => {
-  console.error(error)
-})
+  console.error(error);
+});
 
 db.once('open', () => {
-  console.log('MongoDB connected!')
+  console.log('MongoDB connected!');
 
   Save.find()
     .limit(10)
@@ -47,7 +47,6 @@ db.once('open', () => {
         });
       }
     });
-
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
@@ -65,7 +64,7 @@ db.once('open', () => {
       res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
     });
 
-    app.get('*', function (req, res) {
+    app.get('*', (req, res) => {
       res.redirect('/');
     });
   }

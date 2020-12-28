@@ -9,8 +9,8 @@ const saveSchema = new mongoose.Schema({
     type: [String],
     required: [true, 'Steps field is required.']
   }
-})
+});
 
-const Save = mongoose.model('save', saveSchema)
+const Save = mongoose.model('save', saveSchema);
 
 export default Save;
