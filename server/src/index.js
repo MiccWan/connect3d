@@ -4,7 +4,10 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
+import newLogger from 'knect-common/src/Logger.js';
 import Save from './models/save.js';
+
+const log = newLogger('index');
 
 const app = express();
 const http = createServer(app);
@@ -28,17 +31,17 @@ else {
 const db = mongoose.connection;
 
 db.on('error', (error) => {
-  console.error(error);
+  log.error(error);
 });
 
 db.once('open', () => {
-  console.log('MongoDB connected!');
+  log.info('MongoDB connected!');
 
   Save.find()
     .limit(10)
     .exec((err, res) => {
       if (err) throw err;
-      console.log('Current data in DB:', res);
+      log.info('Current data in DB:', res);
 
       if (!res.length) {
         Save.create({
@@ -52,7 +55,7 @@ db.once('open', () => {
   app.use(express.urlencoded({ extended: false }));
 
   io.on('connection', (socket) => {
-    console.log('a user connected');
+    log.info('a user connected');
     socket.emit('msg', { msg: 'test msg' });
   });
 
@@ -72,6 +75,6 @@ db.once('open', () => {
   const PORT = process.env.PORT || 5000;
 
   http.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    log.info(`Server running on port ${PORT}`);
   });
 });

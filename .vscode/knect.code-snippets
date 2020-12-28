@@ -1,0 +1,10 @@
+{
+	"Add Logger": {
+		"prefix": "newLogger",
+		"body": [
+			"import newLogger from 'knect-common/src/Logger.js';",
+      "const log = newLogger('$1');$0"
+		],
+		"scope": "javascript,typescript"
+	}
+}

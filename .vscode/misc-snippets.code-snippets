@@ -1,0 +1,104 @@
+{
+	"Comment Barrier 1": {
+		"prefix": "comment-barrier1",
+		"body": [
+			"// ###########################################################################",
+			"//  $1",
+			"// ###########################################################################"
+		],
+		"scope": "javascript,typescript"
+	},
+	"Comment Barrier 2": {
+		"prefix": "comment-barrier2",
+		"body": [
+			"// ########################################",
+			"//  $1",
+			"// ########################################"
+		],
+		"scope": "javascript,typescript"
+	},
+	
+	"Comment Barrier 1: css": {
+		"prefix": "comment-barrier1",
+		"body": [
+			"/** ###########################################################################",
+			" *  $1",
+			" * ############################################################################ */$0"
+		],
+		"scope": "css,scss"
+	},
+	"Comment Barrier 2: css": {
+		"prefix": "comment-barrier2",
+		"body": [
+			"/** #######################################",
+			" *  $1",
+			" * ######################################## */$0"
+		],
+		"scope": "css,scss"
+	},
+
+  "JSDoc: @type": {
+    "prefix": "@type",
+    "body": [
+      "/**",
+      " * @type {$1}",
+      " */"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: @type {number}": {
+    "prefix": "@type_number",
+    "body": [
+      "/**",
+      " * @type {number}",
+      " */"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: @param": {
+    "prefix": "@param",
+    "body": [
+      "/**",
+      " * @param {$1} $2",
+      " */"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: additional @param": {
+    "prefix": "@param_add",
+    "body": [
+      "@param {$1} $2"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: @return": {
+    "prefix": "@return",
+    "body": [
+      "/**",
+      " * @return {$1}",
+      " */"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: add @return": {
+    "prefix": "@return_add",
+    "body": [
+      "@return {$1}"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: @typedef-default": {
+    "prefix": "@typedef-default",
+    "body": [
+      "/** @typedef {import('$1/$0').default} $0 */"
+    ],
+    "scope": "javascript,typescript"
+  },
+  "JSDoc: @typedef-named": {
+    "prefix": "@typedef-named",
+    "body": [
+      "/** @typedef {import('$1').$0} $0 */"
+    ],
+    "scope": "javascript,typescript"
+  }
+}
