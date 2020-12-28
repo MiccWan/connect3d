@@ -10,8 +10,8 @@ function App() {
   const initSocket = () => {
     socket = io();
 
-    socket.on('msg', ({ msg }) => alert(msg));
-  }
+    socket.on('msg', ({ msg }) => console.log(msg));
+  };
 
   return (
     <div className="App">
@@ -26,7 +26,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React {`${Test.test}`}
+          Learn React {Test.test}
         </a>
         <div><input type="button" value="connect" onClick={initSocket} /></div>
       </header>
