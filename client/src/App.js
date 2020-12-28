@@ -1,8 +1,10 @@
 import React from 'react';
 import io from 'socket.io-client';
-import Test from 'knect-common';
+import newLogger from 'knect-common/src/Logger';
 import logo from './logo.svg';
 import './App.css';
+
+const log = newLogger('App');
 
 function App() {
   let socket;
@@ -10,7 +12,7 @@ function App() {
   const initSocket = () => {
     socket = io();
 
-    socket.on('msg', ({ msg }) => console.log(msg));
+    socket.on('msg', ({ msg }) => log.info(msg));
   };
 
   return (
@@ -26,7 +28,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React {Test.test}
+          Learn React
         </a>
         <div><input type="button" value="connect" onClick={initSocket} /></div>
       </header>

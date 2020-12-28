@@ -16,7 +16,7 @@
     "nodemon": "^2.0.6"
   },
   "scripts": {
-    "start": "npx nodemon index.js"
+    "start": "npx nodemon src/index.js"
   },
   "type": "module"
 }
