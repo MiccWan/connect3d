@@ -25,12 +25,14 @@ function App() {
   };
 
   return (
-    isNotLogin ? (
-      <LoginPage initSocket={initSocket} login={login} />
-    )
-      : (
-        <LobbyPage userName={userName} />
+    <body className="App">
+      {isNotLogin ? (
+        <LoginPage initSocket={initSocket} login={login} />
       )
+        : (
+          <LobbyPage userName={userName} />
+        )}
+    </body>
   );
 }
 

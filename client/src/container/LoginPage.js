@@ -26,10 +26,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
   submit: {
     margin: theme.spacing(2, 0, 2),
   },
@@ -70,62 +66,60 @@ function LoginPage({ login }) {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="tempUserName"
-            label="User Name"
-            name="tempUserName"
-            autoComplete="tempUserName"
-            autoFocus
-            value={tempUserName}
-            onChange={tempUserNameChange}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={passwordChange}
-          />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="tempUserName"
+          label="User Name"
+          name="tempUserName"
+          autoComplete="tempUserName"
+          autoFocus
+          value={tempUserName}
+          onChange={tempUserNameChange}
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={passwordChange}
+        />
 
-          <Grid container spacing={3}>
-            <Grid item xs={6}>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={loginClick}
-                disabled
-              >
-                Login
-              </Button>
-            </Grid>
-            <Grid item xs={6}>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={loginGuestClick}
-              >
-                Login as Guest
-              </Button>
-            </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={6}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={loginClick}
+              disabled
+            >
+              Login
+            </Button>
           </Grid>
-        </form>
+          <Grid item xs={6}>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={loginGuestClick}
+            >
+              Login as Guest
+            </Button>
+          </Grid>
+        </Grid>
       </div>
     </Container>
   );
