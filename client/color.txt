@@ -1,0 +1,6 @@
+font : #56494E
+background : #EAD2AC
+grid : #40798C
+
+palayer1: #F4997B
+palayer2 :#A4C77F

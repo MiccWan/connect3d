@@ -21,6 +21,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    color: 'inherit'
   },
   avatar: {
     margin: theme.spacing(1),
@@ -64,7 +65,7 @@ function LoginPage({ login }) {
           <p>knect</p>
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Log in
         </Typography>
         <TextField
           variant="outlined"

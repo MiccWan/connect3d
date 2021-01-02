@@ -2,12 +2,31 @@ import React, { useState } from 'react';
 import io from 'socket.io-client';
 import newLogger from 'knect-common/src/Logger.js';
 import './App.css';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';
 
 const log = newLogger('App');
 
 function App() {
+  const theme = createMuiTheme({
+    palette: {
+      primary: {
+        main: '#40798C',
+      },
+      secondary: {
+        main: '#553D36',
+      },
+      text: {
+        primary: '#56494E',
+      },
+      background: {
+        paper: '#EFDBBD',
+        default: '#EAD2AC',
+      }
+    },
+  });
+
   let socket;
 
   const initSocket = () => {
@@ -25,14 +44,14 @@ function App() {
   };
 
   return (
-    <body className="App">
+    <ThemeProvider theme={theme}>
       {isNotLogin ? (
         <LoginPage initSocket={initSocket} login={login} />
       )
         : (
           <LobbyPage userName={userName} />
         )}
-    </body>
+    </ThemeProvider>
   );
 }
 
