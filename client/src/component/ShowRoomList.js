@@ -9,7 +9,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 const useStyles = makeStyles(() => ({
   root: {
     width: '100%',
-    maxWidth: 100,
   },
 }));
 

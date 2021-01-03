@@ -1,32 +1,29 @@
 import React, { useState } from 'react';
 import io from 'socket.io-client';
 import newLogger from 'knect-common/src/Logger.js';
-import './App.css';
+// import './App.css';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';
 
 const log = newLogger('App');
 
-function App() {
-  const theme = createMuiTheme({
-    palette: {
-      primary: {
-        main: '#40798C',
-      },
-      secondary: {
-        main: '#553D36',
-      },
-      text: {
-        primary: '#56494E',
-      },
-      background: {
-        paper: '#EFDBBD',
-        default: '#EAD2AC',
-      }
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#40798C',
     },
-  });
+    text: {
+      primary: '#56494E',
+    },
+    background: {
+      paper: '#EFDBBD',
+      default: '#EAD2AC',
+    }
+  },
+});
 
+function App() {
   let socket;
 
   const initSocket = () => {
