@@ -9,17 +9,18 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
-import TelegramIcon from '@material-ui/icons/Telegram';
+import SendIcon from '@material-ui/icons/Send';
+import ForwardIcon from '@material-ui/icons/Forward';
 
 import ShowRoomList from '../component/ShowRoomList.js';
 import ShowPlayerList from '../component/ShowPlayerList.js';
+import ShowChat from '../subContainer/ShowChat.js';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(3),
-    display: 'flex',
-    flexDirection: 'row',
     alignItems: 'center',
+    padding: theme.spacing(0, 4),
   },
   roomList: {
     background: theme.palette.background.paper,
@@ -27,13 +28,19 @@ const useStyles = makeStyles((theme) => ({
   },
   playerList: {
     background: theme.palette.background.paper,
-    height: theme.spacing(30),
+    height: theme.spacing(27),
   },
 
   chatRoom: {
     background: theme.palette.background.paper,
-    height: theme.spacing(23),
+    height: theme.spacing(22),
     width: '100%',
+  },
+  chatInput: {
+    background: theme.palette.background.paper,
+    height: theme.spacing(4),
+    width: '100%',
+    padding: theme.spacing(0, 1),
   },
   chooseBar: {
     height: theme.spacing(5),
@@ -42,42 +49,48 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function LobbyPage({ userName }) {
+function LobbyPage({ userName, enterRoom, roomID }) {
   const classes = useStyles();
   const [roomList, setRoomList] = useState([]);
   const [playerList, setPlayerList] = useState([]);
   const [tempRoomId, setTempRoomId] = useState('');
+  const [chatInput, setChatInput] = useState('');
 
   useEffect(() => {
-    setRoomList(['ss', 'tt']);
+    setRoomList([{ id: 123, timeRule: '15 min', status: 'ing', players: 'dd' }, { id: 124, timeRule: '15 min', status: 'ing', players: 'dd' }, { id: 125, timeRule: '15 min', status: 'ing', players: 'dd' }]);
     setPlayerList(['ss', 'tt']);
   }, []);
 
   const selectRoomClick = (roomId) => {
-    const a = roomId;
-    return a;
+    enterRoom(roomId);
   };
 
-  const joinRoomClick = (roomId) => {
-    const a = roomId;
-    return a;
+  const joinRoomClick = () => {
+    enterRoom(tempRoomId);
   };
 
-  const createRoomClick = (e) => {
-    const a = e;
-    return a;
+  const createRoomClick = () => {
+    const roomId = 1212;
+    enterRoom(roomId);
   };
 
   const tempRoomIdChange = (event) => {
     setTempRoomId(event.target.value);
   };
 
+  const chatInputChange = (event) => {
+    setChatInput(event.target.value);
+  };
+
+  const chatInputEnter = () => {
+    setChatInput('');
+  };
+
   return (
-    <Container className={classes.paper} margins="100px">
-      <Grid container spacing={2} justify="center">
-        <Grid item xs={2} justify="center">
+    <Container className={classes.paper}>
+      <Grid container spacing={2} justify="center" direction="row">
+        <Grid item xs={2}>
           <Button
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
@@ -87,7 +100,7 @@ function LobbyPage({ userName }) {
             create Room
           </Button>
         </Grid>
-        <Grid item xs={2} justify="center">
+        <Grid item xs={2}>
           <TextField
             variant="outlined"
             margin="none"
@@ -104,7 +117,7 @@ function LobbyPage({ userName }) {
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton edge="end" size="small" onClick={joinRoomClick}>
-                    <TelegramIcon color="primary" />
+                    <ForwardIcon color="primary" />
                   </IconButton>
                 </InputAdornment>),
             }}
@@ -113,17 +126,17 @@ function LobbyPage({ userName }) {
         <Grid item xs={7}>
           {null}
         </Grid>
-        <Grid item xs={1} alignItems="center">
+        <Grid item xs={1} container justify="flex-end">
           <Avatar className={classes.chooseBar}>
             {userName}
           </Avatar>
         </Grid>
-        <Grid item xs={12} sm={8}>
+        <Grid item xs={8} sm={8}>
           <div className={classes.roomList}>
             <ShowRoomList roomList={roomList} selectRoom={selectRoomClick} />
           </div>
         </Grid>
-        <Grid item xs={0} sm={4}>
+        <Grid item xs={4} sm={4}>
           <Grid container spacing={2} justify="space-between" direction="column">
             <Grid item xs={12}>
               <div className={classes.playerList}>
@@ -132,7 +145,28 @@ function LobbyPage({ userName }) {
             </Grid>
             <Grid item xs={12}>
               <div className={classes.chatRoom}>
-                <ShowPlayerList playerList={playerList} />
+                <ShowChat roomID={roomID} />
+              </div>
+              <div className={classes.chatInput}>
+                <TextField
+                  variant="standard"
+                  margin="none"
+                  size="small"
+                  fullWidth
+                  id="chatInput"
+                  name="Join room"
+                  placeholder="say something"
+                  value={chatInput}
+                  onChange={chatInputChange}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton edge="end" size="small" onClick={chatInputEnter}>
+                          <SendIcon color="primary" />
+                        </IconButton>
+                      </InputAdornment>),
+                  }}
+                />
               </div>
             </Grid>
           </Grid>
@@ -143,7 +177,9 @@ function LobbyPage({ userName }) {
 }
 
 LobbyPage.propTypes = {
-  userName: PropTypes.string.isRequired
+  userName: PropTypes.string.isRequired,
+  enterRoom: PropTypes.func.isRequired,
+  roomID: PropTypes.number.isRequired,
 };
 
 export default LobbyPage;

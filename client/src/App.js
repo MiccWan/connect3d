@@ -5,6 +5,7 @@ import newLogger from 'knect-common/src/Logger.js';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';
+import RoomPage from './container/RoomPage.js';
 
 const log = newLogger('App');
 
@@ -19,6 +20,10 @@ const theme = createMuiTheme({
     background: {
       paper: '#EFDBBD',
       default: '#EAD2AC',
+    },
+    player: {
+      one: '#F4997B',
+      two: '#A4C77F',
     }
   },
 });
@@ -34,20 +39,37 @@ function App() {
 
   const [userName, setUserName] = useState('');
   const [isNotLogin, setIsNotLogin] = useState(true);
+  const [isNotEnterRoom, setNotIsEnterRoom] = useState(true);
+  const [roomID, setRoomID] = useState(0);
 
   const login = (name) => {
     setUserName(name);
     setIsNotLogin(false);
   };
 
+  const enterRoom = (_roomID) => {
+    setRoomID(_roomID);
+    setNotIsEnterRoom(false);
+  };
+
+  const leaveRoom = () => {
+    setRoomID(0);
+    setNotIsEnterRoom(true);
+  };
+
+  const returnPage = () => {
+    if (isNotLogin) {
+      return (<LoginPage initSocket={initSocket} login={login} />);
+    }
+    if (isNotEnterRoom) {
+      return (<LobbyPage userName={userName} enterRoom={enterRoom} roomID={roomID} />);
+    }
+    return (<RoomPage userName={userName} roomID={roomID} leaveRoom={leaveRoom} />);
+  };
+
   return (
     <ThemeProvider theme={theme}>
-      {isNotLogin ? (
-        <LoginPage initSocket={initSocket} login={login} />
-      )
-        : (
-          <LobbyPage userName={userName} />
-        )}
+      {returnPage()}
     </ThemeProvider>
   );
 }
