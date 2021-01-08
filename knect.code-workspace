@@ -5,5 +5,7 @@
 		}
   ],
   "settings": {
+    "javascript.preferences.quoteStyle": "single",
+    "javascript.preferences.importModuleSpecifierEnding": "js"
   }
 }
