@@ -15,6 +15,7 @@ import ForwardIcon from '@material-ui/icons/Forward';
 import ShowRoomList from '../component/ShowRoomList.js';
 import ShowPlayerList from '../component/ShowPlayerList.js';
 import ShowChat from '../subContainer/ShowChat.js';
+import ChooseTimeDialog from '../subContainer/ChooseTimeDialog.js';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -55,6 +56,7 @@ function LobbyPage({ userName, enterRoom, roomID }) {
   const [playerList, setPlayerList] = useState([]);
   const [tempRoomId, setTempRoomId] = useState('');
   const [chatInput, setChatInput] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     setRoomList([{ id: 123, timeRule: '15 min', status: 'ing', players: 'dd' }, { id: 124, timeRule: '15 min', status: 'ing', players: 'dd' }, { id: 125, timeRule: '15 min', status: 'ing', players: 'dd' }]);
@@ -70,8 +72,7 @@ function LobbyPage({ userName, enterRoom, roomID }) {
   };
 
   const createRoomClick = () => {
-    const roomId = 1212;
-    enterRoom(roomId);
+    setOpenDialog(true);
   };
 
   const tempRoomIdChange = (event) => {
@@ -172,6 +173,11 @@ function LobbyPage({ userName, enterRoom, roomID }) {
           </Grid>
         </Grid>
       </Grid>
+      <ChooseTimeDialog
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+        enterRoom={enterRoom}
+      />
     </Container>
   );
 }

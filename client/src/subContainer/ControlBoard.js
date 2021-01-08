@@ -204,15 +204,15 @@ function ControlBoard({ userName, roomID, leaveRoom }) {
       <Grid container className={classes.infoBar} direction="row" alignItems="center">
         <Grid item container xs={4} justify="center" alignItems="flex-end">
           <Typography variant="body1">
-            Room ID:{roomID}
+            Room ID: {roomID}
           </Typography>
         </Grid>
-        <Grid item container xs={5} justify="center">
+        <Grid item container xs={6} justify="center">
           <Typography variant="body1">
-            Time Rule: 10 min
+            Sudden Death: 10 min
           </Typography>
         </Grid>
-        <Grid item container xs={3} justify="flex-end">
+        <Grid item container xs={2} justify="flex-end">
           <Button
             variant="contained"
             color="primary"
