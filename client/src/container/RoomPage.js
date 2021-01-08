@@ -91,8 +91,14 @@ function roomPage({ userName, roomId, leaveRoom }) {
                   id="chatInput"
                   name="Join room"
                   placeholder="say something"
+                  autoComplete="off"
                   value={chatInput}
                   onChange={chatInputChange}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      chatInputEnter();
+                    }
+                  }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">

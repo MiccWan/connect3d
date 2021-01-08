@@ -72,6 +72,7 @@ function LoginPage({ login }) {
           margin="normal"
           required
           fullWidth
+          disabled
           id="tempUserName"
           label="User Name"
           name="tempUserName"
@@ -85,6 +86,7 @@ function LoginPage({ login }) {
           margin="normal"
           required
           fullWidth
+          disabled
           name="password"
           label="Password"
           type="password"

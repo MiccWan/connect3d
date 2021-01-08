@@ -80,24 +80,42 @@ const useStyles = makeStyles((theme) => ({
 function ControlBoard({ userName, roomId, leaveRoom }) {
   const classes = useStyles();
 
-  const [player1Name, setPlayer1Name] = useState('waiting...');
-  const [player2Name, setPlayer2Name] = useState('waiting...');
-
+  const [player1Name, setPlayer1Name] = useState();
+  const [player2Name, setPlayer2Name] = useState();
+  const [userState, setUserState] = useState(0);
   const playerButtonClick = (index) => {
-    if (index === 1) {
-      setPlayer1Name(userName);
+    if (userState !== 0) {
+      if (index === 1 && userState === 2) {
+        setPlayer2Name();
+        setUserState(1);
+        setPlayer1Name(userName);
+      }
+      if (index === 2 && userState === 1) {
+        setPlayer1Name();
+        setUserState(2);
+        setPlayer2Name(userName);
+      }
     }
-    else if (index === 2) {
-      setPlayer2Name(userName);
+    else {
+      if (index === 1) {
+        setPlayer1Name(userName);
+        setUserState(1);
+      }
+      if (index === 2) {
+        setPlayer2Name(userName);
+        setUserState(2);
+      }
     }
   };
 
   const exitClick = (index) => {
     if (index === 1) {
-      setPlayer1Name('waiting...');
+      setPlayer1Name();
+      setUserState(0);
     }
     else if (index === 2) {
-      setPlayer2Name('waiting...');
+      setPlayer2Name();
+      setUserState(0);
     }
   };
 
@@ -133,7 +151,7 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
         </div>
       );
     }
-    if (playerName === 'waiting...' && player1Name !== userName && player2Name !== userName) {
+    if (playerName === undefined) {
       return (
         <ButtonBase
           className={classes[`player${index}img`]}
@@ -152,32 +170,11 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
             </Grid>
             <Grid item container xs={12}>
               <Typography variant="h6" className={classes.playerButtonInner3} align="center">
-                {playerName}
+                waiting...
               </Typography>
             </Grid>
           </Grid>
         </ButtonBase>
-      );
-    }
-    if (playerName === 'waiting...') {
-      return (
-        <div className={classes[`player${index}img`]}>
-          <Grid container direction="column" justify="space-between">
-            <Grid item container xs={12} justify="flex-end">
-              <div className={classes.playerButtonInner4} />
-            </Grid>
-            <Grid item container xs={12}>
-              <Typography variant="h3" align="center" className={classes.playerButtonInner2}>
-                ?
-              </Typography>
-            </Grid>
-            <Grid item container xs={12}>
-              <Typography variant="h6" align="center" className={classes.playerButtonInner3}>
-                {playerName}
-              </Typography>
-            </Grid>
-          </Grid>
-        </div>
       );
     }
     return (
@@ -190,7 +187,7 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
             <div className={classes.playerButtonInner2} />
           </Grid>
           <Grid item container xs={12}>
-            <Typography variant="h6" align="center" className={classes.playerButtonInner3}>
+            <Typography variant="h6" align="left" className={classes.playerButtonInner3}>
               {playerName}
             </Typography>
           </Grid>

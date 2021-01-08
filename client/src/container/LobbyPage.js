@@ -111,9 +111,15 @@ function LobbyPage({ userName, enterRoom, roomId }) {
             label="Join room"
             name="Join room"
             placeholder="Room ID"
+            autoComplete="off"
             className={classes.chooseBar}
             value={tempRoomId}
             onChange={tempRoomIdChange}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                joinRoomClick();
+              }
+            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -153,12 +159,18 @@ function LobbyPage({ userName, enterRoom, roomId }) {
                   variant="standard"
                   margin="none"
                   size="small"
+                  autoComplete="off"
                   fullWidth
                   id="chatInput"
                   name="Join room"
                   placeholder="say something"
                   value={chatInput}
                   onChange={chatInputChange}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      chatInputEnter();
+                    }
+                  }}
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
