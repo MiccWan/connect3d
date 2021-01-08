@@ -22,8 +22,8 @@ class Logger {
   }
 }
 
-function newLogger(tag) {
-  return new Logger(tag);
+function newLogger(tag, verbose = false) {
+  return new Logger(tag, verbose);
 }
 
 export default newLogger;

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import io from 'socket.io-client';
-import newLogger from 'knect-common/src/Logger.js';
-// import './App.css';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+// import newLogger from 'knect-common/src/Logger.js';
+import { ClientRequests } from 'knect-common/src/SocketEvents';
+// import './App.css';
 import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';
 import RoomPage from './container/RoomPage.js';
+import ClientSocketWrapper from './socket/index.js';
 
-const log = newLogger('App');
+// const log = newLogger('App');
 
 const theme = createMuiTheme({
   palette: {
@@ -30,19 +31,23 @@ const theme = createMuiTheme({
 
 function App() {
   let socket;
-
-  const initSocket = () => {
-    socket = io();
-
-    socket.on('msg', ({ msg }) => log.info(msg));
-  };
-
   const [userName, setUserName] = useState('');
   const [isNotLogin, setIsNotLogin] = useState(true);
   const [isNotEnterRoom, setNotIsEnterRoom] = useState(true);
   const [roomId, setRoomId] = useState(0);
+  const [messages, setMessages] = useState([]);
+  // const [playerList, setPlayerList] = useState([]);
+
+  const initSocket = async () => {
+    if (!socket) {
+      const funcs = { setMessages };
+      socket = new ClientSocketWrapper(funcs);
+      setUserName(await socket.request(ClientRequests.GetPlayerName));
+    }
+  };
 
   const login = (name) => {
+    initSocket();
     setUserName(name);
     setIsNotLogin(false);
   };
@@ -59,10 +64,17 @@ function App() {
 
   const returnPage = () => {
     if (isNotLogin) {
-      return (<LoginPage initSocket={initSocket} login={login} />);
+      return (<LoginPage login={login} />);
     }
     if (isNotEnterRoom) {
-      return (<LobbyPage userName={userName} enterRoom={enterRoom} roomId={roomId} />);
+      return (
+        <LobbyPage
+          messages={messages}
+          userName={userName}
+          roomId={roomId}
+          enterRoom={enterRoom}
+        />
+      );
     }
     return (<RoomPage userName={userName} roomId={roomId} leaveRoom={leaveRoom} />);
   };
