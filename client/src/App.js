@@ -40,20 +40,20 @@ function App() {
   const [userName, setUserName] = useState('');
   const [isNotLogin, setIsNotLogin] = useState(true);
   const [isNotEnterRoom, setNotIsEnterRoom] = useState(true);
-  const [roomID, setRoomID] = useState(0);
+  const [roomId, setRoomId] = useState(0);
 
   const login = (name) => {
     setUserName(name);
     setIsNotLogin(false);
   };
 
-  const enterRoom = (_roomID) => {
-    setRoomID(_roomID);
+  const enterRoom = (id) => {
+    setRoomId(id);
     setNotIsEnterRoom(false);
   };
 
   const leaveRoom = () => {
-    setRoomID(0);
+    setRoomId(0);
     setNotIsEnterRoom(true);
   };
 
@@ -62,9 +62,9 @@ function App() {
       return (<LoginPage initSocket={initSocket} login={login} />);
     }
     if (isNotEnterRoom) {
-      return (<LobbyPage userName={userName} enterRoom={enterRoom} roomID={roomID} />);
+      return (<LobbyPage userName={userName} enterRoom={enterRoom} roomId={roomId} />);
     }
-    return (<RoomPage userName={userName} roomID={roomID} leaveRoom={leaveRoom} />);
+    return (<RoomPage userName={userName} roomId={roomId} leaveRoom={leaveRoom} />);
   };
 
   return (

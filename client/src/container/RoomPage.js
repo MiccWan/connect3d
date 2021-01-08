@@ -10,7 +10,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 
-import ChatAndHistory from '../subContainer/ChatAndRecord.js';
+import ChatAndRecord from '../subContainer/ChatAndRecord.js';
 import ControlBoard from '../subContainer/ControlBoard.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function roomPage({ userName, roomID, leaveRoom }) {
+function roomPage({ userName, roomId, leaveRoom }) {
   const classes = useStyles();
 
   const [chatInput, setChatInput] = useState('');
@@ -74,13 +74,13 @@ function roomPage({ userName, roomID, leaveRoom }) {
         <Grid item container xs={3} sm={4} spacing={2} justify="space-between" direction="row">
           <Grid item xs={12}>
             <div className={classes.controlBoard}>
-              <ControlBoard userName={userName} roomID={roomID} leaveRoom={leaveRoom} />
+              <ControlBoard userName={userName} roomId={roomId} leaveRoom={leaveRoom} />
             </div>
           </Grid>
           <Grid item xs={12}>
             <div className={classes.chatBoard}>
               <div className={classes.chatRoom}>
-                <ChatAndHistory setIsChatMode={setIsChatMode} roomID={roomID} />
+                <ChatAndRecord setIsChatMode={setIsChatMode} roomId={roomId} />
               </div>
               <div className={classes.chatInput} hidden={!isChatMode}>
                 <TextField
@@ -113,7 +113,7 @@ function roomPage({ userName, roomID, leaveRoom }) {
 
 roomPage.propTypes = {
   userName: PropTypes.string.isRequired,
-  roomID: PropTypes.number.isRequired,
+  roomId: PropTypes.number.isRequired,
   leaveRoom: PropTypes.func.isRequired,
 };
 

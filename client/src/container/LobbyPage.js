@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function LobbyPage({ userName, enterRoom, roomID }) {
+function LobbyPage({ userName, enterRoom, roomId }) {
   const classes = useStyles();
   const [roomList, setRoomList] = useState([]);
   const [playerList, setPlayerList] = useState([]);
@@ -63,8 +63,8 @@ function LobbyPage({ userName, enterRoom, roomID }) {
     setPlayerList(['ss', 'tt']);
   }, []);
 
-  const selectRoomClick = (roomId) => {
-    enterRoom(roomId);
+  const selectRoomClick = (id) => {
+    enterRoom(id);
   };
 
   const joinRoomClick = () => {
@@ -110,7 +110,7 @@ function LobbyPage({ userName, enterRoom, roomID }) {
             id="tempRoomId"
             label="Join room"
             name="Join room"
-            placeholder="room ID"
+            placeholder="Room ID"
             className={classes.chooseBar}
             value={tempRoomId}
             onChange={tempRoomIdChange}
@@ -146,7 +146,7 @@ function LobbyPage({ userName, enterRoom, roomID }) {
             </Grid>
             <Grid item xs={12}>
               <div className={classes.chatRoom}>
-                <ShowChat roomID={roomID} />
+                <ShowChat roomId={roomId} />
               </div>
               <div className={classes.chatInput}>
                 <TextField
@@ -185,7 +185,7 @@ function LobbyPage({ userName, enterRoom, roomID }) {
 LobbyPage.propTypes = {
   userName: PropTypes.string.isRequired,
   enterRoom: PropTypes.func.isRequired,
-  roomID: PropTypes.number.isRequired,
+  roomId: PropTypes.number.isRequired,
 };
 
 export default LobbyPage;

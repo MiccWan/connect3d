@@ -12,12 +12,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function ShowChat({ roomID }) {
+function ShowChat({ roomId }) {
   const classes = useStyles();
   const [chatContent, setChatContent] = useState([]);
 
   useEffect(() => {
-    setChatContent([roomID]);
+    setChatContent([roomId]);
   }, []);
 
   return (
@@ -36,7 +36,7 @@ function ShowChat({ roomID }) {
 }
 
 ShowChat.propTypes = {
-  roomID: PropTypes.number.isRequired,
+  roomId: PropTypes.number.isRequired,
 };
 
 export default ShowChat;

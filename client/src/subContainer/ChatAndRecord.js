@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function ChatAndRecord({ setIsChatMode, roomID }) {
+function ChatAndRecord({ setIsChatMode, roomId }) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -93,7 +93,9 @@ function ChatAndRecord({ setIsChatMode, roomID }) {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <ShowChat roomID={roomID} />
+        <div>
+          <ShowChat roomId={roomId} />
+        </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
         Item Two
@@ -107,7 +109,7 @@ function ChatAndRecord({ setIsChatMode, roomID }) {
 
 ChatAndRecord.propTypes = {
   setIsChatMode: PropTypes.func.isRequired,
-  roomID: PropTypes.number.isRequired,
+  roomId: PropTypes.number.isRequired,
 };
 
 export default ChatAndRecord;

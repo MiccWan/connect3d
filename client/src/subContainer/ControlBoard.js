@@ -77,7 +77,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ControlBoard({ userName, roomID, leaveRoom }) {
+function ControlBoard({ userName, roomId, leaveRoom }) {
   const classes = useStyles();
 
   const [player1Name, setPlayer1Name] = useState('waiting...');
@@ -204,7 +204,7 @@ function ControlBoard({ userName, roomID, leaveRoom }) {
       <Grid container className={classes.infoBar} direction="row" alignItems="center">
         <Grid item container xs={4} justify="center" alignItems="flex-end">
           <Typography variant="body1">
-            Room ID: {roomID}
+            Room ID: {roomId}
           </Typography>
         </Grid>
         <Grid item container xs={6} justify="center">
@@ -245,7 +245,7 @@ function ControlBoard({ userName, roomID, leaveRoom }) {
 
 ControlBoard.propTypes = {
   userName: PropTypes.string.isRequired,
-  roomID: PropTypes.number.isRequired,
+  roomId: PropTypes.number.isRequired,
   leaveRoom: PropTypes.func.isRequired,
 };
 
