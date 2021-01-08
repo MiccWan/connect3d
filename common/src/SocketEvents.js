@@ -8,10 +8,11 @@ let ServerRequests = {
 let ServerEvents = {
   SetPlayerName: 'set_player_name',
   UpdatePlayerList: 'update_player_list',
-  SendChat: 'send_chat'
+  SendChat: 'send_chat',
 };
 
 let ClientRequests = {
+  GetPlayerName: 'get_player_name',
   GetPlayerList: 'get_player_list',
 };
 

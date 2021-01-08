@@ -12,14 +12,17 @@ export default class ServerSocketWrapper extends SocketWrapper {
    * @param {Socket} _socket
    */
   constructor(gc, player, _socket) {
-    super(gc, player, _socket);
+    super(_socket);
 
     /**
      * Add handlers here to response to client requests.
      */
     const requestsHandler = {
+      [ClientRequests.GetPlayerName]() {
+        return player.name;
+      },
       [ClientRequests.GetPlayerList]() {
-        return gc.playerList.getAll();
+        return gc.allPlayers.getAll;
       }
     };
 

@@ -1,6 +1,6 @@
 import { ServerEvents } from 'knect-common/src/SocketEvents.js';
 import PlayerStatusType from './constant/PlayerStatusType.js';
-import ServerSocketWrapper from './SocketWrapper.js';
+import ServerSocketWrapper from './ServerSocketWrapper.js';
 import getUniqueName from './util/generateName.js';
 
 /** @typedef {import('socket.io').Socket} Socket */
