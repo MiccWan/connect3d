@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 import React, { useState, useEffect } from 'react';
 import { PropTypes } from 'prop-types';
 
@@ -11,6 +12,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 import ForwardIcon from '@material-ui/icons/Forward';
+
+import { ClientEvents } from 'knect-common/src/SocketEvents';
 
 import ShowRoomList from '../component/ShowRoomList.js';
 import ShowPlayerList from '../component/ShowPlayerList.js';
@@ -50,17 +53,14 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function LobbyPage({ userName, enterRoom, roomId }) {
+function LobbyPage({ userName, enterRoom, chatContent, playerList, socket }) {
   const classes = useStyles();
   const [roomList, setRoomList] = useState([]);
-  const [playerList, setPlayerList] = useState([]);
   const [tempRoomId, setTempRoomId] = useState('');
   const [chatInput, setChatInput] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
-
   useEffect(() => {
     setRoomList([{ id: 123, timeRule: '15 min', status: 'ing', players: 'dd' }, { id: 124, timeRule: '15 min', status: 'ing', players: 'dd' }, { id: 125, timeRule: '15 min', status: 'ing', players: 'dd' }]);
-    setPlayerList(['ss', 'tt']);
   }, []);
 
   const selectRoomClick = (id) => {
@@ -84,6 +84,7 @@ function LobbyPage({ userName, enterRoom, roomId }) {
   };
 
   const chatInputEnter = () => {
+    socket.emit(ClientEvents.SendChat, { payload: chatInput });
     setChatInput('');
   };
 
@@ -152,7 +153,7 @@ function LobbyPage({ userName, enterRoom, roomId }) {
             </Grid>
             <Grid item xs={12}>
               <div className={classes.chatRoom}>
-                <ShowChat roomId={roomId} />
+                <ShowChat chatContent={chatContent} />
               </div>
               <div className={classes.chatInput}>
                 <TextField
@@ -195,9 +196,11 @@ function LobbyPage({ userName, enterRoom, roomId }) {
 }
 
 LobbyPage.propTypes = {
+  playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
   userName: PropTypes.string.isRequired,
   enterRoom: PropTypes.func.isRequired,
-  roomId: PropTypes.number.isRequired,
+  chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
+  socket: PropTypes.object.isRequired,
 };
 
 export default LobbyPage;

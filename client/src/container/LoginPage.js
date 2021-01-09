@@ -52,9 +52,7 @@ function LoginPage({ login }) {
   };
 
   const loginGuestClick = () => {
-    const msg = [tempUserName, password];
-    login(tempUserName);
-    return msg;
+    login();
   };
 
   return (

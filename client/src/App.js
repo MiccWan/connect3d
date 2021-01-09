@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 // import newLogger from 'knect-common/src/Logger.js';
-import { ClientRequests } from 'knect-common/src/SocketEvents';
+// import { ClientRequests } from 'knect-common/src/SocketEvents';
 // import './App.css';
 import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';
@@ -30,36 +30,39 @@ const theme = createMuiTheme({
 });
 
 function App() {
-  let socket;
+  const [socket, setSocket] = useState();
   const [userName, setUserName] = useState('');
   const [isNotLogin, setIsNotLogin] = useState(true);
   const [isNotEnterRoom, setNotIsEnterRoom] = useState(true);
   const [roomId, setRoomId] = useState(0);
-  const [messages, setMessages] = useState([]);
+  const [chatContent, setChatContent] = useState([{ name: 'dd', content: 'dd' }]);
+  const [playerList, setPlayerList] = useState([]);
   // const [playerList, setPlayerList] = useState([]);
-
   const initSocket = async () => {
     if (!socket) {
-      const funcs = { setMessages };
-      socket = new ClientSocketWrapper(funcs);
-      setUserName(await socket.request(ClientRequests.GetPlayerName));
+      const funcs = { setChatContent, setPlayerList };
+      setSocket(new ClientSocketWrapper(funcs));
     }
   };
 
-  const login = (name) => {
-    initSocket();
-    setUserName(name);
+  const login = async () => {
+    await initSocket();
+    // setUserName(await socket.request(ClientRequests.GetPlayerName));
+    // setPlayerList(await socket.request(ClientRequests.GetPlayerList));
+    setUserName('');
     setIsNotLogin(false);
   };
 
   const enterRoom = (id) => {
     setRoomId(id);
     setNotIsEnterRoom(false);
+    setChatContent([]);
   };
 
   const leaveRoom = () => {
     setRoomId(0);
     setNotIsEnterRoom(true);
+    setChatContent([]);
   };
 
   const returnPage = () => {
@@ -69,14 +72,23 @@ function App() {
     if (isNotEnterRoom) {
       return (
         <LobbyPage
-          messages={messages}
           userName={userName}
           roomId={roomId}
+          chatContent={chatContent}
+          playerList={playerList}
           enterRoom={enterRoom}
+          socket={socket}
         />
       );
     }
-    return (<RoomPage userName={userName} roomId={roomId} leaveRoom={leaveRoom} />);
+    return (
+      <RoomPage
+        userName={userName}
+        roomId={roomId}
+        leaveRoom={leaveRoom}
+        chatContent={chatContent}
+      />
+    );
   };
 
   return (

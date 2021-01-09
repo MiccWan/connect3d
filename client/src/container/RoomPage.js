@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function roomPage({ userName, roomId, leaveRoom }) {
+function roomPage({ userName, roomId, leaveRoom, chatContent }) {
   const classes = useStyles();
 
   const [chatInput, setChatInput] = useState('');
@@ -80,7 +80,11 @@ function roomPage({ userName, roomId, leaveRoom }) {
           <Grid item xs={12}>
             <div className={classes.chatBoard}>
               <div className={classes.chatRoom}>
-                <ChatAndRecord setIsChatMode={setIsChatMode} roomId={roomId} />
+                <ChatAndRecord
+                  setIsChatMode={setIsChatMode}
+                  roomId={roomId}
+                  chatContent={chatContent}
+                />
               </div>
               <div className={classes.chatInput} hidden={!isChatMode}>
                 <TextField
@@ -121,6 +125,7 @@ roomPage.propTypes = {
   userName: PropTypes.string.isRequired,
   roomId: PropTypes.number.isRequired,
   leaveRoom: PropTypes.func.isRequired,
+  chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default roomPage;

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -44,9 +44,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function ChatAndRecord({ setIsChatMode, roomId }) {
+function ChatAndRecord({ setIsChatMode, roomId, chatContent }) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
 
   useEffect(() => {
     if (value === 0) {
@@ -94,7 +94,7 @@ function ChatAndRecord({ setIsChatMode, roomId }) {
       </AppBar>
       <TabPanel value={value} index={0}>
         <div>
-          <ShowChat roomId={roomId} />
+          <ShowChat roomId={roomId} chatContent={chatContent} />
         </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
@@ -110,6 +110,7 @@ function ChatAndRecord({ setIsChatMode, roomId }) {
 ChatAndRecord.propTypes = {
   setIsChatMode: PropTypes.func.isRequired,
   roomId: PropTypes.number.isRequired,
+  chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default ChatAndRecord;
