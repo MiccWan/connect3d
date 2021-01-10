@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 // import newLogger from 'knect-common/src/Logger.js';
-// import { ClientRequests } from 'knect-common/src/SocketEvents';
-// import './App.css';
+import { ClientRequests } from 'knect-common/src/SocketEvents';
+
 import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';
 import RoomPage from './container/RoomPage.js';
@@ -37,7 +37,6 @@ function App() {
   const [roomId, setRoomId] = useState(0);
   const [chatContent, setChatContent] = useState([{ name: 'dd', content: 'dd' }]);
   const [playerList, setPlayerList] = useState([]);
-  // const [playerList, setPlayerList] = useState([]);
   const initSocket = async () => {
     if (!socket) {
       const funcs = { setChatContent, setPlayerList };
@@ -47,9 +46,8 @@ function App() {
 
   const login = async () => {
     await initSocket();
-    // setUserName(await socket.request(ClientRequests.GetPlayerName));
-    // setPlayerList(await socket.request(ClientRequests.GetPlayerList));
-    setUserName('');
+    setUserName(await socket.request(ClientRequests.GetPlayerName));
+    setPlayerList(await socket.request(ClientRequests.GetPlayerList));
     setIsNotLogin(false);
   };
 
