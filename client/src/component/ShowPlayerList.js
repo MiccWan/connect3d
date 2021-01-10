@@ -14,7 +14,6 @@ const useStyles = makeStyles(() => ({
 
 function ShowPlayerList({ playerList }) {
   const classes = useStyles();
-
   return (
     <List className={classes.root}>
       { playerList.map((player) => (

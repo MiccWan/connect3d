@@ -7,6 +7,7 @@ import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';
 import RoomPage from './container/RoomPage.js';
 import ClientSocketWrapper from './socket/index.js';
+import SocketContext from './socket/SocketContext.js';
 
 // const log = newLogger('App');
 
@@ -35,19 +36,20 @@ function App() {
   const [isNotLogin, setIsNotLogin] = useState(true);
   const [isNotEnterRoom, setNotIsEnterRoom] = useState(true);
   const [roomId, setRoomId] = useState(0);
-  const [chatContent, setChatContent] = useState([{ name: 'dd', content: 'dd' }]);
+  const [chatContent, setChatContent] = useState([]);
   const [playerList, setPlayerList] = useState([]);
   const initSocket = async () => {
     if (!socket) {
       const funcs = { setChatContent, setPlayerList };
-      setSocket(new ClientSocketWrapper(funcs));
+      const _socket = await new ClientSocketWrapper(funcs);
+      setSocket(_socket);
+      setUserName(await _socket.request(ClientRequests.GetPlayerName));
+    // setPlayerList(await socket.request(ClientRequests.GetPlayerList));
     }
   };
 
   const login = async () => {
     await initSocket();
-    setUserName(await socket.request(ClientRequests.GetPlayerName));
-    setPlayerList(await socket.request(ClientRequests.GetPlayerList));
     setIsNotLogin(false);
   };
 
@@ -75,7 +77,6 @@ function App() {
           chatContent={chatContent}
           playerList={playerList}
           enterRoom={enterRoom}
-          socket={socket}
         />
       );
     }
@@ -91,7 +92,9 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      {returnPage()}
+      <SocketContext.Provider value={socket}>
+        {returnPage()}
+      </SocketContext.Provider>
     </ThemeProvider>
   );
 }

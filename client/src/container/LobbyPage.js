@@ -1,5 +1,5 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { PropTypes } from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -19,6 +19,7 @@ import ShowRoomList from '../component/ShowRoomList.js';
 import ShowPlayerList from '../component/ShowPlayerList.js';
 import ShowChat from '../subContainer/ShowChat.js';
 import ChooseTimeDialog from '../subContainer/ChooseTimeDialog.js';
+import SocketContext from '../socket/SocketContext.js';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -53,12 +54,14 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function LobbyPage({ userName, enterRoom, chatContent, playerList, socket }) {
+function LobbyPage({ userName, enterRoom, chatContent, playerList }) {
   const classes = useStyles();
+  const socket = useContext(SocketContext);
   const [roomList, setRoomList] = useState([]);
   const [tempRoomId, setTempRoomId] = useState('');
   const [chatInput, setChatInput] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
+
   useEffect(() => {
     setRoomList([{ id: 123, timeRule: '15 min', status: 'ing', players: 'dd' }, { id: 124, timeRule: '15 min', status: 'ing', players: 'dd' }, { id: 125, timeRule: '15 min', status: 'ing', players: 'dd' }]);
   }, []);
@@ -84,7 +87,7 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, socket }) {
   };
 
   const chatInputEnter = () => {
-    socket.emit(ClientEvents.SendChat, { payload: chatInput });
+    socket.emit(ClientEvents.SendChat, { msg: chatInput });
     setChatInput('');
   };
 
@@ -200,7 +203,6 @@ LobbyPage.propTypes = {
   userName: PropTypes.string.isRequired,
   enterRoom: PropTypes.func.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
-  socket: PropTypes.object.isRequired,
 };
 
 export default LobbyPage;

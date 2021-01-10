@@ -23,9 +23,9 @@ export default class Player {
     gc.lobby.join(this.id);
   }
 
-  get id() {
-    return this.socket.id;
-  }
+  // get id() {
+  //   return this.socket.id;
+  // }
 
   sendChat({ playerId, msg, time }) {
     const { name } = this.gc.allPlayers.getById(playerId);
