@@ -17,7 +17,8 @@ export default class SocketWrapper {
           ack({ result });
         }
         catch (err) {
-          ack({ error: err.message });
+          log.error(err);
+          ack({ error: `SocketRemoteError: Remote failed to process request '${event}'` });
         }
       });
     }
@@ -29,7 +30,8 @@ export default class SocketWrapper {
           ack({ result: `Event '${event}' successfully processed.` });
         }
         catch (err) {
-          ack({ error: `Error processing event '${event}', ${err.message}` });
+          log.error(err);
+          ack({ error: `SocketRemoteError: Remote failed to process event '${event}'` });
         }
       });
     }

@@ -13,7 +13,6 @@ export default class Player {
    */
   constructor(gc, _socket) {
     this.gc = gc;
-    this.id = _socket.id;
     this.name = getUniqueName();
     this.roomId = null;
     this.socket = new ServerSocketWrapper(gc, this, _socket);
@@ -23,12 +22,13 @@ export default class Player {
     gc.lobby.join(this.id);
   }
 
-  // get id() {
-  //   return this.socket.id;
-  // }
+  get id() {
+    return this.socket.id;
+  }
 
-  sendChat({ playerId, msg, time }) {
-    const { name } = this.gc.allPlayers.getById(playerId);
+  sendChat(msg) {
+    const { name } = this;
+    const time = Date.now();
     if (PlayerStatusType.is.Lobby(this.status)) {
       this.gc.lobby.emitAll(ServerEvents.SendChat, { name, msg, time });
     }

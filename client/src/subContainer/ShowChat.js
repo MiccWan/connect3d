@@ -15,10 +15,10 @@ function ShowChat({ chatContent }) {
 
   return (
     <div className={classes.root}>
-      { chatContent.map(({ name, content }, index) => (
+      { chatContent.map(({ name, msg }, index) => (
         // eslint-disable-next-line react/no-array-index-key
         <Typography variant="body1" align="left" noWrap key={index}>
-          {name}: {content}
+          {name}: {msg}
         </Typography>
       ))}
     </div>
