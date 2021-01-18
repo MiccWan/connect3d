@@ -26,7 +26,7 @@ const theme = createMuiTheme({
     player: {
       one: '#F4997B',
       two: '#A4C77F',
-    }
+    },
   },
 });
 
@@ -38,13 +38,14 @@ function App() {
   const [roomId, setRoomId] = useState(0);
   const [chatContent, setChatContent] = useState([]);
   const [playerList, setPlayerList] = useState([]);
+
   const initSocket = async () => {
     if (!socket) {
       const funcs = { setChatContent, setPlayerList };
       const _socket = await new ClientSocketWrapper(funcs);
       setSocket(_socket);
       setUserName(await _socket.request(ClientRequests.GetPlayerName));
-    // setPlayerList(await socket.request(ClientRequests.GetPlayerList));
+      // setPlayerList(await _socket.request(ClientRequests.GetPlayerList));
     }
   };
 
