@@ -75,6 +75,10 @@ const useStyles = makeStyles((theme) => ({
     width: '25%',
     padding: theme.spacing(1, 0, 0, 0),
   },
+  playerName: {
+    position: 'relative',
+    bottom: '-3px',
+  }
 }));
 
 function ControlBoard({ userName, roomId, leaveRoom }) {
@@ -143,9 +147,11 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
               <div className={classes.playerButtonInner2} />
             </Grid>
             <Grid item container xs={12}>
-              <Typography variant="h6" align="center" className={classes.playerButtonInner3}>
-                {playerName}
-              </Typography>
+              <div className={classes.playerButtonInner3}>
+                <Typography variant="subtitle1" align="center" className={classes.playerName}>
+                  {playerName}
+                </Typography>
+              </div>
             </Grid>
           </Grid>
         </div>
@@ -187,9 +193,11 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
             <div className={classes.playerButtonInner2} />
           </Grid>
           <Grid item container xs={12}>
-            <Typography variant="h6" align="left" className={classes.playerButtonInner3}>
-              {playerName}
-            </Typography>
+            <div className={classes.playerButtonInner3}>
+              <Typography variant="subtitle1" align="center" className={classes.playerName}>
+                {playerName}
+              </Typography>
+            </div>
           </Grid>
         </Grid>
       </div>
