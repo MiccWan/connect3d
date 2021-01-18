@@ -30,11 +30,11 @@ export default class Player {
     const { name } = this;
     const time = Date.now();
     if (PlayerStatusType.is.Lobby(this.status)) {
-      this.gc.lobby.emitAll(ServerEvents.SendChat, { name, msg, time });
+      this.gc.lobby.emitAll(ServerEvents.NotifyChat, { name, msg, time });
     }
     else if (PlayerStatusType.is.Room(this.status)) {
       const room = this.gc.rooms.getById(this.roomId);
-      room.emitAll(ServerEvents.SendChat, { name, msg, time });
+      room.emitAll(ServerEvents.NotifyChat, { name, msg, time });
     }
     else {
       throw new Error(`Player '${name}' trying to send chat is neither in lobby nor any room`);

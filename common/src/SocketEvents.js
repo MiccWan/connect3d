@@ -9,8 +9,9 @@ let ServerRequests = {
 let ServerEvents = {
   SetPlayerName: 'set_player_name',
   UpdatePlayerList: 'update_player_list',
-  SendChat: 'send_chat',
+  NotifyChat: 'notify_chat',
   NotifyInvitation: 'notify_invitation',
+  NotifyPlayerJoinRoom: 'notify_player_join_room',
 };
 
 let ClientRequests = {

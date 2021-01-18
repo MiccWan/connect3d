@@ -1,3 +1,4 @@
+import { ServerEvents } from 'knect-common/src/SocketEvents.js';
 import { v4 as uuidv4 } from 'uuid';
 
 /** @typedef {import('./index.js').GameCenter} GameCenter */
@@ -34,7 +35,11 @@ export default class Room {
    * @param {String} id
    */
   join(id) {
+    if (this.players.has(id)) {
+      throw new Error(`Player ${id} already in this room`);
+    }
     this.players.add(id);
+    this.emitAll(ServerEvents.NotifyPlayerJoinRoom, { id });
   }
 
   remove(id) {
