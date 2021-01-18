@@ -30,4 +30,11 @@ export default class PlayerList {
   getById(id) {
     return this._all.get(id);
   }
+
+  /**
+   * @return {Array<Player>}
+   */
+  getAll() {
+    return Array.from(this._all.values());
+  }
 }

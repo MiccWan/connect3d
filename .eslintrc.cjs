@@ -11,6 +11,7 @@ module.exports = {
     'no-restricted-syntax': 0,
     'no-underscore-dangle': 0,
     'object-curly-newline': 0,
-    'guard-for-in': 0
+    'guard-for-in': 0,
+    'quotes': 0,
   }
 };

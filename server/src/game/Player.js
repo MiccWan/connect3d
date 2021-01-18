@@ -45,4 +45,20 @@ export default class Player {
     this.gc.getRoomById(roomId, { throwOnError: true });
     this.roomId = roomId;
   }
+
+  /**
+   * Return whether a player is in a room
+   * @param {{ throwOnFalse: bool }} config // <- how
+   * @return {bool} whether the player is in any room
+   */
+  isInRoom({ throwOnFalse = false }) {
+    if (!this.roomId && throwOnFalse) {
+      throw new Error('Player is not in any room');
+    }
+    return !!this.roomId;
+  }
+
+  receiveInvitation(playerId, roomId) {
+    this.socket.emit(ServerEvents.NotifyInvitation, { playerId, roomId });
+  }
 }

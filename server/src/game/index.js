@@ -4,6 +4,7 @@ import RoomList from './RoomList.js';
 import Player from './Player.js';
 
 /** @typedef {import('socket.io').Server} SocketIO */
+/** @typedef {import('./Room').default} Room */
 
 export class GameCenter {
   /**
@@ -26,12 +27,26 @@ export class GameCenter {
     });
   }
 
+  /**
+   * @return {Room}
+   */
   getRoomById(roomId, { throwOnError = false }) {
     const room = this.rooms.getById(roomId);
     if (room === undefined && throwOnError) {
       throw new Error(`Room ${roomId} doesn't exist`);
     }
     return room;
+  }
+
+  /**
+   * @return {Player}
+   */
+  getPlayerById(playerId, { throwOnError = false }) {
+    const player = this.allPlayers.getById(playerId);
+    if (!player && throwOnError) {
+      throw new Error(`Player ${playerId} doesn't exist`);
+    }
+    return player;
   }
 }
 
