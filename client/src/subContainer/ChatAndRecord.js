@@ -18,8 +18,8 @@ function TabPanel({ children, value, index }) {
       aria-labelledby={`full-width-tab-${index}`}
     >
       {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
+        <Box p={1}>
+          {children}
         </Box>
       )}
     </div>
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 'auto',
     minWidth: 'auto',
     padding: theme.spacing(0, 0, 0, 0),
-  }
+  },
 }));
 
 function ChatAndRecord({ setIsChatMode, roomId, chatContent }) {
@@ -98,10 +98,10 @@ function ChatAndRecord({ setIsChatMode, roomId, chatContent }) {
         </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        <Typography>Item Two</Typography>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item three
+        <Typography>Item Twt</Typography>
       </TabPanel>
     </div>
   );
