@@ -40,4 +40,9 @@ export default class Player {
       throw new Error(`Player '${name}' trying to send chat is neither in lobby nor any room`);
     }
   }
+
+  joinRoom(roomId) {
+    this.gc.getRoomById(roomId, { throwOnError: true });
+    this.roomId = roomId;
+  }
 }

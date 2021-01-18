@@ -29,6 +29,11 @@ export default class ServerSocketWrapper extends SocketWrapper {
     const eventsHandler = {
       [ClientEvents.SendChat]({ msg }) {
         player.sendChat(msg);
+      },
+      [ClientEvents.JoinRoom]({ roomId }) {
+        const room = gc.getRoomById(roomId, { throwOnError: true });
+        room.join(player.id);
+        player.joinRoom(roomId);
       }
     };
 

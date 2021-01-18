@@ -25,6 +25,14 @@ export class GameCenter {
       this.allPlayers.add(player);
     });
   }
+
+  getRoomById(roomId, { throwOnError = false }) {
+    const room = this.rooms.getById(roomId);
+    if (room === undefined && throwOnError) {
+      throw new Error(`Room ${roomId} doesn't exist`);
+    }
+    return room;
+  }
 }
 
 export default function initGameCenter(io) {
