@@ -1,5 +1,5 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { PropTypes } from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -54,17 +54,12 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function LobbyPage({ userName, enterRoom, chatContent, playerList }) {
+function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
   const classes = useStyles();
   const socket = useContext(SocketContext);
-  const [roomList, setRoomList] = useState([]);
   const [tempRoomId, setTempRoomId] = useState('');
   const [chatInput, setChatInput] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
-
-  useEffect(() => {
-    setRoomList([{ id: 123, timeRule: '15 min', status: 'ing', players: 'dd' }, { id: 124, timeRule: '15 min', status: 'ing', players: 'dd' }, { id: 125, timeRule: '15 min', status: 'ing', players: 'dd' }]);
-  }, []);
 
   const selectRoomClick = (id) => {
     enterRoom(id);
@@ -203,6 +198,7 @@ LobbyPage.propTypes = {
   userName: PropTypes.string.isRequired,
   enterRoom: PropTypes.func.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
+  roomList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default LobbyPage;

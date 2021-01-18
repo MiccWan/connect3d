@@ -11,7 +11,7 @@ export default class ClientSocketWrapper extends SocketWrapper {
     };
 
     const eventsHandler = {
-      [ServerEvents.SendChat](msg) {
+      [ServerEvents.NotifyChat](msg) {
         setChatContent((message) => [...message, msg]);
       },
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 // import newLogger from 'knect-common/src/Logger.js';
-import { ClientRequests } from 'knect-common/src/SocketEvents';
+import { ClientRequests, ClientEvents } from 'knect-common/src/SocketEvents';
 
 import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';
@@ -36,8 +36,10 @@ function App() {
   const [isNotLogin, setIsNotLogin] = useState(true);
   const [isNotEnterRoom, setNotIsEnterRoom] = useState(true);
   const [roomId, setRoomId] = useState(0);
+
   const [chatContent, setChatContent] = useState([]);
   const [playerList, setPlayerList] = useState([]);
+  const [roomList, setRoomList] = useState([]);
 
   const initSocket = async () => {
     if (!socket) {
@@ -45,7 +47,8 @@ function App() {
       const _socket = await new ClientSocketWrapper(funcs);
       setSocket(_socket);
       setUserName(await _socket.request(ClientRequests.GetPlayerName));
-      // setPlayerList(await _socket.request(ClientRequests.GetPlayerList));
+      setPlayerList(await _socket.request(ClientRequests.GetPlayerList));
+      setRoomList(await _socket.request(ClientRequests.GetRoomList));
     }
   };
 
@@ -54,7 +57,8 @@ function App() {
     setIsNotLogin(false);
   };
 
-  const enterRoom = (id) => {
+  const enterRoom = async (id) => {
+    await socket.emit(ClientEvents.JoinRoom, { roomId: id });
     setRoomId(id);
     setNotIsEnterRoom(false);
     setChatContent([]);
@@ -77,6 +81,7 @@ function App() {
           roomId={roomId}
           chatContent={chatContent}
           playerList={playerList}
+          roomList={roomList}
           enterRoom={enterRoom}
         />
       );
