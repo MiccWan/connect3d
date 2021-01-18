@@ -3,16 +3,16 @@ import Enum from './Enum.js';
 /* eslint-disable import/no-mutable-exports */
 
 let ServerRequests = {
-  UpdateRoomList: 'update_room_list',
-  UpdatePlayerList: 'update_player_list',
+
 };
 
 let ServerEvents = {
   SetPlayerName: 'set_player_name',
+  UpdateRoomList: 'update_room_list',
   UpdatePlayerList: 'update_player_list',
   NotifyChat: 'notify_chat',
   NotifyInvitation: 'notify_invitation',
-  NotifyPlayerJoinRoom: 'notify_player_join_room',
+  NotifyPlayerJoinRoom: 'notify_player_join_room', // deprecated
 };
 
 let ClientRequests = {

@@ -31,9 +31,9 @@ export default class ServerSocketWrapper extends SocketWrapper {
           players: Array.from(room.players).map(gc.getPlayerById).map(({ id, name }) => ({ id, name })),
         }));
       },
-      [ClientRequests.CreateRoom]() {
+      [ClientRequests.CreateRoom]({ name }) {
         player.isInRoom({ throwOnTrue: true });
-        const room = gc.createRoom();
+        const room = gc.createRoom(name);
         player.joinRoom(room.roomId);
         return room.roomId;
       },
@@ -44,9 +44,11 @@ export default class ServerSocketWrapper extends SocketWrapper {
         player.sendChat(msg);
       },
       [ClientEvents.JoinRoom]({ roomId }) {
+        player.isInRoom();
         const room = gc.getRoomById(roomId, { throwOnError: true });
+        const oldRoom = gc.getRoomById(player.roomId, { throwOnError: true });
+        oldRoom.remove(player.id);
         room.join(player.id);
-        player.joinRoom(roomId);
       },
       [ClientEvents.SendInvitation]({ playerId }) {
         player.isInRoom({ throwOnFalse: true });

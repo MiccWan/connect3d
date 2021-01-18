@@ -3,6 +3,8 @@ import PlayerList from './PlayerList.js';
 import RoomList from './RoomList.js';
 import Player from './Player.js';
 import Room from './Room.js';
+import { ServerEvents } from 'knect-common/src/SocketEvents';
+import UpdateType from 'knect-common/src/UpdateType';
 
 /** @typedef {import('socket.io').Server} SocketIO */
 /** @typedef {import('./Room').default} Room */
@@ -23,6 +25,12 @@ export class GameCenter {
   init() {
     this.io.on('connection', (_socket) => {
       const player = new Player(this, _socket);
+
+      const { id, name } = player;
+      this.lobby.emitAll(ServerEvents.UpdatePlayerList, { type: UpdateType.New, id, name });
+
+      this.lobby.join(id);
+      player.joinRoom(this.lobby.id);
 
       this.allPlayers.add(player);
     });
@@ -51,10 +59,13 @@ export class GameCenter {
   }
 
   /**
+   * @param {string} name
    * @return {Room}
    */
-  createRoom() {
+  createRoom(name) {
     const room = this.rooms.create();
+    const { id } = room;
+    this.lobby.emitAll(ServerEvents.UpdateRoomList, { type: UpdateType.New, id, name });
     return room;
   }
 }
