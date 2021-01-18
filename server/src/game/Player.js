@@ -41,6 +41,9 @@ export default class Player {
     }
   }
 
+  /**
+   * @param {string} roomId
+   */
   joinRoom(roomId) {
     this.gc.getRoomById(roomId, { throwOnError: true });
     this.roomId = roomId;
@@ -48,17 +51,20 @@ export default class Player {
 
   /**
    * Return whether a player is in a room
-   * @param {{ throwOnFalse: bool }} config // <- how
-   * @return {bool} whether the player is in any room
+   * @param {{ throwOnFalse: boolean }} config // <- how
+   * @return {boolean} whether the player is in any room
    */
-  isInRoom({ throwOnFalse = false }) {
+  isInRoom({ throwOnTrue = false, throwOnFalse = false }) {
+    if (this.roomId && throwOnTrue) {
+      throw new Error(`Player is already in room ${this.roomId}`);
+    }
     if (!this.roomId && throwOnFalse) {
       throw new Error('Player is not in any room');
     }
     return !!this.roomId;
   }
 
-  receiveInvitation(playerId, roomId) {
+  notifyInvitation(playerId, roomId) {
     this.socket.emit(ServerEvents.NotifyInvitation, { playerId, roomId });
   }
 }

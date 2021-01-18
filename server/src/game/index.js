@@ -2,6 +2,7 @@ import Lobby from './Lobby.js';
 import PlayerList from './PlayerList.js';
 import RoomList from './RoomList.js';
 import Player from './Player.js';
+import Room from './Room.js';
 
 /** @typedef {import('socket.io').Server} SocketIO */
 /** @typedef {import('./Room').default} Room */
@@ -47,6 +48,14 @@ export class GameCenter {
       throw new Error(`Player ${playerId} doesn't exist`);
     }
     return player;
+  }
+
+  /**
+   * @return {Room}
+   */
+  createRoom() {
+    const room = this.rooms.create();
+    return room;
   }
 }
 

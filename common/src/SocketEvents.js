@@ -3,7 +3,8 @@ import Enum from './Enum.js';
 /* eslint-disable import/no-mutable-exports */
 
 let ServerRequests = {
-
+  UpdateRoomList: 'update_room_list',
+  UpdatePlayerList: 'update_player_list',
 };
 
 let ServerEvents = {
@@ -18,6 +19,7 @@ let ClientRequests = {
   GetPlayerName: 'get_player_name',
   GetPlayerList: 'get_player_list',
   GetRoomList: 'get_room_list',
+  CreateRoom: 'create_room',
 };
 
 let ClientEvents = {
