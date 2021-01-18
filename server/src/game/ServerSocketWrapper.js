@@ -22,13 +22,31 @@ export default class ServerSocketWrapper extends SocketWrapper {
         return player.name;
       },
       [ClientRequests.GetPlayerList]() {
-        return gc.allPlayers.getAll;
-      }
+        return gc.allPlayers.getAll();
+      },
+      [ClientRequests.GetRoomList]() {
+        return gc.rooms.getAll();
+      },
     };
 
     const eventsHandler = {
       [ClientEvents.SendChat]({ msg }) {
         player.sendChat(msg);
+      },
+      [ClientEvents.JoinRoom]({ roomId }) {
+        const room = gc.getRoomById(roomId, { throwOnError: true });
+        room.join(player.id);
+        player.joinRoom(roomId);
+      },
+      [ClientEvents.SendInvitation]({ playerId }) {
+        player.isInRoom({ throwOnFalse: true });
+        const target = gc.getPlayerById(playerId, { throwOnError: true });
+        target.receiveInvitation(player.id, player.roomId);
+      },
+      [ClientEvents.JoinGame]() {
+        player.isInRoom({ throwOnFalse: true });
+        const room = gc.rooms.getById(player.roomId);
+        room.joinGame(player.id);
       }
     };
 

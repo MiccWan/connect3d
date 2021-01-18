@@ -30,14 +30,35 @@ export default class Player {
     const { name } = this;
     const time = Date.now();
     if (PlayerStatusType.is.Lobby(this.status)) {
-      this.gc.lobby.emitAll(ServerEvents.SendChat, { name, msg, time });
+      this.gc.lobby.emitAll(ServerEvents.NotifyChat, { name, msg, time });
     }
     else if (PlayerStatusType.is.Room(this.status)) {
       const room = this.gc.rooms.getById(this.roomId);
-      room.emitAll(ServerEvents.SendChat, { name, msg, time });
+      room.emitAll(ServerEvents.NotifyChat, { name, msg, time });
     }
     else {
       throw new Error(`Player '${name}' trying to send chat is neither in lobby nor any room`);
     }
+  }
+
+  joinRoom(roomId) {
+    this.gc.getRoomById(roomId, { throwOnError: true });
+    this.roomId = roomId;
+  }
+
+  /**
+   * Return whether a player is in a room
+   * @param {{ throwOnFalse: bool }} config // <- how
+   * @return {bool} whether the player is in any room
+   */
+  isInRoom({ throwOnFalse = false }) {
+    if (!this.roomId && throwOnFalse) {
+      throw new Error('Player is not in any room');
+    }
+    return !!this.roomId;
+  }
+
+  receiveInvitation(playerId, roomId) {
+    this.socket.emit(ServerEvents.NotifyInvitation, { playerId, roomId });
   }
 }

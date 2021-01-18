@@ -1,6 +1,7 @@
 import Enum from './Enum.js';
 
 /* eslint-disable import/no-mutable-exports */
+
 let ServerRequests = {
 
 };
@@ -8,16 +9,22 @@ let ServerRequests = {
 let ServerEvents = {
   SetPlayerName: 'set_player_name',
   UpdatePlayerList: 'update_player_list',
-  SendChat: 'send_chat',
+  NotifyChat: 'notify_chat',
+  NotifyInvitation: 'notify_invitation',
+  NotifyPlayerJoinRoom: 'notify_player_join_room',
 };
 
 let ClientRequests = {
   GetPlayerName: 'get_player_name',
   GetPlayerList: 'get_player_list',
+  GetRoomList: 'get_room_list',
 };
 
 let ClientEvents = {
   SendChat: 'send_chat',
+  JoinRoom: 'join_room',
+  SendInvitation: 'send_invitation',
+  JoinGame: 'join_game',
 };
 
 ServerRequests = new Enum(Object.fromEntries(Object.entries(ServerRequests).map(([key, str]) => [key, `S_R_${str}`])));

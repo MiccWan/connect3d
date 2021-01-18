@@ -36,4 +36,11 @@ export default class RoomList {
       throw new Error(`Trying to remove non empty room#${id}`);
     }
   }
+
+  /**
+   * @return {Array<Room>}
+   */
+  getAll() {
+    return Array.from(this._all.values());
+  }
 }
