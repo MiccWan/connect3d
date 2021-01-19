@@ -63,8 +63,8 @@ function ShowRoomList({ roomList, selectRoom, roomFilter }) {
               <TableCell align="left" className={classes.cell}>{room.name}</TableCell>
               <TableCell align="left" className={classes.cell}>{room.status}</TableCell>
               <TableCell align="left" className={classes.cellPlayers}>
-                <Typography>{room.players[1].name}</Typography>
-                <Typography>{room.players[2].name}</Typography>
+                <Typography>{room.players[1]?.name}</Typography>
+                <Typography>{room.players[2]?.name}</Typography>
               </TableCell>
             </TableRow>
           ))}

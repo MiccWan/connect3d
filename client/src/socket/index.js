@@ -13,11 +13,11 @@ export default class ClientSocketWrapper extends SocketWrapper {
 
     const eventsHandler = {
 
-      [ServerEvents.UpdateRoomList](room) {
-        if (room.type === UpdateType.New) {
+      [ServerEvents.UpdateRoomList]({ type, room }) {
+        if (type === UpdateType.New) {
           setRoomList((list) => [...list, room]);
         }
-        if (room.type === UpdateType.Remove) {
+        if (type === UpdateType.Remove) {
           setRoomList((list) => list.filter(x => x.id !== room.id));
         }
       },
@@ -40,8 +40,12 @@ export default class ClientSocketWrapper extends SocketWrapper {
 
       // },
 
-      [ServerEvents.NotifyChat](newMessage) {
-        setChatContent((message) => [...message, newMessage]);
+      [ServerEvents.NotifyPlayerJoinRoom]() {
+        return 0;
+      },
+
+      [ServerEvents.NotifyPlayerSide]() {
+        return 0;
       },
 
     };
