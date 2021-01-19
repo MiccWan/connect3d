@@ -22,11 +22,11 @@ let ClientRequests = {
   GetRoomList: 'get_room_list',
   CreateRoom: 'create_room',
   JoinRoom: 'join_room',
+  LeaveRoom: 'leave_room',
 };
 
 let ClientEvents = {
   SendChat: 'send_chat',
-  LeaveRoom: 'leave_room',
   LeaveGame: 'leave_game',
   SendInvitation: 'send_invitation',
   JoinGame: 'join_game',
