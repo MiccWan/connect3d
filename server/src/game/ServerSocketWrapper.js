@@ -57,6 +57,11 @@ export default class ServerSocketWrapper extends SocketWrapper {
         player.isInRoom({ throwOnFalse: true });
         gc.switchPlayerRoom(player.id, lobbyId);
       },
+      [ClientEvents.LeaveGame]() {
+        player.isInRoom({ throwOnFalse: true });
+        const room = gc.getRoomById(player.roomId);
+        room.removeFromGame(player.id);
+      },
       [ClientEvents.SendInvitation]({ playerId }) {
         player.isInRoom({ throwOnFalse: true });
         const target = gc.getPlayerById(playerId, { throwOnError: true });
