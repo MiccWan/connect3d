@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 // import newLogger from 'knect-common/src/Logger.js';
-import { ClientRequests } from 'knect-common/src/SocketEvents';
+import { ClientRequests, ClientEvents } from 'knect-common/src/SocketEvents';
 
 import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';
@@ -66,6 +66,7 @@ function App() {
   };
 
   const leaveRoom = () => {
+    socket.emit(ClientEvents.LeaveRoom);
     setRoomId(0);
     setNotIsEnterRoom(true);
     setChatContent([]);
