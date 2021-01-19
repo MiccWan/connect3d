@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { ServerEvents } from 'knect-common/src/SocketEvents.js';
 import UpdateType from 'knect-common/src/UpdateType.js';
+import PlayerSideType from 'knect-common/src/PlayerSideType.js';
 
 /** @typedef {import('./index.js').GameCenter} GameCenter */
 
@@ -60,12 +61,15 @@ export default class Room {
   /**
    * Join a player to the game
    * @param {string} id
+   * @param {PlayerSideType} side
    */
-  joinGame(id) {
+  joinGame(id, side) {
     if (!this.players.has(id)) {
       throw new Error(`This player is not in this room`);
     }
     // TODO: check if game joinable
+    // TODO: check side is empty
     // TODO: join game
+    this.emitAll(ServerEvents.NotifyPlayerSide, { id, side });
   }
 }

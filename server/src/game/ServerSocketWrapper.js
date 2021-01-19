@@ -57,10 +57,10 @@ export default class ServerSocketWrapper extends SocketWrapper {
         const target = gc.getPlayerById(playerId, { throwOnError: true });
         target.notifyInvitation(player.id, player.roomId);
       },
-      [ClientEvents.JoinGame]() {
+      [ClientEvents.JoinGame]({ side }) {
         player.isInRoom({ throwOnFalse: true });
         const room = gc.rooms.getById(player.roomId);
-        room.joinGame(player.id);
+        room.joinGame(player.id, side);
       },
     };
 
