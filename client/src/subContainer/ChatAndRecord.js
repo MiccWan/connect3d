@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 import ShowChat from './ShowChat.js';
+import PlayersInRoom from '../component/PlayersInRoom.js';
 
 function TabPanel({ children, value, index }) {
   return (
@@ -44,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ChatAndRecord({ setIsChatMode, roomId, chatContent }) {
+function ChatAndRecord({ setIsChatMode, roomId, chatContent, roomInfo }) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
@@ -101,7 +103,7 @@ function ChatAndRecord({ setIsChatMode, roomId, chatContent }) {
         <Typography>Item Two</Typography>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Typography>Item Twt</Typography>
+        <PlayersInRoom roomInfo={roomInfo} />
       </TabPanel>
     </div>
   );
@@ -111,6 +113,7 @@ ChatAndRecord.propTypes = {
   setIsChatMode: PropTypes.func.isRequired,
   roomId: PropTypes.string.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
+  roomInfo: PropTypes.object.isRequired,
 };
 
 export default ChatAndRecord;
