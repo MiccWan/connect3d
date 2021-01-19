@@ -29,7 +29,7 @@ export default class ServerSocketWrapper extends SocketWrapper {
         return gc.rooms.getAll().map(room => ({
           id: room.id,
           name: room.name,
-          players: Array.from(room.players).map(gc.getPlayerById).map(({ id, name }) => ({ id, name })),
+          players: Array.from(room.players).map(gc.getPlayerById.bind(gc)).map(({ id, name }) => ({ id, name })),
         }));
       },
       [ClientRequests.CreateRoom]({ name }) {
