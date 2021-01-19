@@ -78,7 +78,9 @@ export default class Room {
       throw new Error(`Player ${id} is not in game`);
     }
 
-    const payload = { type: UpdateType.Remove, roomId: this.id, id, side };
+    const { name } = this.gc.getPlayerById(id);
+
+    const payload = { type: UpdateType.Remove, roomId: this.id, id, name, side };
     this.emitAll(ServerEvents.NotifyPlayerSide, payload);
     this.gc.lobby.emitAll(ServerEvents.NotifyPlayerSide, payload);
 
@@ -132,7 +134,9 @@ export default class Room {
 
     this.players.set(side, id);
 
-    const payload = { type: UpdateType.New, roomId: this.id, id, side };
+    const { name } = this.gc.getPlayerById(id);
+
+    const payload = { type: UpdateType.New, roomId: this.id, id, name, side };
     this.emitAll(ServerEvents.NotifyPlayerSide, payload);
     this.gc.lobby.emitAll(ServerEvents.NotifyPlayerSide, payload);
 
