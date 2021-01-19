@@ -13,12 +13,10 @@ export default class ClientSocketWrapper extends SocketWrapper {
     const eventsHandler = {
 
       [ServerEvents.UpdateRoomList]({ type, id, name }) {
-        // new room
-        if (type === 1) {
+        if (type === 1) { // new room
           setRoomList((list) => [...list, { id, name }]);
         }
-        // remove room
-        if (type === 2) {
+        if (type === 2) { // remove room
           setRoomList((list) => list.filter(x => x.id !== id));
         }
       },
@@ -40,6 +38,10 @@ export default class ClientSocketWrapper extends SocketWrapper {
       // [ServerEvents.NotifyInvitation]({ playerId, roomId }){
 
       // },
+
+      [ServerEvents.NotifyChat](newMessage) {
+        setChatContent((message) => [...message, newMessage]);
+      },
 
     };
 

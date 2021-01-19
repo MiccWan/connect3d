@@ -41,7 +41,7 @@ export default class ServerSocketWrapper extends SocketWrapper {
         gc.switchPlayerRoom(player.id, room.id);
         return room.serialize();
       },
-      [ClientEvents.JoinRoom]({ roomId }) {
+      [ClientRequests.JoinRoom]({ roomId }) {
         player.isInRoom({ throwOnTrue: true });
         gc.switchPlayerRoom(player.id, roomId);
         const room = gc.getRoomById(roomId);

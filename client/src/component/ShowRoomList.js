@@ -8,7 +8,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-// import { Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,10 +61,10 @@ function ShowRoomList({ roomList, selectRoom, roomFilter }) {
             >
               <TableCell align="left" className={classes.cell}>{room.name}</TableCell>
               <TableCell align="left" className={classes.cell}>{room.status}</TableCell>
-              {/* <TableCell align="left" className={classes.cellPlayers}>
-                <Typography>{room.players.one.name}</Typography>
-                <Typography>{room.players.two.name}</Typography>
-              </TableCell> */}
+              <TableCell align="left" className={classes.cellPlayers}>
+                <Typography>{room.players[0].name}</Typography>
+                <Typography>{room.players[1].name}</Typography>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
