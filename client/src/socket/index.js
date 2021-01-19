@@ -18,7 +18,10 @@ export default class ClientSocketWrapper extends SocketWrapper {
           setRoomList((list) => [...list, room]);
         }
         if (type === UpdateType.Remove) {
-          setRoomList((list) => list.filter(x => x.id !== room.id));
+          setRoomList((list) => {
+            console.log(list);
+            return list.filter(x => x.id !== room.id);
+          });
         }
       },
 
@@ -26,7 +29,6 @@ export default class ClientSocketWrapper extends SocketWrapper {
         if (type === 1) {
           setPlayerList((list) => [...list, { id, name }]);
         }
-        // remove room
         if (type === 2) {
           setPlayerList((list) => list.filter(x => x.id !== id));
         }
@@ -39,10 +41,6 @@ export default class ClientSocketWrapper extends SocketWrapper {
       // [ServerEvents.NotifyInvitation]({ playerId, roomId }){
 
       // },
-
-      [ServerEvents.NotifyPlayerJoinRoom]() {
-        return 0;
-      },
 
       [ServerEvents.NotifyPlayerSide]() {
         return 0;

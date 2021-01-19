@@ -64,13 +64,18 @@ function App() {
     setRoomInfo(tempRoomInfo);
     setRoomId(tempRoomInfo.id);
     setNotIsEnterRoom(false);
+    setPlayerList(tempRoomInfo.allPlayers);
+    setRoomList([]);
     setChatContent([]);
   };
 
   const joinRoom = async (id) => {
-    setRoomInfo(await socket.request(ClientRequests.JoinRoom, { roomId: id }));
+    const tempRoomInfo = await socket.request(ClientRequests.JoinRoom, { roomId: id });
+    setRoomInfo(tempRoomInfo);
     setRoomId(id);
     setNotIsEnterRoom(false);
+    setPlayerList(tempRoomInfo.allPlayers);
+    setRoomList([]);
     setChatContent([]);
   };
 
@@ -78,6 +83,8 @@ function App() {
     socket.emit(ClientEvents.LeaveRoom);
     setRoomId(0);
     setNotIsEnterRoom(true);
+    setPlayerList([]);
+    setRoomList([]);
     setChatContent([]);
   };
 
