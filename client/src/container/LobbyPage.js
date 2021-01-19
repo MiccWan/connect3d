@@ -61,8 +61,8 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
   const [chatInput, setChatInput] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
 
-  const selectRoomClick = (id) => {
-    enterRoom(id);
+  const selectRoomClick = (roomId) => {
+    enterRoom(roomId);
   };
 
   const deleteRoomFilterClick = () => {
@@ -82,8 +82,10 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
   };
 
   const chatInputEnter = () => {
-    socket.emit(ClientEvents.SendChat, { msg: chatInput });
-    setChatInput('');
+    if (chatInput !== '') {
+      socket.emit(ClientEvents.SendChat, { msg: chatInput });
+      setChatInput('');
+    }
   };
 
   return (
@@ -113,11 +115,6 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
             className={classes.chooseBar}
             value={roomFilter}
             onChange={roomFilterChange}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                deleteRoomFilterClick();
-              }
-            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

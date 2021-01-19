@@ -35,6 +35,9 @@ function ChooseTimeDialog({ openDialog, setOpenDialog, enterRoom }) {
     setOpenDialog(false);
   };
   const continueClick = async () => {
+    if (roomName === '') {
+      return;
+    }
     setOpenDialog(false);
     const roomId = await socket.request(ClientRequests.CreateRoom, { name: roomName });
     enterRoom(roomId);
@@ -68,6 +71,7 @@ function ChooseTimeDialog({ openDialog, setOpenDialog, enterRoom }) {
                 onChange={roomNameChange}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
+                    e.preventDefault();
                     continueClick();
                   }
                 }}

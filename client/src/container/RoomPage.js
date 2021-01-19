@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { PropTypes } from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,8 +10,11 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 
+import { ClientEvents } from 'knect-common/src/SocketEvents';
+
 import ChatAndRecord from '../subContainer/ChatAndRecord.js';
 import ControlBoard from '../subContainer/ControlBoard.js';
+import SocketContext from '../socket/SocketContext.js';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -49,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo }) {
   const classes = useStyles();
-
+  const socket = useContext(SocketContext);
   const [chatInput, setChatInput] = useState('');
   const [isChatMode, setIsChatMode] = useState(true);
 
@@ -58,7 +61,10 @@ function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo }) {
   };
 
   const chatInputEnter = () => {
-    setChatInput('');
+    if (chatInput !== '') {
+      socket.emit(ClientEvents.SendChat, { msg: chatInput });
+      setChatInput('');
+    }
   };
 
   return (
