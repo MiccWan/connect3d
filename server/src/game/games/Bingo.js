@@ -1,5 +1,5 @@
 import PieceType from 'knect-common/src/games/PieceType';
-import TurnsType, { getPieceType } from './TurnsType.js';
+import RoleType, { getPieceType } from './RoleType.js';
 import { ClientEvents } from './BingoEvents.js';
 import CheckResultType from './CheckResultType.js';
 import Game from './Game.js';
@@ -40,7 +40,7 @@ export default class Bingo extends Game {
 
   init() {
     super.init();
-    this.turn = TurnsType.None;
+    this.turn = RoleType.None;
     this.record = [];
     for (let i = 0; i < 4; ++i) {
       for (let j = 0; j < 4; ++j) {
