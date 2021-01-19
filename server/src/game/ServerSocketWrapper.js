@@ -15,21 +15,6 @@ export default class ServerSocketWrapper extends SocketWrapper {
   constructor(gc, player, _socket) {
     super(_socket);
 
-    const getPlayerList = () => {
-      return gc.allPlayers.getAll().map(({ id, name, roomId }) => ({ id, name, roomId }));
-    }
-
-    const getRoomList = () => {
-      return gc.rooms.getAll().map(room => ({
-        id: room.id,
-        name: room.name,
-        players: Array.from(room.players).map(([side, id]) => {
-          const { name } = gc.getPlayerById(id);
-          return [side, { id, name }];
-        }),
-      }));
-    }
-
     /**
      * Add handlers here to response to client requests.
      */
@@ -37,8 +22,13 @@ export default class ServerSocketWrapper extends SocketWrapper {
       [ClientRequests.GetPlayerName]() {
         return player.name;
       },
-      [ClientRequests.GetPlayerList]: getPlayerList,
-      [ClientRequests.GetRoomList]: getRoomList,
+      [ClientRequests.GetPlayerList]() {
+        const room = gc.getRoomById(player.roomId);
+        return room.allPlayers.serialize();
+      },
+      [ClientRequests.GetRoomList]() {
+        return gc.rooms.serialize();
+      },
       [ClientRequests.CreateRoom]({ name }) {
         player.isInRoom({ throwOnTrue: true });
         const room = gc.createRoom(name);
@@ -54,7 +44,10 @@ export default class ServerSocketWrapper extends SocketWrapper {
       [ClientRequests.LeaveRoom]() {
         player.isInRoom({ throwOnFalse: true });
         gc.switchPlayerRoom(player.id, lobbyId);
-        return { room: getRoomList(), player: getPlayerList() };
+        return {
+          rooms: gc.rooms.serialize(),
+          players: gc.allPlayers.serialize()
+        };
       },
     };
 
@@ -65,7 +58,7 @@ export default class ServerSocketWrapper extends SocketWrapper {
       [ClientEvents.LeaveGame]() {
         player.isInRoom({ throwOnFalse: true });
         const room = gc.getRoomById(player.roomId);
-        room.removeFromGame(player.id);
+        room.leaveGame(player.id);
       },
       [ClientEvents.SendInvitation]({ playerId }) {
         player.isInRoom({ throwOnFalse: true });

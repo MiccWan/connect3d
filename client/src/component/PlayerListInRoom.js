@@ -46,7 +46,7 @@ function PlayerListInRoom({ playerList }) {
 }
 
 PlayerListInRoom.propTypes = {
-  playerList: PropTypes.object.isRequired,
+  playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default PlayerListInRoom;

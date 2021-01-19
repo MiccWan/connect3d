@@ -9,6 +9,7 @@ module.exports = {
     'guard-for-in': 0,
     'import/extensions': ['error', 'ignorePackages'],
     'linebreak-style': 0,
+    'max-len': ['warn', { "code": 160 }],
     'no-restricted-syntax': 0,
     'no-underscore-dangle': 0,
     'object-curly-newline': 0,

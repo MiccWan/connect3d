@@ -119,7 +119,7 @@ ChatAndRecord.propTypes = {
   setIsChatMode: PropTypes.func.isRequired,
   roomId: PropTypes.string.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
-  playerList: PropTypes.object.isRequired,
+  playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default ChatAndRecord;

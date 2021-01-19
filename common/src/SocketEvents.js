@@ -13,7 +13,7 @@ let ServerEvents = {
   NotifyChat: 'notify_chat',
   NotifyInvitation: 'notify_invitation',
   NotifyPlayerJoinRoom: 'notify_player_join_room', // deprecated
-  NotifyPlayerSide: 'notify_player_side',
+  NotifyPlayerJoinGame: 'notify_player_join_game',
 };
 
 let ClientRequests = {

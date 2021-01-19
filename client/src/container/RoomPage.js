@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo, playerList }) {
+function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo, playerList, gamers }) {
   const classes = useStyles();
   const socket = useContext(SocketContext);
   const [chatInput, setChatInput] = useState('');
@@ -80,7 +80,7 @@ function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo, playerLi
         <Grid item container xs={3} sm={4} spacing={2} justify="space-between" direction="row">
           <Grid item xs={12}>
             <div className={classes.controlBoard}>
-              <ControlBoard userName={userName} roomInfo={roomInfo} leaveRoom={leaveRoom} />
+              <ControlBoard userName={userName} roomInfo={roomInfo} leaveRoom={leaveRoom} gamers={gamers} />
             </div>
           </Grid>
           <Grid item xs={12}>
@@ -134,6 +134,7 @@ roomPage.propTypes = {
   leaveRoom: PropTypes.func.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
   playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  gamers: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default roomPage;

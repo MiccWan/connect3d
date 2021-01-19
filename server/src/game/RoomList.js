@@ -43,4 +43,8 @@ export default class RoomList {
   getAll() {
     return Array.from(this._all.values());
   }
+
+  serialize() {
+    return this.getAll().map(room => room.serialize());
+  }
 }

@@ -40,12 +40,13 @@ function App() {
   const [chatContent, setChatContent] = useState([]);
   const [playerList, setPlayerList] = useState([]);
   const [roomList, setRoomList] = useState({});
+  const [gamers, setGamers] = useState([]);
 
   const [roomInfo, setRoomInfo] = useState({});
 
   const initSocket = async () => {
     if (!socket) {
-      const funcs = { setChatContent, setPlayerList, setRoomList, setRoomInfo };
+      const funcs = { setChatContent, setPlayerList, setRoomList, setRoomInfo, setGamers };
       const _socket = new ClientSocketWrapper(funcs);
       setSocket(_socket);
       setUserName(await _socket.request(ClientRequests.GetPlayerName));
@@ -75,6 +76,7 @@ function App() {
     setRoomId(id);
     setNotIsEnterRoom(false);
     setPlayerList(tempRoomInfo.allPlayers);
+    setGamers(tempRoomInfo.gamers);
     setRoomList([]);
     setChatContent([]);
   };
@@ -84,8 +86,8 @@ function App() {
     setRoomInfo(tempRoomInfo);
     setRoomId(0);
     setNotIsEnterRoom(true);
-    setPlayerList(tempRoomInfo.player);
-    setRoomList(tempRoomInfo.room);
+    setPlayerList(tempRoomInfo.players);
+    setRoomList(tempRoomInfo.rooms);
     setChatContent([]);
   };
 
@@ -114,6 +116,7 @@ function App() {
         chatContent={chatContent}
         roomInfo={roomInfo}
         playerList={playerList}
+        gamers={gamers}
       />
     );
   };

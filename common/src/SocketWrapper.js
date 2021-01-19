@@ -18,7 +18,7 @@ export default class SocketWrapper {
       this._socket.on(event, async (arg, ack) => {
         try {
           const result = await cb(arg);
-          console.log(new Date().toISOString(), 'event arg result', event, arg, result);
+          log.debug('Get Request', event, arg, result);
           ack({ result });
         }
         catch (err) {
@@ -33,7 +33,7 @@ export default class SocketWrapper {
         try {
           await cb(arg);
           ack({ result: `Event '${event}' successfully processed.` });
-          console.log(new Date().toISOString(), 'event arg', event, arg);
+          log.debug('Get Event', event, arg);
         }
         catch (err) {
           log.error(err);
@@ -63,6 +63,7 @@ export default class SocketWrapper {
         clearTimeout(timeout);
         if (!response.error) {
           resolve(response.result);
+          log.debug('Get Response from event', event, response.result);
         }
         else {
           reject(new Error(`Error when processing response: ${response.error}`));

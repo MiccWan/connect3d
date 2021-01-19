@@ -1,5 +1,4 @@
 import { ServerEvents } from 'knect-common/src/SocketEvents.js';
-import UpdateType from 'knect-common/src/UpdateType.js';
 import Lobby from './Lobby.js';
 import PlayerList from './PlayerList.js';
 import RoomList from './RoomList.js';
@@ -65,8 +64,7 @@ export class GameCenter {
    */
   createRoom(name) {
     const room = this.rooms.create(name);
-    const { id } = room;
-    this.lobby.emitAll(ServerEvents.UpdateRoomList, { type: UpdateType.New, room: room.serialize() });
+    this.lobby.emitAll(ServerEvents.UpdateRoomList, this.rooms.serialize());
     return room;
   }
 
@@ -80,15 +78,6 @@ export class GameCenter {
     const newRoom = this.getRoomById(newRoomId);
     oldRoom.remove(player.id);
     newRoom.join(player.id);
-
-    console.log('new room', newRoomId, newRoom);
-
-    console.log('old room', oldRoom.allPlayers, oldRoom.players);
-    if (oldRoom.isEmpty() && oldRoom !== this.lobby) {
-      this.rooms.remove(oldRoom.id);
-      console.log('lobby member', this.lobby.allPlayers);
-      this.lobby.emitAll(ServerEvents.UpdateRoomList, { type: UpdateType.Remove, room: { id: oldRoom.id, name: oldRoom.name } });
-    }
   }
 
   /**
@@ -97,6 +86,7 @@ export class GameCenter {
   disconnect(player) {
     const room = this.getRoomById(player.roomId);
     room.remove(player.id);
+    this.allPlayers.remove(player.id);
   }
 }
 

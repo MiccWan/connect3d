@@ -1,10 +1,9 @@
 import io from 'socket.io-client';
 import { ServerEvents } from 'knect-common/src/SocketEvents';
 import SocketWrapper from 'knect-common/src/SocketWrapper';
-import UpdateType from 'knect-common/src/UpdateType';
 
 export default class ClientSocketWrapper extends SocketWrapper {
-  constructor({ setChatContent, setPlayerList, setRoomList }) {
+  constructor({ setChatContent, setPlayerList, setRoomList, setGamers }) {
     super(io());
 
     const requestsHandler = {
@@ -12,26 +11,12 @@ export default class ClientSocketWrapper extends SocketWrapper {
     };
 
     const eventsHandler = {
-
-      [ServerEvents.UpdateRoomList]({ type, room }) {
-        if (type === UpdateType.New) {
-          setRoomList((list) => [...list, room]);
-        }
-        if (type === UpdateType.Remove) {
-          setRoomList((list) => {
-            console.log(list);
-            return list.filter(x => x.id !== room.id);
-          });
-        }
+      [ServerEvents.UpdateRoomList](rooms) {
+        setRoomList(rooms);
       },
 
-      [ServerEvents.UpdatePlayerList]({ type, id, name }) {
-        if (type === 1) {
-          setPlayerList((list) => [...list, { id, name }]);
-        }
-        if (type === 2) {
-          setPlayerList((list) => list.filter(x => x.id !== id));
-        }
+      [ServerEvents.UpdatePlayerList](players) {
+        setPlayerList(players);
       },
 
       [ServerEvents.NotifyChat](newMessage) {
@@ -42,8 +27,8 @@ export default class ClientSocketWrapper extends SocketWrapper {
 
       // },
 
-      [ServerEvents.NotifyPlayerSide]() {
-        return 0;
+      [ServerEvents.NotifyPlayerJoinGame](gamers) {
+        setGamers(gamers);
       },
 
     };
