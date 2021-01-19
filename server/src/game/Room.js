@@ -27,8 +27,8 @@ export default class Room {
     this.players = new Map();
   }
 
-  get isEmpty() {
-    return !!this.allPlayers.size;
+  isEmpty() {
+    return !this.allPlayers.size;
   }
 
   emitAll(event, arg) {
