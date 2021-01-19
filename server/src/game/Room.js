@@ -108,10 +108,10 @@ export default class Room {
         const { name: playerName } = this.gc.getPlayerById(playerId);
         return { id: playerId, name: playerName };
       }),
-      players: Array.from(players).map(([side, playerId]) => {
+      players: Object.fromEntries(Array.from(players).map(([side, playerId]) => {
         const { name: playerName } = this.gc.getPlayerById(playerId);
         return [side, { id: playerId, name: playerName }];
-      }),
+      })),
     };
   }
 
