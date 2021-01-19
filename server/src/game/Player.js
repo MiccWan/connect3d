@@ -2,6 +2,7 @@ import { ServerEvents } from 'knect-common/src/SocketEvents.js';
 import PlayerStatusType from './constant/PlayerStatusType.js';
 import ServerSocketWrapper from './ServerSocketWrapper.js';
 import getUniqueName from './util/generateName.js';
+import { lobbyId } from './Lobby.js';
 
 /** @typedef {import('socket.io').Socket} Socket */
 /** @typedef {import('./index.js').GameCenter} GameCenter */
@@ -44,24 +45,31 @@ export default class Player {
     }
   }
 
+  /**
+   * @param {string} roomId
+   */
   joinRoom(roomId) {
-    this.gc.getRoomById(roomId, { throwOnError: true });
+    // this.gc.getRoomById(roomId, { throwOnError: true });
     this.roomId = roomId;
   }
 
   /**
    * Return whether a player is in a room
-   * @param {{ throwOnFalse: bool }} config // <- how
-   * @return {bool} whether the player is in any room
+   * @param {{ throwOnFalse: boolean }} config
+   * @return {boolean} whether the player is in any room
    */
-  isInRoom({ throwOnFalse = false }) {
-    if (!this.roomId && throwOnFalse) {
+  isInRoom({ throwOnTrue = false, throwOnFalse = false }) {
+    const result = this.roomId && this.roomId !== lobbyId;
+    if (result && throwOnTrue) {
+      throw new Error(`Player is already in room ${this.roomId}`);
+    }
+    if (!result && throwOnFalse) {
       throw new Error('Player is not in any room');
     }
-    return !!this.roomId;
+    return result;
   }
 
-  receiveInvitation(playerId, roomId) {
+  notifyInvitation(playerId, roomId) {
     this.socket.emit(ServerEvents.NotifyInvitation, { playerId, roomId });
   }
 }

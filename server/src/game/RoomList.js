@@ -21,8 +21,8 @@ export default class RoomList {
     return this._all.get(id);
   }
 
-  create() {
-    const room = new Room();
+  create(name) {
+    const room = new Room(this.gc, name);
     this._all.set(room.id, room);
     return room;
   }

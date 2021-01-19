@@ -22,10 +22,20 @@ export default class ServerSocketWrapper extends SocketWrapper {
         return player.name;
       },
       [ClientRequests.GetPlayerList]() {
-        return gc.allPlayers.getAll();
+        return gc.allPlayers.getAll().map(({ id, name, roomId }) => ({ id, name, roomId }));
       },
       [ClientRequests.GetRoomList]() {
-        return gc.rooms.getAll();
+        return gc.rooms.getAll().map(room => ({
+          id: room.id,
+          name: room.name,
+          players: Array.from(room.players).map(gc.getPlayerById).map(({ id, name }) => ({ id, name })),
+        }));
+      },
+      [ClientRequests.CreateRoom]({ name }) {
+        player.isInRoom({ throwOnTrue: true });
+        const room = gc.createRoom(name);
+        player.joinRoom(room.roomId);
+        return room.roomId;
       },
     };
 
@@ -34,14 +44,16 @@ export default class ServerSocketWrapper extends SocketWrapper {
         player.sendChat(msg);
       },
       [ClientEvents.JoinRoom]({ roomId }) {
+        player.isInRoom();
         const room = gc.getRoomById(roomId, { throwOnError: true });
+        const oldRoom = gc.getRoomById(player.roomId, { throwOnError: true });
+        oldRoom.remove(player.id);
         room.join(player.id);
-        player.joinRoom(roomId);
       },
       [ClientEvents.SendInvitation]({ playerId }) {
         player.isInRoom({ throwOnFalse: true });
         const target = gc.getPlayerById(playerId, { throwOnError: true });
-        target.receiveInvitation(player.id, player.roomId);
+        target.notifyInvitation(player.id, player.roomId);
       },
       [ClientEvents.JoinGame]() {
         player.isInRoom({ throwOnFalse: true });

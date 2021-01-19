@@ -8,16 +8,18 @@ let ServerRequests = {
 
 let ServerEvents = {
   SetPlayerName: 'set_player_name',
+  UpdateRoomList: 'update_room_list',
   UpdatePlayerList: 'update_player_list',
   NotifyChat: 'notify_chat',
   NotifyInvitation: 'notify_invitation',
-  NotifyPlayerJoinRoom: 'notify_player_join_room',
+  NotifyPlayerJoinRoom: 'notify_player_join_room', // deprecated
 };
 
 let ClientRequests = {
   GetPlayerName: 'get_player_name',
   GetPlayerList: 'get_player_list',
   GetRoomList: 'get_room_list',
+  CreateRoom: 'create_room',
 };
 
 let ClientEvents = {
