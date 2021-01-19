@@ -9,6 +9,10 @@ export default class SocketWrapper {
     this._socket = socket;
   }
 
+  get id() {
+    return this._socket.id;
+  }
+
   init(requestsHandler, eventsHandler) {
     for (const [event, cb] of Object.entries(requestsHandler)) {
       this._socket.on(event, async (arg, ack) => {
@@ -17,7 +21,7 @@ export default class SocketWrapper {
           ack({ result });
         }
         catch (err) {
-          log.error(err);
+          log.error(`SocketError: Failed to process request ${event}.`, err);
           ack({ error: `SocketRemoteError: Remote failed to process request '${event}'` });
         }
       });

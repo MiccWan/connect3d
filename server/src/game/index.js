@@ -24,6 +24,8 @@ export class GameCenter {
       const player = new Player(this, _socket);
 
       this.allPlayers.add(player);
+
+      player.init();
     });
   }
 

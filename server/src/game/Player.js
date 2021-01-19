@@ -19,7 +19,10 @@ export default class Player {
     this.socket.emit(ServerEvents.SetPlayerName, this.name);
 
     this.status = PlayerStatusType.Lobby;
-    gc.lobby.join(this.id);
+  }
+
+  init() {
+    this.gc.lobby.join(this.id);
   }
 
   get id() {
