@@ -87,7 +87,7 @@ export class GameCenter {
     if (oldRoom.isEmpty() && oldRoom !== this.lobby) {
       this.rooms.remove(oldRoom.id);
       console.log('lobby member', this.lobby.allPlayers);
-      this.lobby.emitAll(ServerEvents.UpdateRoomList, { type: UpdateType.Remove, id: oldRoom.id, name: oldRoom.name });
+      this.lobby.emitAll(ServerEvents.UpdateRoomList, { type: UpdateType.Remove, room: { id: oldRoom.id, name: oldRoom.name } });
     }
   }
 
