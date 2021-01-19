@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import Bingo from './games/Bingo.js';
 
 /** @typedef {import('./index.js').GameCenter} GameCenter */
 
@@ -16,6 +17,8 @@ export default class Room {
      * @type {Set<string>}
      */
     this.players = new Set();
+
+    this.game = new Bingo(gc, this.id);
   }
 
   get isEmpty() {

@@ -1,19 +1,26 @@
 import PieceType from 'knect-common/src/games/PieceType';
+import { ClientEvents, ServerEvents } from 'knect-common/src/BingoEvents';
 import RoleType, { getPieceType } from './RoleType.js';
-import { ClientEvents } from './BingoEvents.js';
 import CheckResultType from './CheckResultType.js';
 import Game from './Game.js';
 
+/** @typedef {import('../index.js').GameCenter} GameCenter */
+
 export default class Bingo extends Game {
-  constructor(roomId) {
-    super('3DBingo', roomId);
-    this.board = new Array(64);
+  /**
+   * 
+   * @param {GameCenter} gc 
+   * @param {string} roomId 
+   */
+  constructor(gc, roomId) {
+    super(gc, '3DBingo', roomId);
+    this.board = [];
     this.turn = null;
-    this.players = new Array(2);
+    this.players = [];
     this.record = [];
 
     this.eventHandlers = {
-      [ClientEvents.place]: (playerId, x, y, z) => {
+      [ClientEvents.place]: (playerId, { x, y, z }) => {
         if (playerId !== this.players[this.turn]) {
           throw new Error(`Forbidden Operation: Authentication check failed.`);
         }
@@ -25,7 +32,8 @@ export default class Bingo extends Game {
         this.setBoard(x, y, z, this.getCurrentPiece());
         this.addRecord(x, y, z);
 
-        // TODO: NotifyPlaced
+        const room = gc.rooms.getById(roomId);
+        room.emitAll(ServerEvents.NotifyPlaced, { x, y, z });
       }
     };
 

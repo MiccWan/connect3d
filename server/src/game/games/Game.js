@@ -5,9 +5,10 @@ export default class Game {
    * @param {GameCenter} gc
    * @param {string} name
    */
-  constructor(gc, name) {
+  constructor(gc, name, roomId) {
     this.gc = gc;
     this.gameName = name;
+    this.roomId = roomId;
     this.playing = false;
   }
 
