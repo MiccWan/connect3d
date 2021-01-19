@@ -7,7 +7,7 @@ let ServerRequests = {
 };
 
 let ServerEvents = {
-  SetPlayerName: 'set_player_name',
+  SetPlayerName: 'set_player_name', // deprecated
   UpdateRoomList: 'update_room_list',
   UpdatePlayerList: 'update_player_list',
   NotifyChat: 'notify_chat',
@@ -21,11 +21,11 @@ let ClientRequests = {
   GetPlayerList: 'get_player_list',
   GetRoomList: 'get_room_list',
   CreateRoom: 'create_room',
+  JoinRoom: 'join_room',
 };
 
 let ClientEvents = {
   SendChat: 'send_chat',
-  JoinRoom: 'join_room',
   LeaveRoom: 'leave_room',
   SendInvitation: 'send_invitation',
   JoinGame: 'join_game',

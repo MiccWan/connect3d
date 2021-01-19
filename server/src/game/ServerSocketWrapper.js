@@ -29,24 +29,29 @@ export default class ServerSocketWrapper extends SocketWrapper {
         return gc.rooms.getAll().map(room => ({
           id: room.id,
           name: room.name,
-          players: Array.from(room.players).map(gc.getPlayerById.bind(gc)).map(({ id, name }) => ({ id, name })),
+          players: Array.from(room.players).map(([side, id]) => {
+            const { name } = gc.getPlayerById(id);
+            return [side, { id, name }];
+          }),
         }));
       },
       [ClientRequests.CreateRoom]({ name }) {
         player.isInRoom({ throwOnTrue: true });
         const room = gc.createRoom(name);
         gc.switchPlayerRoom(player.id, room.id);
-        return room.id;
+        return room.serialize();
+      },
+      [ClientEvents.JoinRoom]({ roomId }) {
+        player.isInRoom({ throwOnTrue: true });
+        gc.switchPlayerRoom(player.id, roomId);
+        const room = gc.getRoomById(roomId);
+        return room.serialize();
       },
     };
 
     const eventsHandler = {
       [ClientEvents.SendChat]({ msg }) {
         player.sendChat(msg);
-      },
-      [ClientEvents.JoinRoom]({ roomId }) {
-        player.isInRoom({ throwOnTrue: true });
-        gc.switchPlayerRoom(player.id, roomId);
       },
       [ClientEvents.LeaveRoom]() {
         player.isInRoom({ throwOnFalse: true });

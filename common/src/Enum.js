@@ -21,6 +21,8 @@ export default class Enum {
       }
       this[name] = valuesByNames[name];
     }
+
+    this.size = this.names.length;
   }
 
   get is() {

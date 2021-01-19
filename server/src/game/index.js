@@ -26,12 +26,15 @@ export class GameCenter {
       const player = new Player(this, _socket);
       this.allPlayers.add(player);
 
-      // const { id, name } = player;
-      // this.lobby.emitAll(ServerEvents.UpdatePlayerList, { type: UpdateType.New, id, name });
-
       this.lobby.join(player.id);
-      // player.joinRoom(this.lobby.id);
+
+      _socket.on('disconnect', () => {
+        this.disconnect(player);
+      });
     });
+
+    // TODO: listen on disconnect
+    // TODO: remove on allPlayers, room.allPlayers, room.players
   }
 
   /**
@@ -82,6 +85,14 @@ export class GameCenter {
       this.rooms.remove(oldRoom.id);
       this.lobby.emitAll(ServerEvents.UpdateRoomList, { type: UpdateType.Remove, id: oldRoom.id, name: oldRoom.name });
     }
+  }
+
+  /**
+   * @param {Player} player
+   */
+  disconnect(player) {
+    const room = this.getRoomById(player.roomId);
+    room.remove(player);
   }
 }
 
