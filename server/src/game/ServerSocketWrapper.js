@@ -15,6 +15,21 @@ export default class ServerSocketWrapper extends SocketWrapper {
   constructor(gc, player, _socket) {
     super(_socket);
 
+    const getPlayerList = () => {
+      return gc.allPlayers.getAll().map(({ id, name, roomId }) => ({ id, name, roomId }));
+    }
+
+    const getRoomList = () => {
+      return gc.rooms.getAll().map(room => ({
+        id: room.id,
+        name: room.name,
+        players: Array.from(room.players).map(([side, id]) => {
+          const { name } = gc.getPlayerById(id);
+          return [side, { id, name }];
+        }),
+      }));
+    }
+
     /**
      * Add handlers here to response to client requests.
      */
@@ -22,19 +37,8 @@ export default class ServerSocketWrapper extends SocketWrapper {
       [ClientRequests.GetPlayerName]() {
         return player.name;
       },
-      [ClientRequests.GetPlayerList]() {
-        return gc.allPlayers.getAll().map(({ id, name, roomId }) => ({ id, name, roomId }));
-      },
-      [ClientRequests.GetRoomList]() {
-        return gc.rooms.getAll().map(room => ({
-          id: room.id,
-          name: room.name,
-          players: Array.from(room.players).map(([side, id]) => {
-            const { name } = gc.getPlayerById(id);
-            return [side, { id, name }];
-          }),
-        }));
-      },
+      [ClientRequests.GetPlayerList]: getPlayerList,
+      [ClientRequests.GetRoomList]: getRoomList,
       [ClientRequests.CreateRoom]({ name }) {
         player.isInRoom({ throwOnTrue: true });
         const room = gc.createRoom(name);
@@ -47,15 +51,16 @@ export default class ServerSocketWrapper extends SocketWrapper {
         const room = gc.getRoomById(roomId);
         return room.serialize();
       },
+      [ClientRequests.LeaveRoom]() {
+        player.isInRoom({ throwOnFalse: true });
+        gc.switchPlayerRoom(player.id, lobbyId);
+        return { room: getRoomList(), player: getPlayerList() };
+      },
     };
 
     const eventsHandler = {
       [ClientEvents.SendChat]({ msg }) {
         player.sendChat(msg);
-      },
-      [ClientEvents.LeaveRoom]() {
-        player.isInRoom({ throwOnFalse: true });
-        gc.switchPlayerRoom(player.id, lobbyId);
       },
       [ClientEvents.LeaveGame]() {
         player.isInRoom({ throwOnFalse: true });
