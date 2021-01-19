@@ -34,8 +34,8 @@ export default class ServerSocketWrapper extends SocketWrapper {
       [ClientRequests.CreateRoom]({ name }) {
         player.isInRoom({ throwOnTrue: true });
         const room = gc.createRoom(name);
-        player.joinRoom(room.roomId);
-        return room.roomId;
+        player.joinRoom(room.id);
+        return room.id;
       },
     };
 

@@ -40,7 +40,6 @@ const useStyles = makeStyles((theme) => ({
 
 function ShowRoomList({ roomList, selectRoom, roomFilter }) {
   const classes = useStyles();
-
   const filteredRoomList = roomList.filter(room => room.name.includes(roomFilter));
   return (
     <TableContainer className={classes.root}>

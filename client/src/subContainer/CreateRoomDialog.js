@@ -62,6 +62,8 @@ function ChooseTimeDialog({ openDialog, setOpenDialog, enterRoom }) {
                 id="name"
                 label="room&#39;s name"
                 fullWidth
+                required
+                autoComplete="off"
                 value={roomName}
                 onChange={roomNameChange}
                 onKeyDown={(e) => {

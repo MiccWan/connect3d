@@ -109,7 +109,7 @@ function ChatAndRecord({ setIsChatMode, roomId, chatContent }) {
 
 ChatAndRecord.propTypes = {
   setIsChatMode: PropTypes.func.isRequired,
-  roomId: PropTypes.number.isRequired,
+  roomId: PropTypes.string.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 

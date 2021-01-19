@@ -123,7 +123,7 @@ function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo }) {
 
 roomPage.propTypes = {
   userName: PropTypes.string.isRequired,
-  roomId: PropTypes.number.isRequired,
+  roomId: PropTypes.string.isRequired,
   leaveRoom: PropTypes.func.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
