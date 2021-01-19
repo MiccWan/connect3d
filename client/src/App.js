@@ -44,7 +44,7 @@ function App() {
   const initSocket = async () => {
     if (!socket) {
       const funcs = { setChatContent, setPlayerList };
-      const _socket = await new ClientSocketWrapper(funcs);
+      const _socket = new ClientSocketWrapper(funcs);
       setSocket(_socket);
       setUserName(await _socket.request(ClientRequests.GetPlayerName));
       setPlayerList(await _socket.request(ClientRequests.GetPlayerList));

@@ -1,10 +1,9 @@
+import { ServerEvents } from 'knect-common/src/SocketEvents.js';
+import UpdateType from 'knect-common/src/UpdateType.js';
 import Lobby from './Lobby.js';
 import PlayerList from './PlayerList.js';
 import RoomList from './RoomList.js';
 import Player from './Player.js';
-import Room from './Room.js';
-import { ServerEvents } from 'knect-common/src/SocketEvents';
-import UpdateType from 'knect-common/src/UpdateType';
 
 /** @typedef {import('socket.io').Server} SocketIO */
 /** @typedef {import('./Room').default} Room */
@@ -25,23 +24,20 @@ export class GameCenter {
   init() {
     this.io.on('connection', (_socket) => {
       const player = new Player(this, _socket);
+      this.allPlayers.add(player);
 
       const { id, name } = player;
       this.lobby.emitAll(ServerEvents.UpdatePlayerList, { type: UpdateType.New, id, name });
 
       this.lobby.join(id);
       player.joinRoom(this.lobby.id);
-
-      this.allPlayers.add(player);
-
-      player.init();
     });
   }
 
   /**
    * @return {Room}
    */
-  getRoomById(roomId, { throwOnError = false }) {
+  getRoomById(roomId, { throwOnError = false } = {}) {
     const room = this.rooms.getById(roomId);
     if (room === undefined && throwOnError) {
       throw new Error(`Room ${roomId} doesn't exist`);
@@ -52,7 +48,7 @@ export class GameCenter {
   /**
    * @return {Player}
    */
-  getPlayerById(playerId, { throwOnError = false }) {
+  getPlayerById(playerId, { throwOnError = false } = {}) {
     const player = this.allPlayers.getById(playerId);
     if (!player && throwOnError) {
       throw new Error(`Player ${playerId} doesn't exist`);

@@ -27,7 +27,7 @@ function ShowPlayerList({ playerList }) {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      { playerList.map((name) => (
+      { playerList.map(({ name }) => (
         <div key={name} className={classes.body}>
           <Typography variant="body1" align="left">
             {name}
