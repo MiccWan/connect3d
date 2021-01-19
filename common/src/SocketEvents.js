@@ -27,6 +27,7 @@ let ClientRequests = {
 let ClientEvents = {
   SendChat: 'send_chat',
   LeaveRoom: 'leave_room',
+  LeaveGame: 'leave_game',
   SendInvitation: 'send_invitation',
   JoinGame: 'join_game',
 };

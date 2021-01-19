@@ -60,9 +60,43 @@ export default class Room {
       this.emitAll(ServerEvents.UpdatePlayerList, { type: UpdateType.Remove, id, name });
       this.allPlayers.delete(id);
 
-      // TODO: if player in game
+      if (this.getPlayerSide(id) !== null) {
+        this.removeFromGame(id);
+      }
     }
     else throw new Error(`Trying to remove non-existing player from room#${this.id}`);
+  }
+
+  removeFromGame(id) {
+    if (!this.allPlayers.has(id)) {
+      throw new Error(`Player ${id} is not in this room`);
+    }
+
+    const side = this.getPlayerSide(id);
+    if (side === null) {
+      throw new Error(`Player ${id} is not in game`);
+    }
+
+    const payload = { type: UpdateType.Remove, roomId: this.id, id, side };
+    this.emitAll(ServerEvents.NotifyPlayerSide, payload);
+    this.gc.lobby.emitAll(ServerEvents.NotifyPlayerSide, payload);
+
+    this.players.delete(side);
+  }
+
+  /**
+   * @param {string} id player id
+   */
+  getPlayerSide(id) {
+    const playersList = Array.from(this.players);
+    const playersIdList = playersList.map(([_, playerId]) => playerId);
+    const position = playersIdList.indexOf(id);
+
+    if (position === -1) {
+      return null;
+    }
+
+    return playersList[position][0];
   }
 
   serialize() {
@@ -97,7 +131,7 @@ export default class Room {
 
     this.players.set(side, id);
 
-    const payload = { roomId: this.id, id, side };
+    const payload = { type: UpdateType.New, roomId: this.id, id, side };
     this.emitAll(ServerEvents.NotifyPlayerSide, payload);
     this.gc.lobby.emitAll(ServerEvents.NotifyPlayerSide, payload);
 
