@@ -83,7 +83,7 @@ export class GameCenter {
 
     console.log('new room', newRoomId, newRoom);
 
-    console.log(oldRoom.players);
+    console.log('old room', oldRoom.allPlayers, oldRoom.players);
     if (oldRoom.isEmpty() && oldRoom !== this.lobby) {
       this.rooms.remove(oldRoom.id);
       console.log('lobby member', this.lobby.allPlayers);
