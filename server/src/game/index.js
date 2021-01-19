@@ -66,7 +66,7 @@ export class GameCenter {
   createRoom(name) {
     const room = this.rooms.create(name);
     const { id } = room;
-    this.lobby.emitAll(ServerEvents.UpdateRoomList, { type: UpdateType.New, id, name });
+    this.lobby.emitAll(ServerEvents.UpdateRoomList, { type: UpdateType.New, room: room.serialize() });
     return room;
   }
 

@@ -96,7 +96,10 @@ export default class Room {
     }
 
     this.players.set(side, id);
-    this.emitAll(ServerEvents.NotifyPlayerSide, { id, side });
+
+    const payload = { roomId: this.id, id, side };
+    this.emitAll(ServerEvents.NotifyPlayerSide, payload);
+    this.gc.lobby.emitAll(ServerEvents.NotifyPlayerSide, payload);
 
     if (this.players.size === PlayerSideType.size) {
       // TODO: request confirm
