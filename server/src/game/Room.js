@@ -65,6 +65,16 @@ export default class Room {
     else throw new Error(`Trying to remove non-existing player from room#${this.id}`);
   }
 
+  serialize() {
+    const { id, name, allPlayers, players } = this;
+    return {
+      id,
+      name,
+      allPlayers: Array.from(allPlayers),
+      players: Array.from(players),
+    };
+  }
+
   /**
    * Join a player to the game
    * @param {string} id
