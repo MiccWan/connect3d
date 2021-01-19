@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 // import newLogger from 'knect-common/src/Logger.js';
-import { ClientRequests, ClientEvents } from 'knect-common/src/SocketEvents';
+import { ClientRequests } from 'knect-common/src/SocketEvents';
 
 import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';
@@ -79,12 +79,13 @@ function App() {
     setChatContent([]);
   };
 
-  const leaveRoom = () => {
-    socket.emit(ClientEvents.LeaveRoom);
+  const leaveRoom = async () => {
+    const tempRoomInfo = await socket.request(ClientRequests.leaveRoom);
+    setRoomInfo(tempRoomInfo);
     setRoomId(0);
     setNotIsEnterRoom(true);
-    setPlayerList([]);
-    setRoomList([]);
+    setPlayerList(tempRoomInfo.player);
+    setRoomList(tempRoomInfo.room);
     setChatContent([]);
   };
 
