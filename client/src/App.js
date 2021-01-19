@@ -69,7 +69,6 @@ function App() {
 
   const joinRoom = async (id) => {
     setRoomInfo(await socket.request(ClientRequests.JoinRoom, { roomId: id }));
-    console.log(roomInfo);
     setRoomId(id);
     setNotIsEnterRoom(false);
     setChatContent([]);
