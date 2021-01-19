@@ -39,7 +39,7 @@ function ShowPlayerList({ playerList }) {
 }
 
 ShowPlayerList.propTypes = {
-  playerList: PropTypes.arrayOf(PropTypes.string).isRequired
+  playerList: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default ShowPlayerList;

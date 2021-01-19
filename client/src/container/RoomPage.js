@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function roomPage({ userName, roomId, leaveRoom, chatContent }) {
+function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo }) {
   const classes = useStyles();
 
   const [chatInput, setChatInput] = useState('');
@@ -74,7 +74,7 @@ function roomPage({ userName, roomId, leaveRoom, chatContent }) {
         <Grid item container xs={3} sm={4} spacing={2} justify="space-between" direction="row">
           <Grid item xs={12}>
             <div className={classes.controlBoard}>
-              <ControlBoard userName={userName} roomId={roomId} leaveRoom={leaveRoom} />
+              <ControlBoard userName={userName} roomInfo={roomInfo} leaveRoom={leaveRoom} />
             </div>
           </Grid>
           <Grid item xs={12}>

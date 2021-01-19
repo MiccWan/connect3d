@@ -18,37 +18,50 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     borderBlockColor: theme.palette.primary.main,
     borderWidth: '2px',
+    width: '28%',
+  },
+  headPlayers: {
+    backgroundColor: theme.palette.background.paper,
+    borderBlockColor: theme.palette.primary.main,
+    borderWidth: '2px',
+    width: '44%',
   },
   cell: {
     borderBlockColor: theme.palette.primary.main,
     borderWidth: '1px',
+    width: '28%',
+  },
+  cellPlayers: {
+    borderBlockColor: theme.palette.primary.main,
+    borderWidth: '1px',
+    width: '44%',
   },
 }));
 
-function ShowRoomList({ roomList, selectRoom }) {
+function ShowRoomList({ roomList, selectRoom, roomFilter }) {
   const classes = useStyles();
+
+  const filteredRoomList = roomList.filter(room => room.name.includes(roomFilter));
   return (
     <TableContainer className={classes.root}>
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell align="justify" className={classes.head}>Room ID</TableCell>
-            <TableCell align="justify" className={classes.head}>Time Rule</TableCell>
-            <TableCell align="justify" className={classes.head}>Status</TableCell>
-            <TableCell align="justify" className={classes.head}>Players</TableCell>
+            <TableCell align="left" className={classes.head}>Room&#39;s Name</TableCell>
+            <TableCell align="left" className={classes.head}>Status</TableCell>
+            <TableCell align="left" className={classes.headPlayers}>Players</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {roomList.map((room) => (
+          {filteredRoomList.map((room) => (
             <TableRow
               key={room.id}
               onClick={() => selectRoom(room.id)}
               hover
             >
-              <TableCell align="justify" className={classes.cell}>{room.id}</TableCell>
-              <TableCell align="justify" className={classes.cell}>{room.timeRule}</TableCell>
-              <TableCell align="justify" className={classes.cell}>{room.status}</TableCell>
-              <TableCell align="justify" className={classes.cell}>{room.players}</TableCell>
+              <TableCell align="left" className={classes.cell}>{room.name}</TableCell>
+              <TableCell align="left" className={classes.cell}>{room.status}</TableCell>
+              <TableCell align="left" className={classes.cellPlayers}>{room.players}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -59,7 +72,8 @@ function ShowRoomList({ roomList, selectRoom }) {
 
 ShowRoomList.propTypes = {
   roomList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  selectRoom: PropTypes.func.isRequired
+  selectRoom: PropTypes.func.isRequired,
+  roomFilter: PropTypes.string.isRequired,
 };
 
 export default ShowRoomList;

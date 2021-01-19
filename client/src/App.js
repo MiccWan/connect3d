@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 // import newLogger from 'knect-common/src/Logger.js';
-import { ClientRequests, ClientEvents } from 'knect-common/src/SocketEvents';
+import { ClientRequests } from 'knect-common/src/SocketEvents';
 
 import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';
@@ -41,9 +41,11 @@ function App() {
   const [playerList, setPlayerList] = useState([]);
   const [roomList, setRoomList] = useState([]);
 
+  const [roomInfo, setRoomInfo] = useState({});
+
   const initSocket = async () => {
     if (!socket) {
-      const funcs = { setChatContent, setPlayerList };
+      const funcs = { setChatContent, setPlayerList, setRoomList, setRoomInfo };
       const _socket = new ClientSocketWrapper(funcs);
       setSocket(_socket);
       setUserName(await _socket.request(ClientRequests.GetPlayerName));
@@ -58,7 +60,6 @@ function App() {
   };
 
   const enterRoom = async (id) => {
-    await socket.emit(ClientEvents.JoinRoom, { roomId: id });
     setRoomId(id);
     setNotIsEnterRoom(false);
     setChatContent([]);
@@ -92,6 +93,7 @@ function App() {
         roomId={roomId}
         leaveRoom={leaveRoom}
         chatContent={chatContent}
+        roomInfo={roomInfo}
       />
     );
   };

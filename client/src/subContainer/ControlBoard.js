@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   infoBar: {
     width: '100%',
     height: '15%',
-    padding: theme.spacing(1),
+    padding: theme.spacing(1, 1, 1, 3),
   },
   quitButton: {
     minWidth: '0',
@@ -66,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
   playerButtonInner3: {
     height: theme.spacing(4),
     width: '100%',
+    maxWidth: '100%',
     margin: theme.spacing(0, 2),
     backgroundColor: theme.palette.background.paper,
     borderRadius: '5px 5px 0px 0px',
@@ -81,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function ControlBoard({ userName, roomId, leaveRoom }) {
+function ControlBoard({ userName, roomInfo, leaveRoom }) {
   const classes = useStyles();
 
   const [player1Name, setPlayer1Name] = useState();
@@ -146,7 +147,7 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
             <Grid item container xs={12}>
               <div className={classes.playerButtonInner2} />
             </Grid>
-            <Grid item container xs={12}>
+            <Grid item container xs={12} justify="center">
               <div className={classes.playerButtonInner3}>
                 <Typography variant="subtitle1" align="center" className={classes.playerName}>
                   {playerName}
@@ -174,7 +175,7 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
                 ?
               </Typography>
             </Grid>
-            <Grid item container xs={12}>
+            <Grid item container xs={12} justify="center">
               <Typography variant="h6" className={classes.playerButtonInner3} align="center">
                 waiting...
               </Typography>
@@ -192,7 +193,7 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
           <Grid item container xs={12}>
             <div className={classes.playerButtonInner2} />
           </Grid>
-          <Grid item container xs={12}>
+          <Grid item container xs={12} justify="center">
             <div className={classes.playerButtonInner3}>
               <Typography variant="subtitle1" align="center" className={classes.playerName}>
                 {playerName}
@@ -207,14 +208,9 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
   return (
     <>
       <Grid container className={classes.infoBar} direction="row" alignItems="center">
-        <Grid item container xs={4} justify="center" alignItems="flex-end">
+        <Grid item container xs={10} justify="left" alignItems="flex-end">
           <Typography variant="body1">
-            Room ID: {roomId}
-          </Typography>
-        </Grid>
-        <Grid item container xs={6} justify="center">
-          <Typography variant="body1">
-            Sudden Death: 10 min
+            Room&#39;s Name: {roomInfo.name}
           </Typography>
         </Grid>
         <Grid item container xs={2} justify="flex-end">
@@ -250,7 +246,8 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
 
 ControlBoard.propTypes = {
   userName: PropTypes.string.isRequired,
-  roomId: PropTypes.number.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  roomInfo: PropTypes.object.isRequired,
   leaveRoom: PropTypes.func.isRequired,
 };
 

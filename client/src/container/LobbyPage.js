@@ -11,14 +11,14 @@ import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
-import ForwardIcon from '@material-ui/icons/Forward';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import { ClientEvents } from 'knect-common/src/SocketEvents';
 
 import ShowRoomList from '../component/ShowRoomList.js';
 import ShowPlayerList from '../component/ShowPlayerList.js';
 import ShowChat from '../subContainer/ShowChat.js';
-import ChooseTimeDialog from '../subContainer/ChooseTimeDialog.js';
+import CreateRoomDialog from '../subContainer/CreateRoomDialog.js';
 import SocketContext from '../socket/SocketContext.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
 function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
   const classes = useStyles();
   const socket = useContext(SocketContext);
-  const [tempRoomId, setTempRoomId] = useState('');
+  const [roomFilter, setRoomFilter] = useState('');
   const [chatInput, setChatInput] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -65,16 +65,16 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
     enterRoom(id);
   };
 
-  const joinRoomClick = () => {
-    enterRoom(tempRoomId);
+  const deleteRoomFilterClick = () => {
+    setRoomFilter('');
   };
 
   const createRoomClick = () => {
     setOpenDialog(true);
   };
 
-  const tempRoomIdChange = (event) => {
-    setTempRoomId(event.target.value);
+  const roomFilterChange = (event) => {
+    setRoomFilter(event.target.value);
   };
 
   const chatInputChange = (event) => {
@@ -106,24 +106,23 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
             margin="none"
             size="small"
             fullWidth
-            id="tempRoomId"
-            label="Join room"
-            name="Join room"
-            placeholder="Room ID"
+            id="roomfilter"
+            label="Find Room"
+            placeholder="room's name"
             autoComplete="off"
             className={classes.chooseBar}
-            value={tempRoomId}
-            onChange={tempRoomIdChange}
+            value={roomFilter}
+            onChange={roomFilterChange}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                joinRoomClick();
+                deleteRoomFilterClick();
               }
             }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton edge="end" size="small" onClick={joinRoomClick}>
-                    <ForwardIcon color="primary" />
+                  <IconButton edge="end" size="small" onClick={deleteRoomFilterClick}>
+                    <DeleteIcon color="primary" />
                   </IconButton>
                 </InputAdornment>),
             }}
@@ -139,7 +138,11 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
         </Grid>
         <Grid item xs={8} sm={8}>
           <div className={classes.roomList}>
-            <ShowRoomList roomList={roomList} selectRoom={selectRoomClick} />
+            <ShowRoomList
+              roomList={roomList}
+              selectRoom={selectRoomClick}
+              roomFilter={roomFilter}
+            />
           </div>
         </Grid>
         <Grid item xs={4} sm={4}>
@@ -161,7 +164,7 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
                   autoComplete="off"
                   fullWidth
                   id="chatInput"
-                  name="Join room"
+                  name="chatInput"
                   placeholder="say something"
                   value={chatInput}
                   onChange={chatInputChange}
@@ -184,7 +187,7 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
           </Grid>
         </Grid>
       </Grid>
-      <ChooseTimeDialog
+      <CreateRoomDialog
         openDialog={openDialog}
         setOpenDialog={setOpenDialog}
         enterRoom={enterRoom}
