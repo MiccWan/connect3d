@@ -61,7 +61,8 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
   const [chatInput, setChatInput] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
 
-  const selectRoomClick = (roomId) => {
+  const selectRoomClick = async (roomId) => {
+    await socket.emit(ClientEvents.JoinRoom, { roomId });
     enterRoom(roomId);
   };
 
