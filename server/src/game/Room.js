@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { ServerEvents } from 'knect-common/src/SocketEvents.js';
+import { ServerEvents, ServerRequests } from 'knect-common/src/SocketEvents.js';
 import UpdateType from 'knect-common/src/UpdateType.js';
 import PlayerSideType from 'knect-common/src/PlayerSideType.js';
 
@@ -27,8 +27,8 @@ export default class Room {
     this.players = new Map();
   }
 
-  get isEmpty() {
-    return !!this.allPlayers.size;
+  isEmpty() {
+    return !this.allPlayers.size;
   }
 
   emitAll(event, arg) {
@@ -136,7 +136,7 @@ export default class Room {
     this.gc.lobby.emitAll(ServerEvents.NotifyPlayerSide, payload);
 
     if (this.players.size === PlayerSideType.size) {
-      // TODO: request confirm
+      Promise.all(Array.from(this.players.values()).map(playerId => this.gc.getPlayerById(playerId)).map(player => player.socket.request(ServerRequests.ConfirmStart))).then(() => {/* game start */}).catch(e => {})
     }
   }
 }

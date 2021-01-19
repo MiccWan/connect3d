@@ -81,8 +81,12 @@ export class GameCenter {
     oldRoom.remove(player.id);
     newRoom.join(player.id);
 
-    if (oldRoom.players.length === 0 && oldRoom !== this.lobby) {
+    console.log('new room', newRoomId, newRoom);
+
+    console.log(oldRoom.players);
+    if (oldRoom.isEmpty() && oldRoom !== this.lobby) {
       this.rooms.remove(oldRoom.id);
+      console.log('lobby member', this.lobby.allPlayers);
       this.lobby.emitAll(ServerEvents.UpdateRoomList, { type: UpdateType.Remove, id: oldRoom.id, name: oldRoom.name });
     }
   }

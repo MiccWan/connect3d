@@ -3,7 +3,7 @@ import Enum from './Enum.js';
 /* eslint-disable import/no-mutable-exports */
 
 let ServerRequests = {
-
+  ConfirmStart: 'confirm_start',
 };
 
 let ServerEvents = {

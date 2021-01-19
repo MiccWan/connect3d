@@ -29,7 +29,7 @@ export default class RoomList {
 
   remove(id) {
     const room = this.getById(id);
-    if (room.isEmpty) {
+    if (room.isEmpty()) {
       this._all.delete(room.id);
     }
     else {
