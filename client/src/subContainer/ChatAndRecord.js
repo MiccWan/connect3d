@@ -6,24 +6,42 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 
 import ShowChat from './ShowChat.js';
 import PlayersInRoom from '../component/PlayersInRoom.js';
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    height: '100%',
+    padding: '0',
+  },
+  bar: {
+    height: theme.spacing(4.5),
+    minHeight: 'auto',
+    minWidth: 'auto',
+    padding: theme.spacing(0, 0, 0, 0),
+  },
+  fullheight: {
+    height: '100%',
+  },
+  chatPanel: {
+    height: theme.spacing(23.5),
+  }
+}));
+
 function TabPanel({ children, value, index }) {
+  const classes = useStyles();
   return (
     <div
       role="tabpanel"
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
+      className={classes.fullheight}
     >
-      {value === index && (
-        <Box p={1}>
-          {children}
-        </Box>
-      )}
+      {(value === index)
+        && (children)}
     </div>
   );
 }
@@ -33,18 +51,6 @@ TabPanel.propTypes = {
   index: PropTypes.number.isRequired,
   value: PropTypes.number.isRequired,
 };
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
-  bar: {
-    height: theme.spacing(4.5),
-    minHeight: 'auto',
-    minWidth: 'auto',
-    padding: theme.spacing(0, 0, 0, 0),
-  },
-}));
 
 function ChatAndRecord({ setIsChatMode, roomId, chatContent, roomInfo }) {
   const classes = useStyles();
@@ -95,7 +101,7 @@ function ChatAndRecord({ setIsChatMode, roomId, chatContent, roomInfo }) {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <div>
+        <div className={classes.chatPanel}>
           <ShowChat roomId={roomId} chatContent={chatContent} />
         </div>
       </TabPanel>
