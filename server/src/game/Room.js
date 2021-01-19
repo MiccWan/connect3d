@@ -59,11 +59,11 @@ export default class Room {
         this.removeFromGame(id);
       }
 
-      this.allPlayers.delete(id);
-
       const player = this.gc.getPlayerById(id);
       const { name } = player;
       this.emitAll(ServerEvents.UpdatePlayerList, { type: UpdateType.Remove, id, name });
+
+      this.allPlayers.delete(id);
     }
     else throw new Error(`Trying to remove non-existing player from room#${this.id}`);
   }
