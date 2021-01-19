@@ -55,10 +55,10 @@ export default class Player {
 
   /**
    * Return whether a player is in a room
-   * @param {{ throwOnFalse: boolean }} config
+   * @param {{ throwOnTrue: boolean, throwOnFalse: boolean }} config
    * @return {boolean} whether the player is in any room
    */
-  isInRoom({ throwOnTrue = false, throwOnFalse = false }) {
+  isInRoom({ throwOnTrue = false, throwOnFalse = false } = {}) {
     const result = this.roomId && this.roomId !== lobbyId;
     if (result && throwOnTrue) {
       throw new Error(`Player is already in room ${this.roomId}`);

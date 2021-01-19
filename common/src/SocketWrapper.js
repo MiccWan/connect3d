@@ -18,6 +18,7 @@ export default class SocketWrapper {
       this._socket.on(event, async (arg, ack) => {
         try {
           const result = await cb(arg);
+          console.log(new Date().toISOString(), 'event arg result', event, arg, result);
           ack({ result });
         }
         catch (err) {
@@ -32,6 +33,7 @@ export default class SocketWrapper {
         try {
           await cb(arg);
           ack({ result: `Event '${event}' successfully processed.` });
+          console.log(new Date().toISOString(), 'event arg', event, arg);
         }
         catch (err) {
           log.error(err);
