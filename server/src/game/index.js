@@ -26,11 +26,11 @@ export class GameCenter {
       const player = new Player(this, _socket);
       this.allPlayers.add(player);
 
-      const { id, name } = player;
-      this.lobby.emitAll(ServerEvents.UpdatePlayerList, { type: UpdateType.New, id, name });
+      // const { id, name } = player;
+      // this.lobby.emitAll(ServerEvents.UpdatePlayerList, { type: UpdateType.New, id, name });
 
-      this.lobby.join(id);
-      player.joinRoom(this.lobby.id);
+      this.lobby.join(player.id);
+      // player.joinRoom(this.lobby.id);
     });
   }
 
@@ -38,7 +38,7 @@ export class GameCenter {
    * @return {Room}
    */
   getRoomById(roomId, { throwOnError = false } = {}) {
-    const room = this.rooms.getById(roomId);
+    const room = roomId === this.lobby.id ? this.lobby : this.rooms.getById(roomId);
     if (room === undefined && throwOnError) {
       throw new Error(`Room ${roomId} doesn't exist`);
     }
@@ -65,6 +65,23 @@ export class GameCenter {
     const { id } = room;
     this.lobby.emitAll(ServerEvents.UpdateRoomList, { type: UpdateType.New, id, name });
     return room;
+  }
+
+  /**
+   * @param {tring} playerId
+   * @param {tring} newRoomId
+   */
+  switchPlayerRoom(playerId, newRoomId) {
+    const player = this.getPlayerById(playerId);
+    const oldRoom = this.getRoomById(player.roomId);
+    const newRoom = this.getRoomById(newRoomId);
+    oldRoom.remove(player.id);
+    newRoom.join(player.id);
+
+    if (oldRoom.players.length === 0 && oldRoom !== this.lobby) {
+      this.rooms.remove(oldRoom.id);
+      this.lobby.emitAll(ServerEvents.UpdateRoomList, { type: UpdateType.Remove, id: oldRoom.id, name: oldRoom.name });
+    }
   }
 }
 

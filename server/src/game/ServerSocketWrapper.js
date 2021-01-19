@@ -1,5 +1,6 @@
 import SocketWrapper from 'knect-common/src/SocketWrapper.js';
 import { ClientRequests, ClientEvents } from 'knect-common/src/SocketEvents.js';
+import { lobbyId } from './Lobby.js';
 
 /** @typedef {import('socket.io').Socket} Socket */
 /** @typedef {import('./index.js').GameCenter} GameCenter */
@@ -34,7 +35,7 @@ export default class ServerSocketWrapper extends SocketWrapper {
       [ClientRequests.CreateRoom]({ name }) {
         player.isInRoom({ throwOnTrue: true });
         const room = gc.createRoom(name);
-        player.joinRoom(room.id);
+        gc.switchPlayerRoom(player.id, room.id);
         return room.id;
       },
     };
@@ -44,11 +45,12 @@ export default class ServerSocketWrapper extends SocketWrapper {
         player.sendChat(msg);
       },
       [ClientEvents.JoinRoom]({ roomId }) {
-        player.isInRoom();
-        const room = gc.getRoomById(roomId, { throwOnError: true });
-        const oldRoom = gc.getRoomById(player.roomId, { throwOnError: true });
-        oldRoom.remove(player.id);
-        room.join(player.id);
+        player.isInRoom({ throwOnTrue: true });
+        gc.switchPlayerRoom(player.id, roomId);
+      },
+      [ClientEvents.LeaveRoom]() {
+        player.isInRoom({ throwOnFalse: true });
+        gc.switchPlayerRoom(player.id, lobbyId);
       },
       [ClientEvents.SendInvitation]({ playerId }) {
         player.isInRoom({ throwOnFalse: true });
@@ -59,7 +61,7 @@ export default class ServerSocketWrapper extends SocketWrapper {
         player.isInRoom({ throwOnFalse: true });
         const room = gc.rooms.getById(player.roomId);
         room.joinGame(player.id);
-      }
+      },
     };
 
     this.init(requestsHandler, eventsHandler);
