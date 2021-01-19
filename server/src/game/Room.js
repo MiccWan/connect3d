@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default class Room {
   /**
-   * @param {GameCenter} gc 
-   * @param {String} name 
+   * @param {GameCenter} gc
+   * @param {string} name
    */
   constructor(gc, name) {
     this.gc = gc;
