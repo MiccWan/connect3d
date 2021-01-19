@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -9,7 +9,10 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
+import PlayerSideType from 'knect-common/src/PlayerSideType.js';
+import { ClientEvents } from 'knect-common/src/SocketEvents';
 import personimg from '../img/person2.png';
+import SocketContext from '../socket/SocketContext.js';
 
 const useStyles = makeStyles((theme) => ({
   infoBar: {
@@ -84,6 +87,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ControlBoard({ userName, roomInfo, leaveRoom }) {
   const classes = useStyles();
+  const socket = useContext(SocketContext);
 
   const [player1Name, setPlayer1Name] = useState();
   const [player2Name, setPlayer2Name] = useState();
@@ -93,20 +97,26 @@ function ControlBoard({ userName, roomInfo, leaveRoom }) {
       if (index === 1 && userState === 2) {
         setPlayer2Name();
         setUserState(1);
+        socket.emit(ClientEvents.LeaveGame);
+        socket.emit(ClientEvents.JoinGame, { side: PlayerSideType.A });
         setPlayer1Name(userName);
       }
       if (index === 2 && userState === 1) {
         setPlayer1Name();
+        socket.emit(ClientEvents.LeaveGame);
+        socket.emit(ClientEvents.JoinGame, { side: PlayerSideType.B });
         setUserState(2);
         setPlayer2Name(userName);
       }
     }
     else {
       if (index === 1) {
+        socket.emit(ClientEvents.JoinGame, { side: PlayerSideType.A });
         setPlayer1Name(userName);
         setUserState(1);
       }
       if (index === 2) {
+        socket.emit(ClientEvents.JoinGame, { side: PlayerSideType.B });
         setPlayer2Name(userName);
         setUserState(2);
       }
@@ -115,10 +125,12 @@ function ControlBoard({ userName, roomInfo, leaveRoom }) {
 
   const exitClick = (index) => {
     if (index === 1) {
+      socket.emit(ClientEvents.LeaveGame);
       setPlayer1Name();
       setUserState(0);
     }
     else if (index === 2) {
+      socket.emit(ClientEvents.LeaveGame);
       setPlayer2Name();
       setUserState(0);
     }
