@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo }) {
+function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo, playerList }) {
   const classes = useStyles();
   const socket = useContext(SocketContext);
   const [chatInput, setChatInput] = useState('');
@@ -90,7 +90,7 @@ function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo }) {
                   setIsChatMode={setIsChatMode}
                   roomId={roomId}
                   chatContent={chatContent}
-                  roomInfo={roomInfo}
+                  playerList={playerList}
                 />
               </div>
               <div className={classes.chatInput} hidden={!isChatMode}>
@@ -133,6 +133,7 @@ roomPage.propTypes = {
   roomId: PropTypes.string.isRequired,
   leaveRoom: PropTypes.func.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
+  playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default roomPage;

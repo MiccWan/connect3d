@@ -8,7 +8,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 
 import ShowChat from './ShowChat.js';
-import PlayersInRoom from '../component/PlayersInRoom.js';
+import PlayerListInRoom from '../component/PlayerListInRoom.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,7 +52,7 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function ChatAndRecord({ setIsChatMode, roomId, chatContent, roomInfo }) {
+function ChatAndRecord({ setIsChatMode, roomId, chatContent, playerList }) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
@@ -106,10 +106,10 @@ function ChatAndRecord({ setIsChatMode, roomId, chatContent, roomInfo }) {
         </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Typography>Item Two</Typography>
+        <Typography>record</Typography>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <PlayersInRoom roomInfo={roomInfo} />
+        <PlayerListInRoom playerList={playerList} />
       </TabPanel>
     </div>
   );
@@ -119,7 +119,7 @@ ChatAndRecord.propTypes = {
   setIsChatMode: PropTypes.func.isRequired,
   roomId: PropTypes.string.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
-  roomInfo: PropTypes.object.isRequired,
+  playerList: PropTypes.object.isRequired,
 };
 
 export default ChatAndRecord;

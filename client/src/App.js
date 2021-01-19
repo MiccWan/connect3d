@@ -113,6 +113,7 @@ function App() {
         leaveRoom={leaveRoom}
         chatContent={chatContent}
         roomInfo={roomInfo}
+        playerList={playerList}
       />
     );
   };

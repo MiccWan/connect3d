@@ -1,9 +1,9 @@
 /* eslint-disable react/forbid-prop-types */
 import React from 'react';
-// import { PropTypes } from 'prop-types';
+import { PropTypes } from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
-// import Typography from '@material-ui/core/Typography';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,23 +30,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ShowPlayerList() {
+function PlayerListInRoom({ playerList }) {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      {/* { roomInfo.playerList.map(({ name }) => (
+      { playerList.map(({ name }) => (
         <div key={name} className={classes.body}>
           <Typography variant="body1" align="left">
             <span className={classes.online}>●&nbsp;&nbsp;</span> {name}
           </Typography>
         </div>
-      ))} */}
+      ))}
     </div>
   );
 }
 
-// ShowPlayerList.propTypes = {
-//   roomInfo: PropTypes.object.isRequired,
-// };
+PlayerListInRoom.propTypes = {
+  playerList: PropTypes.object.isRequired,
+};
 
-export default ShowPlayerList;
+export default PlayerListInRoom;
