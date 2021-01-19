@@ -80,7 +80,7 @@ function App() {
   };
 
   const leaveRoom = async () => {
-    const tempRoomInfo = await socket.request(ClientRequests.leaveRoom);
+    const tempRoomInfo = await socket.request(ClientRequests.LeaveRoom);
     setRoomInfo(tempRoomInfo);
     setRoomId(0);
     setNotIsEnterRoom(true);

@@ -96,7 +96,7 @@ export class GameCenter {
    */
   disconnect(player) {
     const room = this.getRoomById(player.roomId);
-    room.remove(player);
+    room.remove(player.id);
   }
 }
 
