@@ -118,11 +118,15 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
             onChange={roomFilterChange}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton edge="end" size="small" onClick={deleteRoomFilterClick}>
-                    <DeleteIcon color="primary" />
-                  </IconButton>
-                </InputAdornment>),
+                (roomFilter !== '')
+                   && (
+                   <InputAdornment position="end">
+                     <IconButton edge="end" size="small" onClick={deleteRoomFilterClick} visibility="hidden">
+                       <DeleteIcon color="primary" />
+                     </IconButton>
+                   </InputAdornment>
+                   )
+              ),
             }}
           />
         </Grid>
