@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import { ServerEvents } from 'knect-common/src/SocketEvents';
 import SocketWrapper from 'knect-common/src/SocketWrapper';
+import UpdateType from 'knect-common/src/UpdateType';
 
 export default class ClientSocketWrapper extends SocketWrapper {
   constructor({ setChatContent, setPlayerList, setRoomList }) {
@@ -12,14 +13,12 @@ export default class ClientSocketWrapper extends SocketWrapper {
 
     const eventsHandler = {
 
-      [ServerEvents.UpdateRoomList]({ type, id, name }) {
-        // new room
-        if (type === 1) {
-          setRoomList((list) => [...list, { id, name }]);
+      [ServerEvents.UpdateRoomList]({ type, room }) {
+        if (type === UpdateType.New) {
+          setRoomList((list) => [...list, room]);
         }
-        // remove room
-        if (type === 2) {
-          setRoomList((list) => list.filter(x => x.id !== id));
+        if (type === UpdateType.Remove) {
+          setRoomList((list) => list.filter(x => x.id !== room.id));
         }
       },
 
@@ -40,6 +39,14 @@ export default class ClientSocketWrapper extends SocketWrapper {
       // [ServerEvents.NotifyInvitation]({ playerId, roomId }){
 
       // },
+
+      [ServerEvents.NotifyPlayerJoinRoom]() {
+        return 0;
+      },
+
+      [ServerEvents.NotifyPlayerSide]() {
+        return 0;
+      },
 
     };
 

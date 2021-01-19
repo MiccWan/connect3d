@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
+function LobbyPage({ userName, createRoom, joinRoom, chatContent, playerList, roomList }) {
   const classes = useStyles();
   const socket = useContext(SocketContext);
   const [roomFilter, setRoomFilter] = useState('');
@@ -62,8 +62,7 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
   const [openDialog, setOpenDialog] = useState(false);
 
   const selectRoomClick = async (roomId) => {
-    await socket.emit(ClientEvents.JoinRoom, { roomId });
-    enterRoom(roomId);
+    joinRoom(roomId);
   };
 
   const deleteRoomFilterClick = () => {
@@ -118,11 +117,15 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
             onChange={roomFilterChange}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton edge="end" size="small" onClick={deleteRoomFilterClick}>
-                    <DeleteIcon color="primary" />
-                  </IconButton>
-                </InputAdornment>),
+                (roomFilter !== '')
+                   && (
+                   <InputAdornment position="end">
+                     <IconButton edge="end" size="small" onClick={deleteRoomFilterClick} visibility="hidden">
+                       <DeleteIcon color="primary" />
+                     </IconButton>
+                   </InputAdornment>
+                   )
+              ),
             }}
           />
         </Grid>
@@ -188,7 +191,7 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
       <CreateRoomDialog
         openDialog={openDialog}
         setOpenDialog={setOpenDialog}
-        enterRoom={enterRoom}
+        createRoom={createRoom}
       />
     </Container>
   );
@@ -197,7 +200,8 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList, roomList }) {
 LobbyPage.propTypes = {
   playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
   userName: PropTypes.string.isRequired,
-  enterRoom: PropTypes.func.isRequired,
+  createRoom: PropTypes.func.isRequired,
+  joinRoom: PropTypes.func.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
   roomList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };

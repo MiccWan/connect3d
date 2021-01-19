@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { PropTypes } from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,9 +9,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
-
-import { ClientRequests } from 'knect-common/src/SocketEvents';
-import SocketContext from '../socket/SocketContext.js';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -26,9 +23,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ChooseTimeDialog({ openDialog, setOpenDialog, enterRoom }) {
+function ChooseTimeDialog({ openDialog, setOpenDialog, createRoom }) {
   const classes = useStyles();
-  const socket = useContext(SocketContext);
   const [roomName, setRoomName] = useState('');
 
   const cancelClick = () => {
@@ -39,8 +35,7 @@ function ChooseTimeDialog({ openDialog, setOpenDialog, enterRoom }) {
       return;
     }
     setOpenDialog(false);
-    const roomId = await socket.request(ClientRequests.CreateRoom, { name: roomName });
-    enterRoom(roomId);
+    createRoom(roomName);
   };
 
   const roomNameChange = (event) => {
@@ -95,7 +90,7 @@ function ChooseTimeDialog({ openDialog, setOpenDialog, enterRoom }) {
 ChooseTimeDialog.propTypes = {
   openDialog: PropTypes.bool.isRequired,
   setOpenDialog: PropTypes.func.isRequired,
-  enterRoom: PropTypes.func.isRequired,
+  createRoom: PropTypes.func.isRequired,
 
 };
 

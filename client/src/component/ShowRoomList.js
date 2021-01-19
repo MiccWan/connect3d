@@ -8,6 +8,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 function ShowRoomList({ roomList, selectRoom, roomFilter }) {
   const classes = useStyles();
+  console.log(roomList);
   const filteredRoomList = roomList.filter(room => room.name.includes(roomFilter));
   return (
     <TableContainer className={classes.root}>
@@ -60,7 +62,10 @@ function ShowRoomList({ roomList, selectRoom, roomFilter }) {
             >
               <TableCell align="left" className={classes.cell}>{room.name}</TableCell>
               <TableCell align="left" className={classes.cell}>{room.status}</TableCell>
-              <TableCell align="left" className={classes.cellPlayers}>{room.players}</TableCell>
+              <TableCell align="left" className={classes.cellPlayers}>
+                <Typography>{room.players[1]?.name}</Typography>
+                <Typography>{room.players[2]?.name}</Typography>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

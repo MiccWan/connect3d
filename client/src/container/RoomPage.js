@@ -90,6 +90,7 @@ function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo }) {
                   setIsChatMode={setIsChatMode}
                   roomId={roomId}
                   chatContent={chatContent}
+                  roomInfo={roomInfo}
                 />
               </div>
               <div className={classes.chatInput} hidden={!isChatMode}>
