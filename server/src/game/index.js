@@ -77,6 +77,11 @@ export class GameCenter {
     const newRoom = this.getRoomById(newRoomId);
     oldRoom.remove(player.id);
     newRoom.join(player.id);
+
+    if (oldRoom.players.length === 0 && oldRoom !== this.lobby) {
+      this.rooms.remove(oldRoom.id);
+      this.lobby.emitAll(ServerEvents.UpdateRoomList, { type: UpdateType.Remove, id: oldRoom.id, name: oldRoom.name });
+    }
   }
 }
 
