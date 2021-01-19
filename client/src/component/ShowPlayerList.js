@@ -4,7 +4,7 @@ import { PropTypes } from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     height: '100%',
@@ -20,7 +20,13 @@ const useStyles = makeStyles(() => ({
   body: {
     margin: '1px 0px',
     width: '100%'
-  }
+  },
+  online: {
+    color: theme.palette.player.two,
+  },
+  offline: {
+    color: theme.palette.player.one,
+  },
 }));
 
 function ShowPlayerList({ playerList }) {
@@ -30,7 +36,7 @@ function ShowPlayerList({ playerList }) {
       { playerList.map(({ name }) => (
         <div key={name} className={classes.body}>
           <Typography variant="body1" align="left">
-            {name}
+            <span className={classes.online}>●&nbsp;&nbsp;</span> {name}
           </Typography>
         </div>
       ))}
