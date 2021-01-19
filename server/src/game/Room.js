@@ -19,15 +19,20 @@ export default class Room {
     /**
      * @type {Set<string>}
      */
-    this.players = new Set();
+    this.allPlayers = new Set();
+
+    /**
+     * @type {Map<PlayerSideType, string>}
+     */
+    this.players = new Map();
   }
 
   get isEmpty() {
-    return !!this.players.size;
+    return !!this.allPlayers.size;
   }
 
   emitAll(event, arg) {
-    this.players.forEach(playerId => {
+    this.allPlayers.forEach(playerId => {
       const player = this.gc.allPlayers.getById(playerId);
       player.socket.emit(event, arg);
     });
@@ -38,22 +43,24 @@ export default class Room {
    * @param {string} id
    */
   join(id) {
-    if (this.players.has(id)) {
+    if (this.allPlayers.has(id)) {
       throw new Error(`Player ${id} already in this room`);
     }
     const player = this.gc.getPlayerById(id);
     const { name } = player;
-    this.players.add(id);
+    this.allPlayers.add(id);
     this.emitAll(ServerEvents.UpdatePlayerList, { type: UpdateType.New, id, name });
     player.joinRoom(this.id);
   }
 
   remove(id) {
-    if (this.players.has(id)) {
+    if (this.allPlayers.has(id)) {
       const player = this.gc.getPlayerById(id);
       const { name } = player;
       this.emitAll(ServerEvents.UpdatePlayerList, { type: UpdateType.Remove, id, name });
-      this.players.delete(id);
+      this.allPlayers.delete(id);
+
+      // TODO: if player in game
     }
     else throw new Error(`Trying to remove non-existing player from room#${this.id}`);
   }
@@ -64,12 +71,19 @@ export default class Room {
    * @param {PlayerSideType} side
    */
   joinGame(id, side) {
-    if (!this.players.has(id)) {
+    if (!this.allPlayers.has(id)) {
       throw new Error(`This player is not in this room`);
     }
-    // TODO: check if game joinable
-    // TODO: check side is empty
-    // TODO: join game
+
+    if (this.players.has(side)) {
+      throw new Error(`This side is not joinable`);
+    }
+
+    this.players.set(side, id);
     this.emitAll(ServerEvents.NotifyPlayerSide, { id, side });
+
+    if (this.players.size === PlayerSideType.size) {
+      // TODO: request confirm
+    }
   }
 }
