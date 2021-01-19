@@ -70,8 +70,14 @@ export default class Room {
     return {
       id,
       name,
-      allPlayers: Array.from(allPlayers),
-      players: Array.from(players),
+      allPlayers: Array.from(allPlayers).map(playerId => {
+        const { name: playerName } = this.gc.getPlayerById(playerId);
+        return { id: playerId, name: playerName };
+      }),
+      players: Array.from(players).map(([side, playerId]) => {
+        const { name: playerName } = this.gc.getPlayerById(playerId);
+        return [side, { id: playerId, name: playerName }];
+      }),
     };
   }
 

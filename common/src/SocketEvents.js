@@ -7,7 +7,7 @@ let ServerRequests = {
 };
 
 let ServerEvents = {
-  SetPlayerName: 'set_player_name',
+  SetPlayerName: 'set_player_name', // deprecated
   UpdateRoomList: 'update_room_list',
   UpdatePlayerList: 'update_player_list',
   NotifyChat: 'notify_chat',
