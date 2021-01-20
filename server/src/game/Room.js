@@ -150,12 +150,13 @@ export default class Room {
   }
 
   serialize() {
-    const { id, name, allPlayers } = this;
+    const { id, name, allPlayers, game } = this;
     return {
       id,
       name,
       allPlayers: allPlayers.serialize(),
       gamers: this.serializedGamers(),
+      game: game.serialize(),
     };
   }
 
