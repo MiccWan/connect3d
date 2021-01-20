@@ -15,7 +15,8 @@ let ServerEvents = {
   NotifyPlayerJoinRoom: 'notify_player_join_room', // deprecated
   NotifyPlayerJoinGame: 'notify_player_join_game',
   NotifyGamer: 'notify_gamer',
-  NotifyGameStart: 'notify_game_start'
+  NotifyGameStart: 'notify_game_start',
+  NotifyGameEnd: 'notify_game_end',
 };
 
 let ClientRequests = {
