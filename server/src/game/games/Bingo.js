@@ -31,7 +31,7 @@ export default class Bingo extends Game {
         this.setBoard(x, y, z, this.getCurrentPiece());
         this.addRecord(x, y, z);
 
-        const result = this.checkWinner();
+        const result = this.checkWinner(x, y, z);
         this.turn = result !== CheckResultType.NotOverYet ? RoleType.None : 
                       (this.turn === RoleType.PlayerA) ? RoleType.PlayerB : RoleType.PlayerA;
 

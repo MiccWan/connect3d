@@ -279,7 +279,7 @@ export default class Bingo extends Game {
     }
   }
 
-  handleGameEnd() {
-    // TODO: update rendering by this.result (game result type)
-  }
+  // handleGameEnd() {
+  //   // TODO: update rendering by this.result (game result type)
+  // }
 }
