@@ -17,6 +17,7 @@ let ServerEvents = {
   NotifyGamer: 'notify_gamer',
   NotifyGameStart: 'notify_game_start',
   NotifyGameEnd: 'notify_game_end',
+  Announcement: 'announcement'
 };
 
 let ClientRequests = {

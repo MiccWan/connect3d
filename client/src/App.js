@@ -10,6 +10,7 @@ import RoomPage from './container/RoomPage.js';
 import ClientSocketWrapper from './socket/index.js';
 
 import SocketContext from './socket/SocketContext.js';
+import showToast from './helper/Toast.js';
 
 const log = newLogger('App');
 
@@ -71,6 +72,7 @@ function App() {
   };
 
   const login = async () => {
+    showToast('Logged in as guest');
     await initSocket();
     setIsNotLogin(false);
   };

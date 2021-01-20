@@ -124,7 +124,7 @@ export default class Bingo extends Game {
   }
 
   addRecord(x, y, z) {
-    this.record.push(x * 16 + y * 4 + z);
+    this.record.push({ x, y, z });
   }
 
   getCurrentPiece() {
