@@ -28,20 +28,36 @@ export default class Bingo extends Game {
           throw new Error(`Forbidden Operation: Invalid place.`);
         }
 
+        if (this.playing === false) {
+          throw new Error(`Forbidden Operation: Game is not playing.`);
+        }
+
         this.setBoard(x, y, z, this.getCurrentPiece());
         this.addRecord(x, y, z);
 
-        const result = this.checkWinner(x, y, z);
-        this.turn = result !== CheckResultType.NotOverYet ? RoleType.None : 
+        this.result = this.checkWinner(x, y, z);
+        this.turn = this.result !== CheckResultType.NotOverYet ? RoleType.None : 
                       (this.turn === RoleType.PlayerA) ? RoleType.PlayerB : RoleType.PlayerA;
 
         const room = gc.rooms.getById(roomId);
         room.emitAll(ServerEvents.NotifyPlaced, { board: this.board, turn: this.turn });
 
-        if (result !== CheckResultType.NotOverYet) {
+        if (this.result !== CheckResultType.NotOverYet) {
           this.end();
         }
-      }
+      },
+      [ClientEvents.Surrender]: (playerId) => {
+        if (this.playing === false) {
+          throw new Error(`Forbidden Operation: Game is not playing.`);
+        }
+
+        this.turn = RoleType.None;
+
+        const room = gc.rooms.getById(roomId);
+        room.emitAll(ServerEvents.NotifyPlaced, { board: this.board, turn: this.turn });
+
+        this.playerSurrender(this.gamers.get(RoleType.PlayerA) === playerId ? RoleType.PlayerA : RoleType.PlayerB);
+      },
     };
 
     this.requestHandlers = {
@@ -179,8 +195,17 @@ export default class Bingo extends Game {
     super.end();
 
     const room = this.gc.rooms.getById(this.roomId);
-    room.emitAll(ServerEvents.NotifyGameEnd, { result: CheckResultType });
+    console.log('emit end with result', this.result);
+    room.emitAll(ServerEvents.NotifyGameEnd, { result: this.result });
 
     this.room.saveRecord(this.record);
+  }
+
+  /**
+   * @param {RoleType} side
+   */
+  playerSurrender(side) {
+    this.result = RoleType.is.PlayerA(side) ? CheckResultType.PlayerBWins : CheckResultType.PlayerAWins;
+    this.end();
   }
 }

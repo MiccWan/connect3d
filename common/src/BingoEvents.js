@@ -14,7 +14,8 @@ let ClientRequests = {
 };
 
 let ClientEvents = {
-  Place: 'place'
+  Place: 'place',
+  Surrender: 'surrender',
 };
 
 ServerRequests = new Enum(Object.fromEntries(Object.entries(ServerRequests).map(([key, str]) => [key, `Bingo_S_R_${str}`])));
