@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import newLogger from 'knect-common/src/Logger.js';
-// import initDB from './db/index.js';
+import initDB from './db/index.js';
 import initGameCenter from './game/index.js';
 import initWeb from './www/index.js';
 
@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 async function init(port = 5000) {
   try {
-    // await initDB();
+    await initDB();
     const { listen, io } = initWeb();
 
     initGameCenter(io);

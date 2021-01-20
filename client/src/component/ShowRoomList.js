@@ -57,7 +57,7 @@ function ShowRoomList({ roomList, selectRoom, roomFilter }) {
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell align="left" className={classes.head}>Room&#39;s Name</TableCell>
+            <TableCell align="left" className={classes.head}>Room Name</TableCell>
             <TableCell align="left" className={classes.head}>Status</TableCell>
             <TableCell align="left" className={classes.headPlayers}>Players</TableCell>
           </TableRow>

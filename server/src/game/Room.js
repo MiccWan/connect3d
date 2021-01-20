@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ServerEvents } from 'knect-common/src/SocketEvents.js';
 import Bingo from './games/Bingo.js';
 import PlayerIdList from './PlayerIdList.js';
+import Save from '../db/models/save.js';
 
 /** @typedef {import('./index.js').GameCenter} GameCenter */
 
@@ -91,7 +92,7 @@ export default class Room {
     this.emitAll(ServerEvents.NotifyPlayerJoinGame, this.serializedGamers());
     this.gc.lobby.emitAll(ServerEvents.UpdateRoomList, this.gc.rooms.serialize());
 
-    // TODO: exported constant
+    // TODO: exported constant // is `PlayerSideType.size` broken?
     if (this.gamers.size === 2) {
       this.game.init();
       this.game.start();
@@ -112,6 +113,10 @@ export default class Room {
 
     this.emitAll(ServerEvents.NotifyPlayerJoinGame, this.serializedGamers());
     this.gc.lobby.emitAll(ServerEvents.UpdateRoomList, this.gc.rooms.serialize());
+
+    if (this.game.playing) {
+      this.game.playerSurrender(side);
+    }
   }
 
   /**
@@ -129,13 +134,29 @@ export default class Room {
     return playersList[position][0];
   }
 
+  /**
+   * @param {Array<number>} steps
+   */
+  saveRecord(steps) {
+    const save = new Save({
+      players: Array.from(this.gamers).map(([, playerId]) => this.gc.getPlayerById(playerId).name),
+      steps,
+    });
+    save.save();
+  }
+
+  afterGame() {
+    Array.from(this.gamers.values()).forEach(id => this.leaveGame(id));
+  }
+
   serialize() {
-    const { id, name, allPlayers } = this;
+    const { id, name, allPlayers, game } = this;
     return {
       id,
       name,
       allPlayers: allPlayers.serialize(),
       gamers: this.serializedGamers(),
+      game: game.serialize(),
     };
   }
 

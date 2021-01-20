@@ -28,13 +28,37 @@ export default class Bingo extends Game {
           throw new Error(`Forbidden Operation: Invalid place.`);
         }
 
+        if (this.playing === false) {
+          throw new Error(`Forbidden Operation: Game is not playing.`);
+        }
+
         this.setBoard(x, y, z, this.getCurrentPiece());
         this.addRecord(x, y, z);
-        this.turn = (this.turn === RoleType.PlayerA) ? RoleType.PlayerB : RoleType.PlayerA;
+
+        const result = this.checkWinner(x, y, z);
+        if (result !== CheckResultType.NotOverYet) this.turn = RoleType.None;
+        else if (this.turn === RoleType.PlayerA) this.turn = RoleType.PlayerB;
+        else this.turn = RoleType.PlayerA;
+
+        const room = gc.rooms.getById(roomId);
+        room.emitAll(ServerEvents.NotifyPlaced, { board: this.board, turn: this.turn, lastPiece: { x, y, z } });
+
+        if (result !== CheckResultType.NotOverYet) {
+          this.end(result);
+        }
+      },
+      [ClientEvents.Surrender]: (playerId) => {
+        if (this.playing === false) {
+          throw new Error(`Forbidden Operation: Game is not playing.`);
+        }
+
+        this.turn = RoleType.None;
 
         const room = gc.rooms.getById(roomId);
         room.emitAll(ServerEvents.NotifyPlaced, { board: this.board, turn: this.turn });
-      }
+
+        this.playerSurrender(this.gamers.get(RoleType.PlayerA) === playerId ? RoleType.PlayerA : RoleType.PlayerB);
+      },
     };
 
     this.requestHandlers = {
@@ -100,7 +124,7 @@ export default class Bingo extends Game {
   }
 
   addRecord(x, y, z) {
-    this.record.push(x * 16 + y * 4 + z);
+    this.record.push({ x, y, z });
   }
 
   getCurrentPiece() {
@@ -166,5 +190,28 @@ export default class Bingo extends Game {
     if (this.isBoardFilled()) return CheckResultType.Filled;
 
     return CheckResultType.NotOverYet;
+  }
+
+  end(result) {
+    super.end();
+
+    this.room.emitAll(Socket.ServerEvents.NotifyGameEnd, { result });
+
+    this.room.saveRecord(this.record);
+    this.room.afterGame();
+  }
+
+  /**
+   * @param {RoleType} side
+   */
+  playerSurrender(side) {
+    const result = RoleType.is.PlayerA(side) ? CheckResultType.PlayerBWins : CheckResultType.PlayerAWins;
+    this.end(result);
+  }
+
+  serialize() {
+    const { playing, turn, board, record } = this;
+    if (playing) return { turn, board, record };
+    return {};
   }
 }

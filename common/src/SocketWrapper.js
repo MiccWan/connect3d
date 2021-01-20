@@ -1,6 +1,6 @@
 import newLogger from './Logger.js';
 
-const log = newLogger('SocketWrapper');
+const log = newLogger('SocketWrapper', true);
 
 const RequestTimeOut = 10 * 1000;
 
@@ -44,6 +44,8 @@ export default class SocketWrapper {
   }
 
   emit(event, arg) {
+    if (!event) throw new Error(`Cannot emit empty event: ${event}`);
+
     this._socket.emit(event, arg, ({ result, error }) => {
       if (!error) {
         log.debug(`Server response: ${result}`);
@@ -55,6 +57,8 @@ export default class SocketWrapper {
   }
 
   async request(event, arg) {
+    if (!event) throw new Error(`Cannot emit empty event: ${event}`);
+
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
         reject(new Error(`Request has not received response for ${RequestTimeOut / 1000} second(s).`));

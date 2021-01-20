@@ -48,7 +48,7 @@ export default class ServerSocketWrapper extends SocketWrapper {
         return {
           roomId: lobbyId,
           rooms: gc.rooms.serialize(),
-          players: gc.allPlayers.serialize()
+          players: gc.lobby.allPlayers.serialize(),
         };
       },
       ...Object.fromEntries(Object.values(Bingo.ClientRequests).map(evt => [evt, (...args) => {

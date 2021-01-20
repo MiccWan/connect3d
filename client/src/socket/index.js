@@ -2,6 +2,7 @@ import io from 'socket.io-client';
 import { ServerEvents } from 'knect-common/src/SocketEvents.js';
 import * as BingoEvents from 'knect-common/src/BingoEvents.js';
 import SocketWrapper from 'knect-common/src/SocketWrapper.js';
+import showToast from '../helper/Toast.js';
 
 export default class ClientSocketWrapper extends SocketWrapper {
   constructor({ setChatContent, setPlayerList, setRoomList, setGamers, setGameState }) {
@@ -24,6 +25,10 @@ export default class ClientSocketWrapper extends SocketWrapper {
         setChatContent((message) => [...message, newMessage]);
       },
 
+      [ServerEvents.Announcement]({ msg }) {
+        showToast(msg);
+      },
+
       // [ServerEvents.NotifyInvitation]({ playerId, roomId }){
 
       // },
@@ -37,12 +42,17 @@ export default class ClientSocketWrapper extends SocketWrapper {
       },
 
       [ServerEvents.NotifyGameStart]({ board, turn }) {
-        setGameState((state) => ({ ...state, board, turn }));
+        showToast('Game Start!');
+        setGameState((state) => ({ ...state, end: false, board, turn }));
       },
 
-      [BingoEvents.ServerEvents.NotifyPlaced]({ board, turn }) {
-        setGameState((state) => ({ ...state, board, turn }));
+      [BingoEvents.ServerEvents.NotifyPlaced]({ board, turn, lastPiece }) {
+        setGameState((state) => ({ ...state, board, turn, lastPiece }));
       },
+
+      [ServerEvents.NotifyGameEnd]({ result }) {
+        setGameState((state) => ({ ...state, end: true, result }));
+      }
     };
 
     this.init(requestsHandler, eventsHandler);
