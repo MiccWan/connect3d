@@ -13,7 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { ClientEvents } from 'knect-common/src/SocketEvents';
+import { ClientEvents } from 'knect-common/src/SocketEvents.js';
 
 import ShowRoomList from '../component/ShowRoomList.js';
 import ShowPlayerList from '../component/ShowPlayerList.js';

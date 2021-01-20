@@ -1,5 +1,6 @@
 import SocketWrapper from 'knect-common/src/SocketWrapper.js';
 import { ClientRequests, ClientEvents } from 'knect-common/src/SocketEvents.js';
+import * as Bingo from 'knect-common/src/BingoEvents.js';
 import { lobbyId } from './Lobby.js';
 
 /** @typedef {import('socket.io').Socket} Socket */
@@ -50,6 +51,10 @@ export default class ServerSocketWrapper extends SocketWrapper {
           players: gc.allPlayers.serialize()
         };
       },
+      ...Object.fromEntries(Object.values(Bingo.ClientRequests).map(evt => [evt, (...args) => {
+        const room = gc.rooms.getById(player.roomId);
+        return room.game.requestHandlers[evt](player.id, ...args);
+      }]))
     };
 
     const eventsHandler = {
@@ -71,6 +76,10 @@ export default class ServerSocketWrapper extends SocketWrapper {
         const room = gc.rooms.getById(player.roomId);
         room.joinGame(player.id, side);
       },
+      ...Object.fromEntries(Object.values(Bingo.ClientEvents).map(evt => [evt, (...args) => {
+        const room = gc.rooms.getById(player.roomId);
+        room.game.eventHandlers[evt](player.id, ...args);
+      }]))
     };
 
     this.init(requestsHandler, eventsHandler);

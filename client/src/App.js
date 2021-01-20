@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import newLogger from 'knect-common/src/Logger.js';
-import { ClientRequests } from 'knect-common/src/SocketEvents';
+import { ClientRequests } from 'knect-common/src/SocketEvents.js';
 
 import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';

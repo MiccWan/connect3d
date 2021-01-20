@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { ServerEvents } from 'knect-common/src/SocketEvents.js';
 import PlayerSideType from 'knect-common/src/PlayerSideType.js';
+import Bingo from './games/Bingo.js';
 import PlayerIdList from './PlayerIdList.js';
 
 /** @typedef {import('./index.js').GameCenter} GameCenter */
@@ -17,11 +18,12 @@ export default class Room {
     this.id = id;
 
     this.allPlayers = new PlayerIdList(gc);
-
+    
     /**
      * @type {Map<PlayerSideType, string>}
      */
     this.gamers = new Map();
+    this.game = new Bingo(gc, this.id);
   }
 
   isEmpty() {

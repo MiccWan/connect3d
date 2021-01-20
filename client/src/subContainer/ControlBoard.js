@@ -10,7 +10,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
 import PlayerSideType from 'knect-common/src/PlayerSideType.js';
-import { ClientEvents } from 'knect-common/src/SocketEvents';
+import { ClientEvents } from 'knect-common/src/SocketEvents.js';
 import personimg from '../img/person2.png';
 import SocketContext from '../socket/SocketContext.js';
 

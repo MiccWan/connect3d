@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
-import { ServerEvents } from 'knect-common/src/SocketEvents';
-import SocketWrapper from 'knect-common/src/SocketWrapper';
+import { ServerEvents } from 'knect-common/src/SocketEvents.js';
+import SocketWrapper from 'knect-common/src/SocketWrapper.js';
 
 export default class ClientSocketWrapper extends SocketWrapper {
   constructor({ setChatContent, setPlayerList, setRoomList, setGamers }) {
