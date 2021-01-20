@@ -53,12 +53,13 @@ function App() {
   const [playerList, setPlayerList] = useState([]);
   const [roomList, setRoomList] = useState({});
   const [gamers, setGamers] = useState({});
+  const [gameState, setGameState] = useState({});
 
   const [roomInfo, setRoomInfo] = useState({});
 
   const initSocket = async () => {
     if (!socket) {
-      const funcs = { setChatContent, setPlayerList, setRoomList, setRoomInfo, setGamers };
+      const funcs = { setChatContent, setPlayerList, setRoomList, setRoomInfo, setGamers, setGameState };
       const _socket = new ClientSocketWrapper(funcs);
       setSocket(_socket);
       setUserName(await _socket.request(ClientRequests.GetPlayerName));
@@ -129,6 +130,7 @@ function App() {
         roomInfo={roomInfo}
         playerList={playerList}
         gamers={gamers}
+        gameState={gameState}
       />
     );
   };
