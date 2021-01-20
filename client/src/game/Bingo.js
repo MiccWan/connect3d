@@ -8,7 +8,8 @@ import {
   BoxGeometry,
   MeshLambertMaterial,
   Mesh,
-  Vector2
+  Vector2,
+  Vector3
 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import PieceType from 'knect-common/src/games/PieceType.js';
@@ -67,6 +68,7 @@ export default class Bingo extends Game {
     this.renderer.setClearColor(0xbbbbbb);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.camera.position.set(5, 5, 5);
+    this.controls.target = new Vector3(0, 1, 0);
     this.controls.update();
 
     // raycaster (mouse event)
@@ -75,9 +77,9 @@ export default class Bingo extends Game {
     this.intersected = null;
 
     // light
-    const ambientLight = new AmbientLight(0x888888, 0.3);
+    const ambientLight = new AmbientLight(0xffffff, 0.5);
     this.scene.add(ambientLight);
-    const directionalLight = new DirectionalLight(0xcccccc);
+    const directionalLight = new DirectionalLight(0xffffff, 0.5);
     directionalLight.position.set(1, 2, 3).normalize();
     this.scene.add(directionalLight);
 
