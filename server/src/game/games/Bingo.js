@@ -210,8 +210,8 @@ export default class Bingo extends Game {
   }
 
   serialize() {
-    const { playing, board, record } = this;
-    if (playing) return { board, record };
+    const { playing, turn, board, record } = this;
+    if (playing) return { turn, board, record };
     return {};
   }
 }

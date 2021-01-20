@@ -92,6 +92,7 @@ function App() {
     setNotIsEnterRoom(false);
     setPlayerList(tempRoomInfo.allPlayers);
     setGamers(tempRoomInfo.gamers);
+    setGameState(tempRoomInfo.game);
     setRoomList([]);
     setChatContent([]);
   });
