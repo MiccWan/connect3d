@@ -207,4 +207,10 @@ export default class Bingo extends Game {
     this.result = RoleType.is.PlayerA(side) ? CheckResultType.PlayerBWins : CheckResultType.PlayerAWins;
     this.end();
   }
+
+  serialize() {
+    const { playing, board, record } = this;
+    if (playing) return { board, record };
+    return {};
+  }
 }
