@@ -114,7 +114,9 @@ export default class Room {
     this.emitAll(ServerEvents.NotifyPlayerJoinGame, this.serializedGamers());
     this.gc.lobby.emitAll(ServerEvents.UpdateRoomList, this.gc.rooms.serialize());
 
-    this.game.end();
+    if (this.game.playing) {
+      this.game.playerSurrender(side);
+    }
   }
 
   /**
@@ -143,13 +145,18 @@ export default class Room {
     save.save();
   }
 
+  afterGame() {
+    Array.from(this.gamers.values()).forEach(id => this.leaveGame(id));
+  }
+
   serialize() {
-    const { id, name, allPlayers } = this;
+    const { id, name, allPlayers, game } = this;
     return {
       id,
       name,
       allPlayers: allPlayers.serialize(),
       gamers: this.serializedGamers(),
+      game: game.serialize(),
     };
   }
 

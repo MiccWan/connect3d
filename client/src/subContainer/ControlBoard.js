@@ -196,7 +196,7 @@ function ControlBoard({ userName, roomInfo, leaveRoom, gamers }) {
       <Grid container className={classes.infoBar} direction="row" alignItems="center">
         <Grid item container xs={10} justify="flex-start" alignItems="flex-end">
           <Typography variant="body1">
-            Room&#39;s Name: {roomInfo.name}
+            Room Name: {roomInfo.name}
           </Typography>
         </Grid>
         <Grid item container xs={2} justify="flex-end">

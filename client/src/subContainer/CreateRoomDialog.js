@@ -50,7 +50,7 @@ function ChooseTimeDialog({ openDialog, setOpenDialog, createRoom }) {
         onClose={cancelClick}
         aria-labelledby="dialog"
       >
-        <DialogTitle id="dialog">Please Enter Room&#39;s Name</DialogTitle>
+        <DialogTitle id="dialog">Please Enter Room Name</DialogTitle>
         <DialogContent>
           <form className={classes.form} noValidate>
             <FormControl className={classes.formControl}>
@@ -58,7 +58,7 @@ function ChooseTimeDialog({ openDialog, setOpenDialog, createRoom }) {
                 autoFocus
                 margin="dense"
                 id="name"
-                label="room&#39;s name"
+                label="room name"
                 fullWidth
                 required
                 autoComplete="off"

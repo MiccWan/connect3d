@@ -33,11 +33,19 @@ const useStyles = makeStyles((theme) => ({
     borderBlockColor: theme.palette.primary.main,
     borderWidth: '1px',
     width: '28%',
+    padding: theme.spacing(1, 2),
   },
   cellPlayers: {
     borderBlockColor: theme.palette.primary.main,
     borderWidth: '1px',
     width: '44%',
+    padding: theme.spacing(1, 2),
+  },
+  player1: {
+    color: theme.palette.player.one,
+  },
+  player2: {
+    color: theme.palette.player.two,
   },
 }));
 
@@ -49,7 +57,7 @@ function ShowRoomList({ roomList, selectRoom, roomFilter }) {
       <Table stickyHeader>
         <TableHead>
           <TableRow>
-            <TableCell align="left" className={classes.head}>Room&#39;s Name</TableCell>
+            <TableCell align="left" className={classes.head}>Room Name</TableCell>
             <TableCell align="left" className={classes.head}>Status</TableCell>
             <TableCell align="left" className={classes.headPlayers}>Players</TableCell>
           </TableRow>
@@ -64,8 +72,20 @@ function ShowRoomList({ roomList, selectRoom, roomFilter }) {
               <TableCell align="left" className={classes.cell}>{room.name}</TableCell>
               <TableCell align="left" className={classes.cell}>{room.status}</TableCell>
               <TableCell align="left" className={classes.cellPlayers}>
-                <Typography>{room.gamers[PlayerSideType.A]?.name}</Typography>
-                <Typography>{room.gamers[PlayerSideType.B]?.name}</Typography>
+                <div>
+                  <Typography variant="inherit">
+                    <span nowrap className={classes.player1}>●&nbsp;&nbsp;</span>
+                    {room.gamers[PlayerSideType.A]?.name}
+                    {!(room.gamers[PlayerSideType.A]?.name) && "-"}
+                  </Typography>
+                </div>
+                <div>
+                  <Typography variant="inherit">
+                    <span className={classes.player2}>●&nbsp;&nbsp;</span>
+                    {room.gamers[PlayerSideType.B]?.name}
+                    {!(room.gamers[PlayerSideType.B]?.name) && "-"}
+                  </Typography>
+                </div>
               </TableCell>
             </TableRow>
           ))}
