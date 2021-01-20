@@ -37,7 +37,7 @@ export default class Bingo extends Game {
         else this.turn = RoleType.PlayerA;
 
         const room = gc.rooms.getById(roomId);
-        room.emitAll(ServerEvents.NotifyPlaced, { board: this.board, turn: this.turn });
+        room.emitAll(ServerEvents.NotifyPlaced, { board: this.board, turn: this.turn, lastPiece: { x, y, z } });
 
         if (result !== CheckResultType.NotOverYet) {
           this.end();

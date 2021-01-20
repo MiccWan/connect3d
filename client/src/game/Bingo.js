@@ -273,8 +273,9 @@ export default class Bingo extends Game {
     }
 
     if (this.lastPiece) {
-      const piece = this.pieces[this.lastPiece];
-      const status = this.board[this.lastPiece];
+      const { x, y, z } = this.lastPiece;
+      const piece = this.getPiece(x, y, z);
+      const status = this.getBoard(x, y, z);
 
       if (PieceType.is.PlayerA(status)) piece.material = Materials.BlinkBlue;
       if (PieceType.is.PlayerB(status)) piece.material = Materials.BlinkRed;
