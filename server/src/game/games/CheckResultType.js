@@ -1,4 +1,4 @@
-import Enum from 'knect-common/src/Enum';
+import Enum from 'knect-common/src/Enum.js';
 
 // eslint-disable-next-line import/no-mutable-exports
 let CheckResultType = {

@@ -10,7 +10,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 
-import { ClientEvents } from 'knect-common/src/SocketEvents';
+import { ClientEvents } from 'knect-common/src/SocketEvents.js';
 
 import ChatAndRecord from '../subContainer/ChatAndRecord.js';
 import ControlBoard from '../subContainer/ControlBoard.js';

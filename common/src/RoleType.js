@@ -1,5 +1,5 @@
-import Enum from 'knect-common/src/Enum';
-import PieceType from 'knect-common/src/games/PieceType';
+import Enum from './Enum.js';
+import PieceType from './games/PieceType.js';
 
 // eslint-disable-next-line import/no-mutable-exports
 let RoleType = {

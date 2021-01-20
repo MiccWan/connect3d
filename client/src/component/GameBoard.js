@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
-import { PropTypes } from 'prop-types';
-
+import React, { useState, useRef, useEffect } from 'react';
+// import { PropTypes } from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+
 import Bingo from '../game/Bingo.js';
 
 const useStyles = makeStyles(() => ({
@@ -11,23 +11,33 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function GameBoard({ role, turn, lastPiece, board }) {
+function GameBoard() {
   const classes = useStyles();
-  const canvas = useRef();
-  const [bingo, setBingo] = useState(new Bingo());
-  bingo.setState(role, turn, lastPiece, board);
+  const elRef = useRef();
+  const [bingo, setBingo] = useState(null);
+
+  useEffect(() => {
+    if (!bingo) {
+      const _bingo = new Bingo(elRef);
+      _bingo.onDidMount();
+      setBingo(_bingo);
+    }
+
+    return () => {
+      bingo?.onWillUnmount();
+    };
+  }, []);
+
   return (
-    <div className={classes.root}>
-      <canvas ref={canvas} />
-    </div>
+    <div ref={elRef} className={classes.root} />
   );
 }
 
 GameBoard.propTypes = {
-  role: PropTypes.number.isRequired,
-  turn: PropTypes.number.isRequired,
-  lastPiece: PropTypes.number.isRequired,
-  board: PropTypes.arrayOf(PropTypes.number).isRequired,
+  // role: PropTypes.number.isRequired,
+  // turn: PropTypes.number.isRequired,
+  // lastPiece: PropTypes.number.isRequired,
+  // board: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 
 export default GameBoard;

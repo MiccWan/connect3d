@@ -1,7 +1,22 @@
-import { WebGLRenderer, Scene, PerspectiveCamera, Raycaster, AmbientLight, DirectionalLight, BoxGeometry, MeshLambertMaterial, Mesh, Vector2, Material } from 'three';
-import PieceType from 'knect-common/src/games/PieceType';
+import {
+  WebGLRenderer,
+  Scene,
+  PerspectiveCamera,
+  Raycaster,
+  AmbientLight,
+  DirectionalLight,
+  BoxGeometry,
+  MeshLambertMaterial,
+  Mesh,
+  Vector2,
+  Material
+} from 'three';
+import PieceType from 'knect-common/src/games/PieceType.js';
+import RoleType from 'knect-common/src/RoleType';
+import newLogger from 'knect-common/src/Logger.js';
 import Game from './Game.js';
-import RoleType from '../../../server/src/game/games/RoleType.js';
+
+const log = newLogger('Bingo');
 
 const Materials = {
   Invis: new MeshLambertMaterial({ opacity: 0, transparent: true }),
@@ -22,44 +37,51 @@ const Geometries = {
 };
 
 export default class Bingo extends Game {
-  constructor(el) {
-    super('3DBingo', el);
+  constructor(elRef) {
+    super('3DBingo', elRef);
 
     this.role = RoleType.None;
     this.turn = RoleType.None;
     this.lastPiece = null;
-    this.board = [];
+    this.board = (new Array(64)).map(() => PieceType.None);
+    this.renderFlag = false;
 
-    // Scene setup
+    this.setup();
+
+    this.el.appendChild(this.renderer.domElement);
+  }
+
+  get el() {
+    return this.elRef.current;
+  }
+
+  setup() {
+    // scene
     this.scene = new Scene();
     this.camera = new PerspectiveCamera(70, 1.2, 1, 1000);
     this.renderer = new WebGLRenderer();
-    this.renderer.setSize(el.clientWidth, el.clientHeight);
+    this.renderer.setSize(this.el.clientWidth, this.el.clientHeight);
     this.renderer.setClearColor(0xbbbbbb);
 
-    // raycaster (mouse event) setup
+    // raycaster (mouse event)
     this.raycaster = new Raycaster();
     this.mouse = new Vector2();
     this.intersected = null;
 
-    // set up light
+    // light
     const ambientLight = new AmbientLight(0x888888, 0.3);
     this.scene.add(ambientLight);
     const directionalLight = new DirectionalLight(0xcccccc);
     directionalLight.position.set(1, 2, 3).normalize();
     this.scene.add(directionalLight);
 
-    el.appendChild(this.renderer.domElement);
-  }
-
-  setup() {
     // platform
     const platform = new Mesh(Geometries.Platform, Materials.Gray);
     platform.position.x = 2.5;
     platform.position.z = 2.5;
     this.scene.add(platform);
 
-    // set up cubes
+    // cubes
     this.pieces = [];
     for (let x = 0; x < 4; ++x) {
       for (let y = 0; y < 4; ++y) {
@@ -70,7 +92,8 @@ export default class Bingo extends Game {
           piece.position.y = y + 0.4;
           piece.position.z = z - 1.5;
           piece.onClick = () => {
-            this.onPieceClick(x, y, z);
+            // this.onPieceClick(x, y, z);
+            log.info(x, y, z);
           };
           piece.onMouseHover = () => {
             if (PieceType.is.Empty(piece.status)) {
@@ -112,6 +135,15 @@ export default class Bingo extends Game {
     this.el.addEventListener('click', this.onClick.bind(this), false);
   }
 
+  onDidMount() {
+    this.renderFlag = true;
+    this.render();
+  }
+
+  onWillUnmount() {
+    this.renderFlag = false;
+  }
+
   onResize() {
     this.renderer.setSize(this.el.innerWidth, this.el.innerHeight);
   }
@@ -125,11 +157,19 @@ export default class Bingo extends Game {
     this.mouse.y = -(y / this.el.clientHeight) * 2 + 1;
   }
 
+  // onPieceClick(x, y, z) {
+
+  // }
+
   onClick() {
     this.intersected?.onClick?.();
   }
 
   render() {
+    if (!this.renderFlag) {
+      return;
+    }
+
     requestAnimationFrame(this.render.bind(this));
 
     // set raycaster
@@ -141,14 +181,14 @@ export default class Bingo extends Game {
         // intersection changed
         const oldIntersected = this.intersected;
         this.intersected = intersections[0].object;
-        oldIntersected.onMouseLeave?.();
+        oldIntersected?.onMouseLeave?.();
         this.intersected.onMouseHover?.();
       }
     }
     else {
       const oldIntersected = this.intersected;
       this.intersected = null;
-      oldIntersected.onMouseLeave?.();
+      oldIntersected?.onMouseLeave?.();
     }
 
     // rotate icons

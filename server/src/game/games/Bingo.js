@@ -1,6 +1,6 @@
-import PieceType from 'knect-common/src/games/PieceType';
-import { ClientEvents, ServerEvents } from 'knect-common/src/BingoEvents';
-import RoleType, { getPieceType } from './RoleType.js';
+import PieceType from 'knect-common/src/games/PieceType.js';
+import { ClientEvents, ServerEvents } from 'knect-common/src/BingoEvents.js';
+import RoleType, { getPieceType } from 'knect-common/src/RoleType.js';
 import CheckResultType from './CheckResultType.js';
 import Game from './Game.js';
 
@@ -8,9 +8,8 @@ import Game from './Game.js';
 
 export default class Bingo extends Game {
   /**
-   * 
-   * @param {GameCenter} gc 
-   * @param {string} roomId 
+   * @param {GameCenter} gc
+   * @param {string} roomId
    */
   constructor(gc, roomId) {
     super(gc, '3DBingo', roomId);

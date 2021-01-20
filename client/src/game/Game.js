@@ -1,6 +1,6 @@
 export default class Game {
-  constructor(name, el) {
+  constructor(name, elRef) {
     this.name = name;
-    this.el = el;
+    this.elRef = elRef;
   }
 }
