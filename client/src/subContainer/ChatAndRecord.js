@@ -106,7 +106,7 @@ function ChatAndRecord({ setIsChatMode, roomId, chatContent, playerList, gameSta
         </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Record recordContenet={gameState.record} />
+        <Record recordContent={gameState.record || []} />
       </TabPanel>
       <TabPanel value={value} index={2}>
         <PlayerListInRoom playerList={playerList} />

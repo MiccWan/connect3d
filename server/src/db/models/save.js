@@ -6,7 +6,7 @@ const saveSchema = new mongoose.Schema({
     required: [true, 'Players field is required.']
   },
   steps: {
-    type: [Number],
+    type: [Object],
     required: [true, 'Steps field is required.']
   }
 });
