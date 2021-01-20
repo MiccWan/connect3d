@@ -32,11 +32,11 @@ function Record({ recordContent }) {
 
   return (
     <div className={classes.root} ref={contentRef}>
-      { recordContent?.map((msg, index) => (
+      { recordContent.map(({ x, y, z }, index) => (
         // eslint-disable-next-line react/no-array-index-key
         <div key={index} className={classes.body}>
           <Typography variant="body2" align="left">
-            {msg}
+            {`#${index} (${x}, ${y}, ${z})`}
           </Typography>
         </div>
       ))}
@@ -45,7 +45,7 @@ function Record({ recordContent }) {
 }
 
 Record.propTypes = {
-  recordContent: PropTypes.arrayOf(PropTypes.int).isRequired
+  recordContent: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default Record;

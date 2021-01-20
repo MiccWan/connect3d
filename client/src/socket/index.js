@@ -46,11 +46,12 @@ export default class ClientSocketWrapper extends SocketWrapper {
         setGameState((state) => ({ ...state, end: false, board, turn }));
       },
 
-      [BingoEvents.ServerEvents.NotifyPlaced]({ board, turn, lastPiece }) {
-        setGameState((state) => ({ ...state, board, turn, lastPiece }));
+      [BingoEvents.ServerEvents.NotifyPlaced]({ board, turn, record, lastPiece }) {
+        setGameState((state) => ({ ...state, board, turn, record, lastPiece }));
       },
 
       [ServerEvents.NotifyGameEnd]({ result }) {
+        showToast('Game over!');
         setGameState((state) => ({ ...state, end: true, result }));
       }
     };
