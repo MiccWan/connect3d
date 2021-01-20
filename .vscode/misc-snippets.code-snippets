@@ -87,6 +87,15 @@
     ],
     "scope": "javascript,typescript"
   },
+  "JSDoc: @virtual": {
+    "prefix": "@virtual",
+    "body": [
+      "/**",
+      " * @virtual",
+      " */"
+    ],
+    "scope": "javascript,typescript"
+  },
   "JSDoc: @typedef-default": {
     "prefix": "@typedef-default",
     "body": [

@@ -14,7 +14,7 @@ class Logger {
   }
 
   debug(...args) {
-    if (this.Verbose) console.debug(...args);
+    if (this.Verbose) console.debug(this.tag, ...args);
   }
 
   error(...args) {
@@ -22,8 +22,8 @@ class Logger {
   }
 }
 
-function newLogger(tag) {
-  return new Logger(tag);
+function newLogger(tag, verbose = false) {
+  return new Logger(tag, verbose);
 }
 
 export default newLogger;

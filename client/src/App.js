@@ -1,38 +1,146 @@
-import React from 'react';
-import io from 'socket.io-client';
+import React, { useState } from 'react';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import newLogger from 'knect-common/src/Logger.js';
-import logo from './logo.svg';
-import './App.css';
+import { ClientRequests } from 'knect-common/src/SocketEvents.js';
+
+import LoginPage from './container/LoginPage.js';
+import LobbyPage from './container/LobbyPage.js';
+import RoomPage from './container/RoomPage.js';
+import ClientSocketWrapper from './socket/index.js';
+import SocketContext from './socket/SocketContext.js';
 
 const log = newLogger('App');
 
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#40798C',
+    },
+    text: {
+      primary: '#56494E',
+    },
+    background: {
+      paper: '#EFDBBD',
+      default: '#EAD2AC',
+    },
+    player: {
+      one: '#F4997B',
+      two: '#A4C77F',
+    },
+  },
+});
+
+function asyncWrapper(cb) {
+  return async (...args) => {
+    try {
+      return await cb(...args);
+    }
+    catch (err) {
+      log.error('Promise rejected: ', cb.name?.trim() || '(anonymous callback)', '-', err);
+      return err;
+    }
+  };
+}
+
 function App() {
-  let socket;
+  const [socket, setSocket] = useState();
+  const [userName, setUserName] = useState('');
+  const [isNotLogin, setIsNotLogin] = useState(true);
+  const [isNotEnterRoom, setNotIsEnterRoom] = useState(true);
+  const [roomId, setRoomId] = useState(0);
 
-  const initSocket = () => {
-    socket = io();
+  const [chatContent, setChatContent] = useState([]);
+  const [playerList, setPlayerList] = useState([]);
+  const [roomList, setRoomList] = useState({});
+  const [gamers, setGamers] = useState({});
+  const [gameState, setGameState] = useState({});
 
-    socket.on('msg', ({ msg }) => log.info(msg));
+  const [roomInfo, setRoomInfo] = useState({});
+
+  const initSocket = async () => {
+    if (!socket) {
+      const funcs = { setChatContent, setPlayerList, setRoomList, setRoomInfo, setGamers, setGameState };
+      const _socket = new ClientSocketWrapper(funcs);
+      setSocket(_socket);
+      setUserName(await _socket.request(ClientRequests.GetPlayerName));
+      setPlayerList(await _socket.request(ClientRequests.GetPlayerList));
+      setRoomList(await _socket.request(ClientRequests.GetRoomList));
+    }
+  };
+
+  const login = async () => {
+    await initSocket();
+    setIsNotLogin(false);
+  };
+
+  const createRoom = asyncWrapper(async (roomName) => {
+    const tempRoomInfo = await socket.request(ClientRequests.CreateRoom, { name: roomName });
+    setRoomInfo(tempRoomInfo);
+    setRoomId(tempRoomInfo.id);
+    setNotIsEnterRoom(false);
+    setPlayerList(tempRoomInfo.allPlayers);
+    setRoomList([]);
+    setChatContent([]);
+  });
+
+  const joinRoom = asyncWrapper(async (id) => {
+    const tempRoomInfo = await socket.request(ClientRequests.JoinRoom, { roomId: id });
+    setRoomInfo(tempRoomInfo);
+    setRoomId(id);
+    setNotIsEnterRoom(false);
+    setPlayerList(tempRoomInfo.allPlayers);
+    setGamers(tempRoomInfo.gamers);
+    setRoomList([]);
+    setChatContent([]);
+  });
+
+  const leaveRoom = asyncWrapper(async () => {
+    const tempRoomInfo = await socket.request(ClientRequests.LeaveRoom);
+    setRoomInfo(tempRoomInfo);
+    setRoomId(tempRoomInfo.roomId);
+    setNotIsEnterRoom(true);
+    setPlayerList(tempRoomInfo.players);
+    setRoomList(tempRoomInfo.rooms);
+    setChatContent([]);
+  });
+
+  const returnPage = () => {
+    if (isNotLogin) {
+      return (<LoginPage login={login} />);
+    }
+    if (isNotEnterRoom) {
+      return (
+        <LobbyPage
+          userName={userName}
+          roomId={roomId}
+          chatContent={chatContent}
+          playerList={playerList}
+          roomList={roomList}
+          createRoom={createRoom}
+          joinRoom={joinRoom}
+        />
+      );
+    }
+    return (
+      <RoomPage
+        userName={userName}
+        roomId={roomId}
+        leaveRoom={leaveRoom}
+        chatContent={chatContent}
+        roomInfo={roomInfo}
+        playerList={playerList}
+        gamers={gamers}
+        gameState={gameState}
+      />
+    );
   };
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>client/src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <div><input type="button" value="connect" onClick={initSocket} /></div>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <SocketContext.Provider value={socket}>
+        {returnPage()}
+      </SocketContext.Provider>
+    </ThemeProvider>
   );
 }
 
