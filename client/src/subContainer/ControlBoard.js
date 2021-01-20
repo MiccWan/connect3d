@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -9,13 +9,16 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import CloseIcon from '@material-ui/icons/Close';
 import IconButton from '@material-ui/core/IconButton';
 
+import PlayerSideType from 'knect-common/src/PlayerSideType.js';
+import { ClientEvents } from 'knect-common/src/SocketEvents';
 import personimg from '../img/person2.png';
+import SocketContext from '../socket/SocketContext.js';
 
 const useStyles = makeStyles((theme) => ({
   infoBar: {
     width: '100%',
     height: '15%',
-    padding: theme.spacing(1),
+    padding: theme.spacing(1, 1, 1, 3),
   },
   quitButton: {
     minWidth: '0',
@@ -66,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
   playerButtonInner3: {
     height: theme.spacing(4),
     width: '100%',
+    maxWidth: '100%',
     margin: theme.spacing(0, 2),
     backgroundColor: theme.palette.background.paper,
     borderRadius: '5px 5px 0px 0px',
@@ -75,47 +79,34 @@ const useStyles = makeStyles((theme) => ({
     width: '25%',
     padding: theme.spacing(1, 0, 0, 0),
   },
+  playerName: {
+    position: 'relative',
+    bottom: '-3px',
+  }
 }));
 
-function ControlBoard({ userName, roomId, leaveRoom }) {
+function ControlBoard({ userName, roomInfo, leaveRoom, gamers }) {
   const classes = useStyles();
+  const socket = useContext(SocketContext);
 
-  const [player1Name, setPlayer1Name] = useState();
-  const [player2Name, setPlayer2Name] = useState();
-  const [userState, setUserState] = useState(0);
+  const player1Name = gamers[PlayerSideType.A]?.name;
+  const player2Name = gamers[PlayerSideType.B]?.name;
+
   const playerButtonClick = (index) => {
-    if (userState !== 0) {
-      if (index === 1 && userState === 2) {
-        setPlayer2Name();
-        setUserState(1);
-        setPlayer1Name(userName);
-      }
-      if (index === 2 && userState === 1) {
-        setPlayer1Name();
-        setUserState(2);
-        setPlayer2Name(userName);
-      }
+    if (index === 1) {
+      socket.emit(ClientEvents.JoinGame, { side: PlayerSideType.A });
     }
-    else {
-      if (index === 1) {
-        setPlayer1Name(userName);
-        setUserState(1);
-      }
-      if (index === 2) {
-        setPlayer2Name(userName);
-        setUserState(2);
-      }
+    if (index === 2) {
+      socket.emit(ClientEvents.JoinGame, { side: PlayerSideType.B });
     }
   };
 
   const exitClick = (index) => {
     if (index === 1) {
-      setPlayer1Name();
-      setUserState(0);
+      socket.emit(ClientEvents.LeaveGame);
     }
     else if (index === 2) {
-      setPlayer2Name();
-      setUserState(0);
+      socket.emit(ClientEvents.LeaveGame);
     }
   };
 
@@ -142,10 +133,12 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
             <Grid item container xs={12}>
               <div className={classes.playerButtonInner2} />
             </Grid>
-            <Grid item container xs={12}>
-              <Typography variant="h6" align="center" className={classes.playerButtonInner3}>
-                {playerName}
-              </Typography>
+            <Grid item container xs={12} justify="center">
+              <div className={classes.playerButtonInner3}>
+                <Typography variant="subtitle1" align="center" className={classes.playerName}>
+                  {playerName}
+                </Typography>
+              </div>
             </Grid>
           </Grid>
         </div>
@@ -168,7 +161,7 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
                 ?
               </Typography>
             </Grid>
-            <Grid item container xs={12}>
+            <Grid item container xs={12} justify="center">
               <Typography variant="h6" className={classes.playerButtonInner3} align="center">
                 waiting...
               </Typography>
@@ -186,10 +179,12 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
           <Grid item container xs={12}>
             <div className={classes.playerButtonInner2} />
           </Grid>
-          <Grid item container xs={12}>
-            <Typography variant="h6" align="left" className={classes.playerButtonInner3}>
-              {playerName}
-            </Typography>
+          <Grid item container xs={12} justify="center">
+            <div className={classes.playerButtonInner3}>
+              <Typography variant="subtitle1" align="center" className={classes.playerName}>
+                {playerName}
+              </Typography>
+            </div>
           </Grid>
         </Grid>
       </div>
@@ -199,14 +194,9 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
   return (
     <>
       <Grid container className={classes.infoBar} direction="row" alignItems="center">
-        <Grid item container xs={4} justify="center" alignItems="flex-end">
+        <Grid item container xs={10} justify="flex-start" alignItems="flex-end">
           <Typography variant="body1">
-            Room ID: {roomId}
-          </Typography>
-        </Grid>
-        <Grid item container xs={6} justify="center">
-          <Typography variant="body1">
-            Sudden Death: 10 min
+            Room&#39;s Name: {roomInfo.name}
           </Typography>
         </Grid>
         <Grid item container xs={2} justify="flex-end">
@@ -242,7 +232,8 @@ function ControlBoard({ userName, roomId, leaveRoom }) {
 
 ControlBoard.propTypes = {
   userName: PropTypes.string.isRequired,
-  roomId: PropTypes.number.isRequired,
+  gamers: PropTypes.object.isRequired,
+  roomInfo: PropTypes.object.isRequired,
   leaveRoom: PropTypes.func.isRequired,
 };
 

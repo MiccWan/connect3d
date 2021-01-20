@@ -9,15 +9,20 @@ export default class SocketWrapper {
     this._socket = socket;
   }
 
+  get id() {
+    return this._socket.id;
+  }
+
   init(requestsHandler, eventsHandler) {
     for (const [event, cb] of Object.entries(requestsHandler)) {
       this._socket.on(event, async (arg, ack) => {
         try {
           const result = await cb(arg);
+          log.debug('Get Request', event, arg, result);
           ack({ result });
         }
         catch (err) {
-          log.error(err);
+          log.error(`SocketError: Failed to process request ${event}.`, err);
           ack({ error: `SocketRemoteError: Remote failed to process request '${event}'` });
         }
       });
@@ -28,6 +33,7 @@ export default class SocketWrapper {
         try {
           await cb(arg);
           ack({ result: `Event '${event}' successfully processed.` });
+          log.debug('Get Event', event, arg);
         }
         catch (err) {
           log.error(err);
@@ -57,9 +63,10 @@ export default class SocketWrapper {
         clearTimeout(timeout);
         if (!response.error) {
           resolve(response.result);
+          log.debug('Get Response from event', event, response.result);
         }
         else {
-          reject(new Error(`Error when processing response: ${response.error}`));
+          reject(new Error(`Error processing request: ${response.error}`));
         }
       });
     });

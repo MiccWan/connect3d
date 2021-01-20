@@ -14,7 +14,7 @@ class Logger {
   }
 
   debug(...args) {
-    if (this.Verbose) console.debug(...args);
+    if (this.Verbose) console.debug(this.tag, ...args);
   }
 
   error(...args) {

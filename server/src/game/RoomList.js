@@ -21,19 +21,30 @@ export default class RoomList {
     return this._all.get(id);
   }
 
-  create() {
-    const room = new Room();
+  create(name) {
+    const room = new Room(this.gc, name);
     this._all.set(room.id, room);
     return room;
   }
 
   remove(id) {
     const room = this.getById(id);
-    if (room.isEmpty) {
+    if (room.isEmpty()) {
       this._all.delete(room.id);
     }
     else {
       throw new Error(`Trying to remove non empty room#${id}`);
     }
+  }
+
+  /**
+   * @return {Array<Room>}
+   */
+  getAll() {
+    return Array.from(this._all.values());
+  }
+
+  serialize() {
+    return this.getAll().map(room => room.serialize());
   }
 }

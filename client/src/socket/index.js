@@ -3,7 +3,7 @@ import { ServerEvents } from 'knect-common/src/SocketEvents';
 import SocketWrapper from 'knect-common/src/SocketWrapper';
 
 export default class ClientSocketWrapper extends SocketWrapper {
-  constructor({ setChatContent, setPlayerList }) {
+  constructor({ setChatContent, setPlayerList, setRoomList, setGamers }) {
     super(io());
 
     const requestsHandler = {
@@ -11,13 +11,26 @@ export default class ClientSocketWrapper extends SocketWrapper {
     };
 
     const eventsHandler = {
-      [ServerEvents.SendChat](msg) {
-        setChatContent((message) => [...message, msg]);
+      [ServerEvents.UpdateRoomList](rooms) {
+        setRoomList(rooms);
       },
 
-      [ServerEvents.UpdatePlayerList]({ newList }) {
-        setPlayerList((list) => [...list, newList]);
-      }
+      [ServerEvents.UpdatePlayerList](players) {
+        setPlayerList(players);
+      },
+
+      [ServerEvents.NotifyChat](newMessage) {
+        setChatContent((message) => [...message, newMessage]);
+      },
+
+      // [ServerEvents.NotifyInvitation]({ playerId, roomId }){
+
+      // },
+
+      [ServerEvents.NotifyPlayerJoinGame](gamers) {
+        setGamers(gamers);
+      },
+
     };
 
     this.init(requestsHandler, eventsHandler);

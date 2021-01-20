@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 import React from 'react';
 import { PropTypes } from 'prop-types';
 
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ShowPlayerList({ playerList }) {
+function PlayerListInRoom({ playerList }) {
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -44,8 +45,8 @@ function ShowPlayerList({ playerList }) {
   );
 }
 
-ShowPlayerList.propTypes = {
-  playerList: PropTypes.arrayOf(PropTypes.object).isRequired
+PlayerListInRoom.propTypes = {
+  playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default ShowPlayerList;
+export default PlayerListInRoom;

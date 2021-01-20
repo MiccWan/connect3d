@@ -1,5 +1,5 @@
 /* eslint-disable react/forbid-prop-types */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { PropTypes } from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,14 +11,14 @@ import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
-import ForwardIcon from '@material-ui/icons/Forward';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import { ClientEvents } from 'knect-common/src/SocketEvents';
 
 import ShowRoomList from '../component/ShowRoomList.js';
 import ShowPlayerList from '../component/ShowPlayerList.js';
 import ShowChat from '../subContainer/ShowChat.js';
-import ChooseTimeDialog from '../subContainer/ChooseTimeDialog.js';
+import CreateRoomDialog from '../subContainer/CreateRoomDialog.js';
 import SocketContext from '../socket/SocketContext.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -54,32 +54,27 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function LobbyPage({ userName, enterRoom, chatContent, playerList }) {
+function LobbyPage({ userName, createRoom, joinRoom, chatContent, playerList, roomList }) {
   const classes = useStyles();
   const socket = useContext(SocketContext);
-  const [roomList, setRoomList] = useState([]);
-  const [tempRoomId, setTempRoomId] = useState('');
+  const [roomFilter, setRoomFilter] = useState('');
   const [chatInput, setChatInput] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
 
-  useEffect(() => {
-    setRoomList([{ id: 123, timeRule: '15 min', status: 'ing', players: 'dd' }, { id: 124, timeRule: '15 min', status: 'ing', players: 'dd' }, { id: 125, timeRule: '15 min', status: 'ing', players: 'dd' }]);
-  }, []);
-
-  const selectRoomClick = (id) => {
-    enterRoom(id);
+  const selectRoomClick = async (roomId) => {
+    joinRoom(roomId);
   };
 
-  const joinRoomClick = () => {
-    enterRoom(tempRoomId);
+  const deleteRoomFilterClick = () => {
+    setRoomFilter('');
   };
 
   const createRoomClick = () => {
     setOpenDialog(true);
   };
 
-  const tempRoomIdChange = (event) => {
-    setTempRoomId(event.target.value);
+  const roomFilterChange = (event) => {
+    setRoomFilter(event.target.value);
   };
 
   const chatInputChange = (event) => {
@@ -87,8 +82,10 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList }) {
   };
 
   const chatInputEnter = () => {
-    socket.emit(ClientEvents.SendChat, { msg: chatInput });
-    setChatInput('');
+    if (chatInput !== '') {
+      socket.emit(ClientEvents.SendChat, { msg: chatInput });
+      setChatInput('');
+    }
   };
 
   return (
@@ -111,26 +108,24 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList }) {
             margin="none"
             size="small"
             fullWidth
-            id="tempRoomId"
-            label="Join room"
-            name="Join room"
-            placeholder="Room ID"
+            id="roomfilter"
+            label="Find Room"
+            placeholder="room's name"
             autoComplete="off"
             className={classes.chooseBar}
-            value={tempRoomId}
-            onChange={tempRoomIdChange}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                joinRoomClick();
-              }
-            }}
+            value={roomFilter}
+            onChange={roomFilterChange}
             InputProps={{
               endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton edge="end" size="small" onClick={joinRoomClick}>
-                    <ForwardIcon color="primary" />
-                  </IconButton>
-                </InputAdornment>),
+                (roomFilter !== '')
+                   && (
+                   <InputAdornment position="end">
+                     <IconButton edge="end" size="small" onClick={deleteRoomFilterClick} visibility="hidden">
+                       <DeleteIcon color="primary" />
+                     </IconButton>
+                   </InputAdornment>
+                   )
+              ),
             }}
           />
         </Grid>
@@ -144,7 +139,11 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList }) {
         </Grid>
         <Grid item xs={8} sm={8}>
           <div className={classes.roomList}>
-            <ShowRoomList roomList={roomList} selectRoom={selectRoomClick} />
+            <ShowRoomList
+              roomList={roomList}
+              selectRoom={selectRoomClick}
+              roomFilter={roomFilter}
+            />
           </div>
         </Grid>
         <Grid item xs={4} sm={4}>
@@ -166,7 +165,7 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList }) {
                   autoComplete="off"
                   fullWidth
                   id="chatInput"
-                  name="Join room"
+                  name="chatInput"
                   placeholder="say something"
                   value={chatInput}
                   onChange={chatInputChange}
@@ -189,10 +188,10 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList }) {
           </Grid>
         </Grid>
       </Grid>
-      <ChooseTimeDialog
+      <CreateRoomDialog
         openDialog={openDialog}
         setOpenDialog={setOpenDialog}
-        enterRoom={enterRoom}
+        createRoom={createRoom}
       />
     </Container>
   );
@@ -201,8 +200,10 @@ function LobbyPage({ userName, enterRoom, chatContent, playerList }) {
 LobbyPage.propTypes = {
   playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
   userName: PropTypes.string.isRequired,
-  enterRoom: PropTypes.func.isRequired,
+  createRoom: PropTypes.func.isRequired,
+  joinRoom: PropTypes.func.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
+  roomList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default LobbyPage;
