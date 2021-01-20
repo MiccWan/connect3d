@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import newLogger from 'knect-common/src/Logger.js';
 import { ClientRequests } from 'knect-common/src/SocketEvents.js';
 
@@ -7,6 +8,7 @@ import LoginPage from './container/LoginPage.js';
 import LobbyPage from './container/LobbyPage.js';
 import RoomPage from './container/RoomPage.js';
 import ClientSocketWrapper from './socket/index.js';
+
 import SocketContext from './socket/SocketContext.js';
 
 const log = newLogger('App');
@@ -102,6 +104,7 @@ function App() {
     setPlayerList(tempRoomInfo.players);
     setRoomList(tempRoomInfo.rooms);
     setChatContent([]);
+    setGameState({});
   });
 
   const returnPage = () => {
@@ -137,6 +140,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <SocketContext.Provider value={socket}>
         {returnPage()}
       </SocketContext.Provider>
