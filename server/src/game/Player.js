@@ -64,4 +64,9 @@ export default class Player {
   notifyInvitation(playerId, roomId) {
     this.socket.emit(ServerEvents.NotifyInvitation, { playerId, roomId });
   }
+
+  serialize() {
+    const { id, name, roomId } = this;
+    return { id, name, roomId };
+  }
 }

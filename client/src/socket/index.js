@@ -1,10 +1,10 @@
 import io from 'socket.io-client';
-import { ServerEvents } from 'knect-common/src/SocketEvents';
-import SocketWrapper from 'knect-common/src/SocketWrapper';
-import UpdateType from 'knect-common/src/UpdateType';
+import { ServerEvents } from 'knect-common/src/SocketEvents.js';
+import * as BingoEvents from 'knect-common/src/BingoEvents.js';
+import SocketWrapper from 'knect-common/src/SocketWrapper.js';
 
 export default class ClientSocketWrapper extends SocketWrapper {
-  constructor({ setChatContent, setPlayerList, setRoomList }) {
+  constructor({ setChatContent, setPlayerList, setRoomList, setGamers, setGameState }) {
     super(io());
 
     const requestsHandler = {
@@ -12,24 +12,12 @@ export default class ClientSocketWrapper extends SocketWrapper {
     };
 
     const eventsHandler = {
-
-      [ServerEvents.UpdateRoomList]({ type, room }) {
-        if (type === UpdateType.New) {
-          setRoomList((list) => [...list, room]);
-        }
-        if (type === UpdateType.Remove) {
-          setRoomList((list) => list.filter(x => x.id !== room.id));
-        }
+      [ServerEvents.UpdateRoomList](rooms) {
+        setRoomList(rooms);
       },
 
-      [ServerEvents.UpdatePlayerList]({ type, id, name }) {
-        if (type === 1) {
-          setPlayerList((list) => [...list, { id, name }]);
-        }
-        // remove room
-        if (type === 2) {
-          setPlayerList((list) => list.filter(x => x.id !== id));
-        }
+      [ServerEvents.UpdatePlayerList](players) {
+        setPlayerList(players);
       },
 
       [ServerEvents.NotifyChat](newMessage) {
@@ -40,14 +28,21 @@ export default class ClientSocketWrapper extends SocketWrapper {
 
       // },
 
-      [ServerEvents.NotifyPlayerJoinRoom]() {
-        return 0;
+      [ServerEvents.NotifyPlayerJoinGame](gamers) {
+        setGamers(gamers);
       },
 
-      [ServerEvents.NotifyPlayerSide]() {
-        return 0;
+      [ServerEvents.NotifyGamer](role) {
+        setGameState((state) => ({ ...state, role }));
       },
 
+      [ServerEvents.NotifyGameStart]({ board, turn }) {
+        setGameState((state) => ({ ...state, board, turn }));
+      },
+
+      [BingoEvents.ServerEvents.NotifyPlaced]({ board, turn }) {
+        setGameState((state) => ({ ...state, board, turn }));
+      },
     };
 
     this.init(requestsHandler, eventsHandler);

@@ -10,11 +10,12 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 
-import { ClientEvents } from 'knect-common/src/SocketEvents';
+import { ClientEvents } from 'knect-common/src/SocketEvents.js';
 
 import ChatAndRecord from '../subContainer/ChatAndRecord.js';
 import ControlBoard from '../subContainer/ControlBoard.js';
 import SocketContext from '../socket/SocketContext.js';
+import GameBoard from '../component/GameBoard.js';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo }) {
+function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo, playerList, gamers, gameState }) {
   const classes = useStyles();
   const socket = useContext(SocketContext);
   const [chatInput, setChatInput] = useState('');
@@ -72,15 +73,13 @@ function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo }) {
       <Grid container spacing={2} justify="center" direction="row">
         <Grid item xs={9} sm={8}>
           <div className={classes.gameBoard}>
-            <canvas>
-              {userName}
-            </canvas>
+            <GameBoard gameState={gameState} />
           </div>
         </Grid>
         <Grid item container xs={3} sm={4} spacing={2} justify="space-between" direction="row">
           <Grid item xs={12}>
             <div className={classes.controlBoard}>
-              <ControlBoard userName={userName} roomInfo={roomInfo} leaveRoom={leaveRoom} />
+              <ControlBoard userName={userName} roomInfo={roomInfo} leaveRoom={leaveRoom} gamers={gamers} />
             </div>
           </Grid>
           <Grid item xs={12}>
@@ -90,7 +89,7 @@ function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo }) {
                   setIsChatMode={setIsChatMode}
                   roomId={roomId}
                   chatContent={chatContent}
-                  roomInfo={roomInfo}
+                  playerList={playerList}
                 />
               </div>
               <div className={classes.chatInput} hidden={!isChatMode}>
@@ -133,6 +132,9 @@ roomPage.propTypes = {
   roomId: PropTypes.string.isRequired,
   leaveRoom: PropTypes.func.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
+  playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  gamers: PropTypes.object.isRequired,
+  gameState: PropTypes.object.isRequired
 };
 
 export default roomPage;

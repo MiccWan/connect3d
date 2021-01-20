@@ -1,5 +1,6 @@
 import SocketWrapper from 'knect-common/src/SocketWrapper.js';
 import { ClientRequests, ClientEvents } from 'knect-common/src/SocketEvents.js';
+import * as Bingo from 'knect-common/src/BingoEvents.js';
 import { lobbyId } from './Lobby.js';
 
 /** @typedef {import('socket.io').Socket} Socket */
@@ -15,21 +16,6 @@ export default class ServerSocketWrapper extends SocketWrapper {
   constructor(gc, player, _socket) {
     super(_socket);
 
-    const getPlayerList = () => {
-      return gc.allPlayers.getAll().map(({ id, name, roomId }) => ({ id, name, roomId }));
-    }
-
-    const getRoomList = () => {
-      return gc.rooms.getAll().map(room => ({
-        id: room.id,
-        name: room.name,
-        players: Array.from(room.players).map(([side, id]) => {
-          const { name } = gc.getPlayerById(id);
-          return [side, { id, name }];
-        }),
-      }));
-    }
-
     /**
      * Add handlers here to response to client requests.
      */
@@ -37,8 +23,13 @@ export default class ServerSocketWrapper extends SocketWrapper {
       [ClientRequests.GetPlayerName]() {
         return player.name;
       },
-      [ClientRequests.GetPlayerList]: getPlayerList,
-      [ClientRequests.GetRoomList]: getRoomList,
+      [ClientRequests.GetPlayerList]() {
+        const room = gc.getRoomById(player.roomId);
+        return room.allPlayers.serialize();
+      },
+      [ClientRequests.GetRoomList]() {
+        return gc.rooms.serialize();
+      },
       [ClientRequests.CreateRoom]({ name }) {
         player.isInRoom({ throwOnTrue: true });
         const room = gc.createRoom(name);
@@ -54,8 +45,16 @@ export default class ServerSocketWrapper extends SocketWrapper {
       [ClientRequests.LeaveRoom]() {
         player.isInRoom({ throwOnFalse: true });
         gc.switchPlayerRoom(player.id, lobbyId);
-        return { room: getRoomList(), player: getPlayerList() };
+        return {
+          roomId: lobbyId,
+          rooms: gc.rooms.serialize(),
+          players: gc.allPlayers.serialize()
+        };
       },
+      ...Object.fromEntries(Object.values(Bingo.ClientRequests).map(evt => [evt, (...args) => {
+        const room = gc.rooms.getById(player.roomId);
+        return room.game.requestHandlers[evt](player.id, ...args);
+      }]))
     };
 
     const eventsHandler = {
@@ -65,7 +64,7 @@ export default class ServerSocketWrapper extends SocketWrapper {
       [ClientEvents.LeaveGame]() {
         player.isInRoom({ throwOnFalse: true });
         const room = gc.getRoomById(player.roomId);
-        room.removeFromGame(player.id);
+        room.leaveGame(player.id);
       },
       [ClientEvents.SendInvitation]({ playerId }) {
         player.isInRoom({ throwOnFalse: true });
@@ -77,6 +76,10 @@ export default class ServerSocketWrapper extends SocketWrapper {
         const room = gc.rooms.getById(player.roomId);
         room.joinGame(player.id, side);
       },
+      ...Object.fromEntries(Object.values(Bingo.ClientEvents).map(evt => [evt, (...args) => {
+        const room = gc.rooms.getById(player.roomId);
+        room.game.eventHandlers[evt](player.id, ...args);
+      }]))
     };
 
     this.init(requestsHandler, eventsHandler);
