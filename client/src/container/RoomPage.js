@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { PropTypes } from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,8 +10,11 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 
+import { ClientEvents } from 'knect-common/src/SocketEvents';
+
 import ChatAndRecord from '../subContainer/ChatAndRecord.js';
 import ControlBoard from '../subContainer/ControlBoard.js';
+import SocketContext from '../socket/SocketContext.js';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -47,9 +50,9 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function roomPage({ userName, roomId, leaveRoom, chatContent }) {
+function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo, playerList, gamers }) {
   const classes = useStyles();
-
+  const socket = useContext(SocketContext);
   const [chatInput, setChatInput] = useState('');
   const [isChatMode, setIsChatMode] = useState(true);
 
@@ -58,7 +61,10 @@ function roomPage({ userName, roomId, leaveRoom, chatContent }) {
   };
 
   const chatInputEnter = () => {
-    setChatInput('');
+    if (chatInput !== '') {
+      socket.emit(ClientEvents.SendChat, { msg: chatInput });
+      setChatInput('');
+    }
   };
 
   return (
@@ -74,7 +80,7 @@ function roomPage({ userName, roomId, leaveRoom, chatContent }) {
         <Grid item container xs={3} sm={4} spacing={2} justify="space-between" direction="row">
           <Grid item xs={12}>
             <div className={classes.controlBoard}>
-              <ControlBoard userName={userName} roomId={roomId} leaveRoom={leaveRoom} />
+              <ControlBoard userName={userName} roomInfo={roomInfo} leaveRoom={leaveRoom} gamers={gamers} />
             </div>
           </Grid>
           <Grid item xs={12}>
@@ -84,6 +90,7 @@ function roomPage({ userName, roomId, leaveRoom, chatContent }) {
                   setIsChatMode={setIsChatMode}
                   roomId={roomId}
                   chatContent={chatContent}
+                  playerList={playerList}
                 />
               </div>
               <div className={classes.chatInput} hidden={!isChatMode}>
@@ -123,9 +130,11 @@ function roomPage({ userName, roomId, leaveRoom, chatContent }) {
 
 roomPage.propTypes = {
   userName: PropTypes.string.isRequired,
-  roomId: PropTypes.number.isRequired,
+  roomId: PropTypes.string.isRequired,
   leaveRoom: PropTypes.func.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
+  playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  gamers: PropTypes.object.isRequired,
 };
 
 export default roomPage;

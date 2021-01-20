@@ -6,12 +6,9 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -22,25 +19,28 @@ const useStyles = makeStyles((theme) => ({
   },
   formControl: {
     marginTop: theme.spacing(2),
-    minWidth: 200,
+    minWidth: 300,
   },
 }));
 
-function ChooseTimeDialog({ openDialog, setOpenDialog, enterRoom }) {
+function ChooseTimeDialog({ openDialog, setOpenDialog, createRoom }) {
   const classes = useStyles();
-  const [SDtime, setSDtimee] = useState(10);
+  const [roomName, setRoomName] = useState('');
 
   const cancelClick = () => {
     setOpenDialog(false);
   };
-  const continueClick = () => {
+  const continueClick = async () => {
+    if (roomName === '') {
+      return;
+    }
     setOpenDialog(false);
-    // send SDtime to server
-    enterRoom(123);
+    createRoom(roomName);
   };
 
-  const handleMaxWidthChange = (event) => {
-    setSDtimee(event.target.value);
+  const roomNameChange = (event) => {
+    setRoomName('');
+    setRoomName(event.target.value);
   };
 
   return (
@@ -50,30 +50,27 @@ function ChooseTimeDialog({ openDialog, setOpenDialog, enterRoom }) {
         onClose={cancelClick}
         aria-labelledby="dialog"
       >
-        <DialogTitle id="dialog">Please Choose the Sudden death Time</DialogTitle>
+        <DialogTitle id="dialog">Please Enter Room&#39;s Name</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            The sudden death time means that each player is assigned a
-            fixed amount of time for the whole game.
-            If a player&#39;s time expires, they lose the game.
-          </DialogContentText>
           <form className={classes.form} noValidate>
             <FormControl className={classes.formControl}>
-              <InputLabel>Sudden Death Time</InputLabel>
-              <Select
+              <TextField
                 autoFocus
-                value={SDtime}
-                onChange={handleMaxWidthChange}
-                inputProps={{
-                  name: 'Sudden Death Time',
-                  id: 'Sudden Death Time',
+                margin="dense"
+                id="name"
+                label="room&#39;s name"
+                fullWidth
+                required
+                autoComplete="off"
+                value={roomName}
+                onChange={roomNameChange}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    continueClick();
+                  }
                 }}
-              >
-                <MenuItem value="5">5 min</MenuItem>
-                <MenuItem value="10">10 min</MenuItem>
-                <MenuItem value="15">15 min</MenuItem>
-                <MenuItem value="20">20 min</MenuItem>
-              </Select>
+              />
             </FormControl>
           </form>
         </DialogContent>
@@ -93,7 +90,7 @@ function ChooseTimeDialog({ openDialog, setOpenDialog, enterRoom }) {
 ChooseTimeDialog.propTypes = {
   openDialog: PropTypes.bool.isRequired,
   setOpenDialog: PropTypes.func.isRequired,
-  enterRoom: PropTypes.func.isRequired,
+  createRoom: PropTypes.func.isRequired,
 
 };
 

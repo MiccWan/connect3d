@@ -51,8 +51,8 @@ function LoginPage({ login }) {
     return msg;
   };
 
-  const loginGuestClick = () => {
-    login();
+  const loginGuestClick = async () => {
+    await login();
   };
 
   return (

@@ -1,3 +1,4 @@
+/* eslint-disable react/forbid-prop-types */
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -5,23 +6,42 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
 
 import ShowChat from './ShowChat.js';
+import PlayerListInRoom from '../component/PlayerListInRoom.js';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    height: '100%',
+    padding: '0',
+  },
+  bar: {
+    height: theme.spacing(4.5),
+    minHeight: 'auto',
+    minWidth: 'auto',
+    padding: theme.spacing(0, 0, 0, 0),
+  },
+  fullheight: {
+    height: '100%',
+  },
+  chatPanel: {
+    height: theme.spacing(23.5),
+  }
+}));
 
 function TabPanel({ children, value, index }) {
+  const classes = useStyles();
   return (
     <div
       role="tabpanel"
       hidden={value !== index}
       id={`full-width-tabpanel-${index}`}
       aria-labelledby={`full-width-tab-${index}`}
+      className={classes.fullheight}
     >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {(value === index)
+        && (children)}
     </div>
   );
 }
@@ -32,19 +52,7 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
-  bar: {
-    height: theme.spacing(4.5),
-    minHeight: 'auto',
-    minWidth: 'auto',
-    padding: theme.spacing(0, 0, 0, 0),
-  }
-}));
-
-function ChatAndRecord({ setIsChatMode, roomId, chatContent }) {
+function ChatAndRecord({ setIsChatMode, roomId, chatContent, playerList }) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
@@ -93,15 +101,15 @@ function ChatAndRecord({ setIsChatMode, roomId, chatContent }) {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <div>
+        <div className={classes.chatPanel}>
           <ShowChat roomId={roomId} chatContent={chatContent} />
         </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Two
+        <Typography>record</Typography>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        Item three
+        <PlayerListInRoom playerList={playerList} />
       </TabPanel>
     </div>
   );
@@ -109,8 +117,9 @@ function ChatAndRecord({ setIsChatMode, roomId, chatContent }) {
 
 ChatAndRecord.propTypes = {
   setIsChatMode: PropTypes.func.isRequired,
-  roomId: PropTypes.number.isRequired,
+  roomId: PropTypes.string.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
+  playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default ChatAndRecord;

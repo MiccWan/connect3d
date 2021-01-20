@@ -2,6 +2,7 @@ import { ServerEvents } from 'knect-common/src/SocketEvents.js';
 import PlayerStatusType from './constant/PlayerStatusType.js';
 import ServerSocketWrapper from './ServerSocketWrapper.js';
 import getUniqueName from './util/generateName.js';
+import { lobbyId } from './Lobby.js';
 
 /** @typedef {import('socket.io').Socket} Socket */
 /** @typedef {import('./index.js').GameCenter} GameCenter */
@@ -19,7 +20,10 @@ export default class Player {
     this.socket.emit(ServerEvents.SetPlayerName, this.name);
 
     this.status = PlayerStatusType.Lobby;
-    gc.lobby.join(this.id);
+  }
+
+  init() {
+    this.gc.lobby.join(this.id);
   }
 
   get id() {
@@ -29,15 +33,40 @@ export default class Player {
   sendChat(msg) {
     const { name } = this;
     const time = Date.now();
-    if (PlayerStatusType.is.Lobby(this.status)) {
-      this.gc.lobby.emitAll(ServerEvents.SendChat, { name, msg, time });
+    const room = this.gc.getRoomById(this.roomId);
+    room.emitAll(ServerEvents.NotifyChat, { name, msg, time });
+  }
+
+  /**
+   * @param {string} roomId
+   */
+  joinRoom(roomId) {
+    // this.gc.getRoomById(roomId, { throwOnError: true });
+    this.roomId = roomId;
+  }
+
+  /**
+   * Return whether a player is in a room
+   * @param {{ throwOnTrue: boolean, throwOnFalse: boolean }} config
+   * @return {boolean} whether the player is in any room
+   */
+  isInRoom({ throwOnTrue = false, throwOnFalse = false } = {}) {
+    const result = this.roomId && this.roomId !== lobbyId;
+    if (result && throwOnTrue) {
+      throw new Error(`Player is already in room ${this.roomId}`);
     }
-    else if (PlayerStatusType.is.Room(this.status)) {
-      const room = this.gc.rooms.getById(this.roomId);
-      room.emitAll(ServerEvents.SendChat, { name, msg, time });
+    if (!result && throwOnFalse) {
+      throw new Error('Player is not in any room');
     }
-    else {
-      throw new Error(`Player '${name}' trying to send chat is neither in lobby nor any room`);
-    }
+    return result;
+  }
+
+  notifyInvitation(playerId, roomId) {
+    this.socket.emit(ServerEvents.NotifyInvitation, { playerId, roomId });
+  }
+
+  serialize() {
+    const { id, name, roomId } = this;
+    return { id, name, roomId };
   }
 }
