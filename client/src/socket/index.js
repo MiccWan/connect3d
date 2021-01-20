@@ -1,9 +1,10 @@
 import io from 'socket.io-client';
-import { ServerEvents } from 'knect-common/src/SocketEvents';
-import SocketWrapper from 'knect-common/src/SocketWrapper';
+import { ServerEvents } from 'knect-common/src/SocketEvents.js';
+import * as BingoEvents from 'knect-common/src/BingoEvents.js';
+import SocketWrapper from 'knect-common/src/SocketWrapper.js';
 
 export default class ClientSocketWrapper extends SocketWrapper {
-  constructor({ setChatContent, setPlayerList, setRoomList, setGamers }) {
+  constructor({ setChatContent, setPlayerList, setRoomList, setGamers, setGameState }) {
     super(io());
 
     const requestsHandler = {
@@ -31,6 +32,17 @@ export default class ClientSocketWrapper extends SocketWrapper {
         setGamers(gamers);
       },
 
+      [ServerEvents.NotifyGamer](role) {
+        setGameState((state) => ({ ...state, role }));
+      },
+
+      [ServerEvents.NotifyGameStart]({ board, turn }) {
+        setGameState((state) => ({ ...state, board, turn }));
+      },
+
+      [BingoEvents.ServerEvents.NotifyPlaced]({ board, turn }) {
+        setGameState((state) => ({ ...state, board, turn }));
+      },
     };
 
     this.init(requestsHandler, eventsHandler);
