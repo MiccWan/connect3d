@@ -37,12 +37,16 @@ export default class ClientSocketWrapper extends SocketWrapper {
       },
 
       [ServerEvents.NotifyGameStart]({ board, turn }) {
-        setGameState((state) => ({ ...state, board, turn }));
+        setGameState((state) => ({ ...state, end: false, board, turn }));
       },
 
       [BingoEvents.ServerEvents.NotifyPlaced]({ board, turn }) {
         setGameState((state) => ({ ...state, board, turn }));
       },
+
+      [BingoEvents.ServerEvents.NotifyGameEnd]({ result }) {
+        setGameState((state) => ({ ...state, end: true, result }));
+      }
     };
 
     this.init(requestsHandler, eventsHandler);

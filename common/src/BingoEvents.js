@@ -6,7 +6,8 @@ let ServerRequests = {
 };
 
 let ServerEvents = {
-  NotifyPlaced: 'notify_placed'
+  NotifyPlaced: 'notify_placed',
+  NotifyGameEnd: 'notify_game_end',
 };
 
 let ClientRequests = {

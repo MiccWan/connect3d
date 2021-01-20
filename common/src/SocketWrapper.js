@@ -1,6 +1,6 @@
 import newLogger from './Logger.js';
 
-const log = newLogger('SocketWrapper');
+const log = newLogger('SocketWrapper', true);
 
 const RequestTimeOut = 10 * 1000;
 

@@ -248,6 +248,7 @@ export default class Bingo extends Game {
     this.refreshPiecesMaterial();
     if (RoleType.is.PlayerA(this.role)) this.renderer.setClearColor(0xbbbbdd);
     if (RoleType.is.PlayerB(this.role)) this.renderer.setClearColor(0xddbbbb);
+    if (this.end) this.handleGameEnd();
   }
 
   refreshPiecesMaterial() {
@@ -277,4 +278,8 @@ export default class Bingo extends Game {
       if (PieceType.is.PlayerB(status)) piece.material = Materials.BlinkRed;
     }
   }
+
+  // handleGameEnd() {
+  //   // TODO: update rendering by this.result (game result type)
+  // }
 }
