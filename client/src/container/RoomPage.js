@@ -134,7 +134,7 @@ roomPage.propTypes = {
   leaveRoom: PropTypes.func.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
   playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  gamers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  gamers: PropTypes.object.isRequired,
 };
 
 export default roomPage;

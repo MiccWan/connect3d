@@ -66,7 +66,7 @@ export default class SocketWrapper {
           log.debug('Get Response from event', event, response.result);
         }
         else {
-          reject(new Error(`Error when processing response: ${response.error}`));
+          reject(new Error(`Error processing request: ${response.error}`));
         }
       });
     });

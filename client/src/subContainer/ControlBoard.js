@@ -232,8 +232,7 @@ function ControlBoard({ userName, roomInfo, leaveRoom, gamers }) {
 
 ControlBoard.propTypes = {
   userName: PropTypes.string.isRequired,
-  gamers: PropTypes.arrayOf(PropTypes.object).isRequired,
-  // eslint-disable-next-line react/forbid-prop-types
+  gamers: PropTypes.object.isRequired,
   roomInfo: PropTypes.object.isRequired,
   leaveRoom: PropTypes.func.isRequired,
 };

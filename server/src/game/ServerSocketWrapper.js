@@ -45,6 +45,7 @@ export default class ServerSocketWrapper extends SocketWrapper {
         player.isInRoom({ throwOnFalse: true });
         gc.switchPlayerRoom(player.id, lobbyId);
         return {
+          roomId: lobbyId,
           rooms: gc.rooms.serialize(),
           players: gc.allPlayers.serialize()
         };

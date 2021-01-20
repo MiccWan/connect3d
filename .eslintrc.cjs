@@ -14,5 +14,6 @@ module.exports = {
     'no-underscore-dangle': 0,
     'object-curly-newline': 0,
     'quotes': 0,
+    'react/forbid-prop-types': 0
   }
 };

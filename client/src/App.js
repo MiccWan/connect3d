@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-// import newLogger from 'knect-common/src/Logger.js';
+import newLogger from 'knect-common/src/Logger.js';
 import { ClientRequests } from 'knect-common/src/SocketEvents';
 
 import LoginPage from './container/LoginPage.js';
@@ -9,7 +9,7 @@ import RoomPage from './container/RoomPage.js';
 import ClientSocketWrapper from './socket/index.js';
 import SocketContext from './socket/SocketContext.js';
 
-// const log = newLogger('App');
+const log = newLogger('App');
 
 const theme = createMuiTheme({
   palette: {
@@ -30,6 +30,18 @@ const theme = createMuiTheme({
   },
 });
 
+function asyncWrapper(cb) {
+  return async (...args) => {
+    try {
+      return await cb(...args);
+    }
+    catch (err) {
+      log.error('Promise rejected: ', cb.name?.trim() || '(anonymous callback)', '-', err);
+      return err;
+    }
+  };
+}
+
 function App() {
   const [socket, setSocket] = useState();
   const [userName, setUserName] = useState('');
@@ -40,7 +52,7 @@ function App() {
   const [chatContent, setChatContent] = useState([]);
   const [playerList, setPlayerList] = useState([]);
   const [roomList, setRoomList] = useState({});
-  const [gamers, setGamers] = useState([]);
+  const [gamers, setGamers] = useState({});
 
   const [roomInfo, setRoomInfo] = useState({});
 
@@ -60,7 +72,7 @@ function App() {
     setIsNotLogin(false);
   };
 
-  const createRoom = async (roomName) => {
+  const createRoom = asyncWrapper(async (roomName) => {
     const tempRoomInfo = await socket.request(ClientRequests.CreateRoom, { name: roomName });
     setRoomInfo(tempRoomInfo);
     setRoomId(tempRoomInfo.id);
@@ -68,9 +80,9 @@ function App() {
     setPlayerList(tempRoomInfo.allPlayers);
     setRoomList([]);
     setChatContent([]);
-  };
+  });
 
-  const joinRoom = async (id) => {
+  const joinRoom = asyncWrapper(async (id) => {
     const tempRoomInfo = await socket.request(ClientRequests.JoinRoom, { roomId: id });
     setRoomInfo(tempRoomInfo);
     setRoomId(id);
@@ -79,17 +91,17 @@ function App() {
     setGamers(tempRoomInfo.gamers);
     setRoomList([]);
     setChatContent([]);
-  };
+  });
 
-  const leaveRoom = async () => {
+  const leaveRoom = asyncWrapper(async () => {
     const tempRoomInfo = await socket.request(ClientRequests.LeaveRoom);
     setRoomInfo(tempRoomInfo);
-    setRoomId(0);
+    setRoomId(tempRoomInfo.roomId);
     setNotIsEnterRoom(true);
     setPlayerList(tempRoomInfo.players);
     setRoomList(tempRoomInfo.rooms);
     setChatContent([]);
-  };
+  });
 
   const returnPage = () => {
     if (isNotLogin) {
