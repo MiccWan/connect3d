@@ -5,7 +5,7 @@ const log = newLogger('DB');
 
 export default async function initDB() {
   if (!process.env.MONGO_URL) {
-    throw new Error('Missing environment configuration: proess.env.MONGO_URL');
+    throw new Error('Missing environment configuration: process.env.MONGO_URL');
   }
 
   const db = await mongoose.connect(process.env.MONGO_URL, {

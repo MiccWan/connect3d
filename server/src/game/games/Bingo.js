@@ -30,10 +30,17 @@ export default class Bingo extends Game {
 
         this.setBoard(x, y, z, this.getCurrentPiece());
         this.addRecord(x, y, z);
-        this.turn = (this.turn === RoleType.PlayerA) ? RoleType.PlayerB : RoleType.PlayerA;
+
+        const result = this.checkWinner();
+        this.turn = result !== CheckResultType.NotOverYet ? RoleType.None : 
+                      (this.turn === RoleType.PlayerA) ? RoleType.PlayerB : RoleType.PlayerA;
 
         const room = gc.rooms.getById(roomId);
         room.emitAll(ServerEvents.NotifyPlaced, { board: this.board, turn: this.turn });
+
+        if (result !== CheckResultType.NotOverYet) {
+          this.end();
+        }
       }
     };
 
@@ -166,5 +173,14 @@ export default class Bingo extends Game {
     if (this.isBoardFilled()) return CheckResultType.Filled;
 
     return CheckResultType.NotOverYet;
+  }
+
+  end() {
+    super.end();
+
+    const room = this.gc.rooms.getById(this.roomId);
+    room.emitAll(ServerEvents.NotifyGameEnd, { result: CheckResultType });
+
+    this.room.saveRecord(this.record);
   }
 }
