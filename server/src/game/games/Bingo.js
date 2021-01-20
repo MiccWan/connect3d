@@ -28,6 +28,10 @@ export default class Bingo extends Game {
           throw new Error(`Forbidden Operation: Invalid place.`);
         }
 
+        if (this.playing === false) {
+          throw new Error(`Forbidden Operation: Game is not playing.`);
+        }
+
         this.setBoard(x, y, z, this.getCurrentPiece());
         this.addRecord(x, y, z);
 
@@ -40,9 +44,21 @@ export default class Bingo extends Game {
         room.emitAll(ServerEvents.NotifyPlaced, { board: this.board, turn: this.turn, lastPiece: { x, y, z } });
 
         if (result !== CheckResultType.NotOverYet) {
-          this.end();
+          this.end(result);
         }
-      }
+      },
+      [ClientEvents.Surrender]: (playerId) => {
+        if (this.playing === false) {
+          throw new Error(`Forbidden Operation: Game is not playing.`);
+        }
+
+        this.turn = RoleType.None;
+
+        const room = gc.rooms.getById(roomId);
+        room.emitAll(ServerEvents.NotifyPlaced, { board: this.board, turn: this.turn });
+
+        this.playerSurrender(this.gamers.get(RoleType.PlayerA) === playerId ? RoleType.PlayerA : RoleType.PlayerB);
+      },
     };
 
     this.requestHandlers = {
@@ -176,12 +192,20 @@ export default class Bingo extends Game {
     return CheckResultType.NotOverYet;
   }
 
-  end() {
+  end(result) {
     super.end();
 
-    const room = this.gc.rooms.getById(this.roomId);
-    room.emitAll(ServerEvents.NotifyGameEnd, { result: CheckResultType });
+    this.room.emitAll(Socket.ServerEvents.NotifyGameEnd, { result });
 
     this.room.saveRecord(this.record);
+    this.room.afterGame();
+  }
+
+  /**
+   * @param {RoleType} side
+   */
+  playerSurrender(side) {
+    const result = RoleType.is.PlayerA(side) ? CheckResultType.PlayerBWins : CheckResultType.PlayerAWins;
+    this.end(result);
   }
 }

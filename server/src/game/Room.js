@@ -114,7 +114,9 @@ export default class Room {
     this.emitAll(ServerEvents.NotifyPlayerJoinGame, this.serializedGamers());
     this.gc.lobby.emitAll(ServerEvents.UpdateRoomList, this.gc.rooms.serialize());
 
-    this.game.end();
+    if (this.game.playing) {
+      this.game.playerSurrender(side);
+    }
   }
 
   /**
@@ -141,6 +143,10 @@ export default class Room {
       steps,
     });
     save.save();
+  }
+
+  afterGame() {
+    Array.from(this.gamers.values()).forEach(id => this.leaveGame(id));
   }
 
   serialize() {
