@@ -1,4 +1,5 @@
 import PieceType from 'knect-common/src/games/PieceType.js';
+import * as Socket from 'knect-common/src/SocketEvents.js';
 import { ClientEvents, ServerEvents } from 'knect-common/src/BingoEvents.js';
 import RoleType, { getPieceType } from 'knect-common/src/RoleType.js';
 import CheckResultType from './CheckResultType.js';
@@ -15,12 +16,11 @@ export default class Bingo extends Game {
     super(gc, '3DBingo', roomId);
     this.board = [];
     this.turn = null;
-    this.players = [];
     this.record = [];
 
     this.eventHandlers = {
-      [ClientEvents.place]: (playerId, { x, y, z }) => {
-        if (playerId !== this.players[this.turn]) {
+      [ClientEvents.Place]: (playerId, { x, y, z }) => {
+        if (playerId !== this.gamers.get(this.turn)) {
           throw new Error(`Forbidden Operation: Authentication check failed.`);
         }
 
@@ -30,15 +30,24 @@ export default class Bingo extends Game {
 
         this.setBoard(x, y, z, this.getCurrentPiece());
         this.addRecord(x, y, z);
+        this.turn = (this.turn === RoleType.PlayerA) ? RoleType.PlayerB : RoleType.PlayerA;
 
         const room = gc.rooms.getById(roomId);
-        room.emitAll(ServerEvents.NotifyPlaced, { x, y, z });
+        room.emitAll(ServerEvents.NotifyPlaced, { board: this.board, turn: this.turn });
       }
     };
 
     this.requestHandlers = {
 
     };
+  }
+
+  get room() {
+    return this.gc.rooms.getById(this.roomId);
+  }
+
+  get gamers() {
+    return this.room.gamers;
   }
 
   // ########################################
@@ -58,12 +67,24 @@ export default class Bingo extends Game {
     }
   }
 
+  start() {
+    super.start();
+    this.turn = RoleType.PlayerA;
+
+    const playerA = this.gc.allPlayers.getById(this.gamers.get(RoleType.PlayerA));
+    const playerB = this.gc.allPlayers.getById(this.gamers.get(RoleType.PlayerB));
+
+    this.room.emitAll(Socket.ServerEvents.NotifyGameStart, { board: this.board, turn: this.turn });
+    playerA.socket.emit(Socket.ServerEvents.NotifyGamer, RoleType.PlayerA);
+    playerB.socket.emit(Socket.ServerEvents.NotifyGamer, RoleType.PlayerB);
+  }
+
   // ########################################
   //  util
   // ########################################
 
   getCurrentPlayer() {
-    return this.gc.getPlayerById(this.players[this.turn]);
+    return this.gc.getPlayerById(this.gamers.get(this.turn));
   }
 
   // ########################################
@@ -91,11 +112,11 @@ export default class Bingo extends Game {
       return false;
     }
 
-    if (z === 0) {
+    if (y === 0) {
       return true;
     }
 
-    if (!PieceType.is.Empty(this.getBoard(x, y, z - 1))) {
+    if (!PieceType.is.Empty(this.getBoard(x, y - 1, z))) {
       return true;
     }
 

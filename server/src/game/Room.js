@@ -1,7 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-
 import { ServerEvents } from 'knect-common/src/SocketEvents.js';
-import PlayerSideType from 'knect-common/src/PlayerSideType.js';
 import Bingo from './games/Bingo.js';
 import PlayerIdList from './PlayerIdList.js';
 
@@ -18,9 +16,9 @@ export default class Room {
     this.id = id;
 
     this.allPlayers = new PlayerIdList(gc);
-    
+
     /**
-     * @type {Map<PlayerSideType, string>}
+     * @type {Map<RoleType, string>}
      */
     this.gamers = new Map();
     this.game = new Bingo(gc, this.id);
@@ -93,8 +91,10 @@ export default class Room {
     this.emitAll(ServerEvents.NotifyPlayerJoinGame, this.serializedGamers());
     this.gc.lobby.emitAll(ServerEvents.UpdateRoomList, this.gc.rooms.serialize());
 
-    if (this.gamers.size === PlayerSideType.size) {
-      // game start
+    // TODO: exported constant
+    if (this.gamers.size === 2) {
+      this.game.init();
+      this.game.start();
     }
   }
 
