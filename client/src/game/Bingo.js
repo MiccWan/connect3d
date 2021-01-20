@@ -25,7 +25,7 @@ const Materials = {
   Red: new MeshLambertMaterial({ color: '#F4997B' }),
   Green: new MeshLambertMaterial({ color: '#A4C77F' }),
   Gray: new MeshLambertMaterial({ color: '#222222' }),
-  TransGray: new MeshLambertMaterial({ color: '#999999', opacity: 0.7, transparent: true }),
+  TransGray: new MeshLambertMaterial({ color: '#999999', opacity: 0.45, transparent: true }),
   TransRed: new MeshLambertMaterial({ color: '#F4997B', opacity: 0.8, transparent: true }),
   TransGreen: new MeshLambertMaterial({ color: '#A4C77F', opacity: 0.8, transparent: true }),
   BlinkRed: new MeshLambertMaterial({ color: '#F4997B', opacity: 0, transparent: true }),
@@ -65,7 +65,7 @@ export default class Bingo extends Game {
     this.camera = new PerspectiveCamera(70, this.el.clientWidth / this.el.clientHeight, 1, 1000);
     this.renderer = new WebGLRenderer();
     this.renderer.setSize(this.el.clientWidth, this.el.clientHeight);
-    this.renderer.setClearColor('#eadac2');
+    this.renderer.setClearColor('#EADAC2');
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.camera.position.set(5, 5, 5);
     this.controls.target = new Vector3(0, 1, 0);
@@ -77,9 +77,9 @@ export default class Bingo extends Game {
     this.intersected = null;
 
     // light
-    const ambientLight = new AmbientLight('#ffffff', 0.5);
+    const ambientLight = new AmbientLight('#FFFFFF', 0.5);
     this.scene.add(ambientLight);
-    const directionalLight = new DirectionalLight('#ffffff', 0.5);
+    const directionalLight = new DirectionalLight('#FFFFFF', 0.5);
     directionalLight.position.set(1, 2, 3).normalize();
     this.scene.add(directionalLight);
 
@@ -248,8 +248,8 @@ export default class Bingo extends Game {
   setState(state) {
     Object.assign(this, state);
     this.refreshPiecesMaterial();
-    if (RoleType.is.PlayerA(this.role)) this.renderer.setClearColor('#bbdddd');
-    if (RoleType.is.PlayerB(this.role)) this.renderer.setClearColor('#efdbbb');
+    if (RoleType.is.PlayerA(this.role)) this.renderer.setClearColor('#F0D0B2');
+    if (RoleType.is.PlayerB(this.role)) this.renderer.setClearColor('#E3D8B3');
   }
 
   refreshPiecesMaterial() {
