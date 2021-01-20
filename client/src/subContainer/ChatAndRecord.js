@@ -5,10 +5,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 
 import ShowChat from './ShowChat.js';
 import PlayerListInRoom from '../component/PlayerListInRoom.js';
+import Record from '../component/Record.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,7 +52,7 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function ChatAndRecord({ setIsChatMode, roomId, chatContent, playerList }) {
+function ChatAndRecord({ setIsChatMode, roomId, chatContent, playerList, gameState }) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
@@ -106,7 +106,7 @@ function ChatAndRecord({ setIsChatMode, roomId, chatContent, playerList }) {
         </div>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Typography>record</Typography>
+        <Record recordContenet={gameState.record} />
       </TabPanel>
       <TabPanel value={value} index={2}>
         <PlayerListInRoom playerList={playerList} />
@@ -120,6 +120,7 @@ ChatAndRecord.propTypes = {
   roomId: PropTypes.string.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
   playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  gameState: PropTypes.object.isRequired,
 };
 
 export default ChatAndRecord;
