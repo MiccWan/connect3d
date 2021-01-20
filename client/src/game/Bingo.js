@@ -22,14 +22,14 @@ import Game from './Game.js';
 
 const Materials = {
   Invis: new MeshLambertMaterial({ opacity: 0, transparent: true }),
-  Blue: new MeshLambertMaterial({ color: 0x0000ff }),
-  Red: new MeshLambertMaterial({ color: 0xff0000 }),
-  Gray: new MeshLambertMaterial({ color: 0x222222 }),
-  TransGray: new MeshLambertMaterial({ color: 0x555555, opacity: 0.4, transparent: true }),
-  TransBlue: new MeshLambertMaterial({ color: 0x0000ff, opacity: 0.8, transparent: true }),
-  TransRed: new MeshLambertMaterial({ color: 0xff0000, opacity: 0.8, transparent: true }),
-  BlinkBlue: new MeshLambertMaterial({ color: 0x0000ff, opacity: 0, transparent: true }),
-  BlinkRed: new MeshLambertMaterial({ color: 0xff0000, opacity: 0, transparent: true }),
+  Red: new MeshLambertMaterial({ color: '#F4997B' }),
+  Green: new MeshLambertMaterial({ color: '#A4C77F' }),
+  Gray: new MeshLambertMaterial({ color: '#222222' }),
+  TransGray: new MeshLambertMaterial({ color: '#999999', opacity: 0.7, transparent: true }),
+  TransRed: new MeshLambertMaterial({ color: '#F4997B', opacity: 0.8, transparent: true }),
+  TransGreen: new MeshLambertMaterial({ color: '#A4C77F', opacity: 0.8, transparent: true }),
+  BlinkRed: new MeshLambertMaterial({ color: '#F4997B', opacity: 0, transparent: true }),
+  BlinkGreen: new MeshLambertMaterial({ color: '#A4C77F', opacity: 0, transparent: true }),
 };
 
 const Geometries = {
@@ -65,7 +65,7 @@ export default class Bingo extends Game {
     this.camera = new PerspectiveCamera(70, this.el.clientWidth / this.el.clientHeight, 1, 1000);
     this.renderer = new WebGLRenderer();
     this.renderer.setSize(this.el.clientWidth, this.el.clientHeight);
-    this.renderer.setClearColor(0xbbbbbb);
+    this.renderer.setClearColor('#eadac2');
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.camera.position.set(5, 5, 5);
     this.controls.target = new Vector3(0, 1, 0);
@@ -77,9 +77,9 @@ export default class Bingo extends Game {
     this.intersected = null;
 
     // light
-    const ambientLight = new AmbientLight(0xffffff, 0.5);
+    const ambientLight = new AmbientLight('#ffffff', 0.5);
     this.scene.add(ambientLight);
-    const directionalLight = new DirectionalLight(0xffffff, 0.5);
+    const directionalLight = new DirectionalLight('#ffffff', 0.5);
     directionalLight.position.set(1, 2, 3).normalize();
     this.scene.add(directionalLight);
 
@@ -103,8 +103,8 @@ export default class Bingo extends Game {
           };
           piece.onMouseHover = () => {
             if (PieceType.is.Empty(this.getBoard(x, y, z))) {
-              if (RoleType.is.PlayerA(this.role)) piece.material = Materials.TransBlue;
-              if (RoleType.is.PlayerB(this.role)) piece.material = Materials.TransRed;
+              if (RoleType.is.PlayerA(this.role)) piece.material = Materials.TransRed;
+              if (RoleType.is.PlayerB(this.role)) piece.material = Materials.TransGreen;
             }
           };
           piece.onMouseLeave = () => {
@@ -121,8 +121,8 @@ export default class Bingo extends Game {
 
     // icons
     this.icons = [
-      [new Mesh(Geometries.SmallBox, Materials.Blue), new Mesh(Geometries.SmallBox, Materials.Blue)],
-      [new Mesh(Geometries.SmallBox, Materials.Red), new Mesh(Geometries.SmallBox, Materials.Red)]
+      [new Mesh(Geometries.SmallBox, Materials.Red), new Mesh(Geometries.SmallBox, Materials.Red)],
+      [new Mesh(Geometries.SmallBox, Materials.Green), new Mesh(Geometries.SmallBox, Materials.Green)]
     ];
     this.icons[0][0].position.x = -3;
     this.icons[0][0].position.z = -3;
@@ -226,8 +226,8 @@ export default class Bingo extends Game {
     }
     this.t += 0.05;
     const opacity = Math.sin(this.t) / 4 + 0.75;
-    Materials.BlinkBlue.opacity = opacity;
     Materials.BlinkRed.opacity = opacity;
+    Materials.BlinkGreen.opacity = opacity;
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -248,9 +248,8 @@ export default class Bingo extends Game {
   setState(state) {
     Object.assign(this, state);
     this.refreshPiecesMaterial();
-    if (RoleType.is.PlayerA(this.role)) this.renderer.setClearColor(0xbbbbdd);
-    if (RoleType.is.PlayerB(this.role)) this.renderer.setClearColor(0xddbbbb);
-    if (this.end) this.handleGameEnd();
+    if (RoleType.is.PlayerA(this.role)) this.renderer.setClearColor('#bbdddd');
+    if (RoleType.is.PlayerB(this.role)) this.renderer.setClearColor('#efdbbb');
   }
 
   refreshPiecesMaterial() {
@@ -260,8 +259,8 @@ export default class Bingo extends Game {
           const piece = this.getPiece(x, y, z);
           const status = this.getBoard(x, y, z);
           piece.visible = true;
-          if (PieceType.is.PlayerA(status)) piece.material = Materials.Blue;
-          if (PieceType.is.PlayerB(status)) piece.material = Materials.Red;
+          if (PieceType.is.PlayerA(status)) piece.material = Materials.Red;
+          if (PieceType.is.PlayerB(status)) piece.material = Materials.Green;
           if (PieceType.is.Empty(status)) {
             piece.material = Materials.TransGray;
             if (y !== 0 && PieceType.is.Empty(this.getBoard(x, y - 1, z))) {
@@ -277,8 +276,8 @@ export default class Bingo extends Game {
       const piece = this.getPiece(x, y, z);
       const status = this.getBoard(x, y, z);
 
-      if (PieceType.is.PlayerA(status)) piece.material = Materials.BlinkBlue;
-      if (PieceType.is.PlayerB(status)) piece.material = Materials.BlinkRed;
+      if (PieceType.is.PlayerA(status)) piece.material = Materials.BlinkRed;
+      if (PieceType.is.PlayerB(status)) piece.material = Materials.BlinkGreen;
     }
   }
 
