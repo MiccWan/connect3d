@@ -114,7 +114,9 @@ export default class Room {
     this.emitAll(ServerEvents.NotifyPlayerJoinGame, this.serializedGamers());
     this.gc.lobby.emitAll(ServerEvents.UpdateRoomList, this.gc.rooms.serialize());
 
-    this.game.playerSurrender(side);
+    if (this.game.playing) {
+      this.game.playerSurrender(side);
+    }
   }
 
   /**

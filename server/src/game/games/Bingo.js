@@ -194,9 +194,8 @@ export default class Bingo extends Game {
   end() {
     super.end();
 
-    const room = this.gc.rooms.getById(this.roomId);
     console.log('emit end with result', this.result);
-    room.emitAll(ServerEvents.NotifyGameEnd, { result: this.result });
+    this.room.emitAll(Socket.ServerEvents.NotifyGameEnd, { result: this.result });
 
     this.room.saveRecord(this.record);
   }
