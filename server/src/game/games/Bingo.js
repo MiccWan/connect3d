@@ -194,10 +194,10 @@ export default class Bingo extends Game {
   end() {
     super.end();
 
-    console.log('emit end with result', this.result);
     this.room.emitAll(Socket.ServerEvents.NotifyGameEnd, { result: this.result });
 
     this.room.saveRecord(this.record);
+    this.room.afterGame();
   }
 
   /**

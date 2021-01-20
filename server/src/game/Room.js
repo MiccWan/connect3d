@@ -145,6 +145,10 @@ export default class Room {
     save.save();
   }
 
+  afterGame() {
+    Array.from(this.gamers.values()).forEach(id => this.leaveGame(id));
+  }
+
   serialize() {
     const { id, name, allPlayers } = this;
     return {
