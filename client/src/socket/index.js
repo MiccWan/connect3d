@@ -51,6 +51,7 @@ export default class ClientSocketWrapper extends SocketWrapper {
       },
 
       [ServerEvents.NotifyGameEnd]({ result }) {
+        showToast('Game over!');
         setGameState((state) => ({ ...state, end: true, result }));
       }
     };
