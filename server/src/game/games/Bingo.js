@@ -3,7 +3,7 @@ import * as Socket from 'knect-common/src/SocketEvents.js';
 import ForbiddenError from 'knect-common/src/ForbiddenError.js';
 import { ClientEvents, ServerEvents } from 'knect-common/src/BingoEvents.js';
 import RoleType, { getPieceType } from 'knect-common/src/RoleType.js';
-import CheckResultType from './CheckResultType.js';
+import GameResultType from 'knect-common/src/GameResultType.js';
 import Game from './Game.js';
 
 /** @typedef {import('../index.js').GameCenter} GameCenter */
@@ -15,9 +15,11 @@ export default class Bingo extends Game {
    */
   constructor(gc, roomId) {
     super(gc, '3DBingo', roomId);
-    this.board = [];
-    this.turn = null;
+    this.board = Array.from({ length: 64 }, () => PieceType.Empty);
+    this.turn = RoleType.None;
     this.record = [];
+    this.lastPiece = null;
+    this.result = GameResultType.NotOverYet;
 
     this.eventHandlers = {
       [ClientEvents.Place]: (playerId, { x, y, z }) => {
@@ -35,17 +37,17 @@ export default class Bingo extends Game {
 
         this.setBoard(x, y, z, this.getCurrentPiece());
         this.addRecord(x, y, z);
+        this.lastPiece = { x, y, z };
 
-        const result = this.checkWinner(x, y, z);
-        if (result !== CheckResultType.NotOverYet) this.turn = RoleType.None;
+        this.result = this.checkWinner(x, y, z);
+        if (this.result !== GameResultType.NotOverYet) this.turn = RoleType.None;
         else if (this.turn === RoleType.PlayerA) this.turn = RoleType.PlayerB;
         else this.turn = RoleType.PlayerA;
 
-        const { board, turn, record } = this;
-        this.room.emitAll(ServerEvents.NotifyPlaced, { board, turn, record, lastPiece: { x, y, z } });
+        this.room.emitAll(ServerEvents.NotifyPlaced, this.serialize());
 
-        if (result !== CheckResultType.NotOverYet) {
-          this.end(result);
+        if (this.result !== GameResultType.NotOverYet) {
+          this.end(this.result);
         }
       },
       [ClientEvents.Surrender]: (playerId) => {
@@ -83,6 +85,9 @@ export default class Bingo extends Game {
     super.init();
     this.turn = RoleType.None;
     this.record = [];
+    this.lastPiece = null;
+    this.result = GameResultType.NotOverYet;
+
     for (let i = 0; i < 4; ++i) {
       for (let j = 0; j < 4; ++j) {
         for (let k = 0; k < 4; ++k) {
@@ -99,7 +104,7 @@ export default class Bingo extends Game {
     const playerA = this.gc.allPlayers.getById(this.gamers.get(RoleType.PlayerA));
     const playerB = this.gc.allPlayers.getById(this.gamers.get(RoleType.PlayerB));
 
-    this.room.emitAll(Socket.ServerEvents.NotifyGameStart, { board: this.board, turn: this.turn });
+    this.room.emitAll(Socket.ServerEvents.NotifyGameStart, this.serialize());
     playerA.socket.emit(Socket.ServerEvents.NotifyGamer, RoleType.PlayerA);
     playerB.socket.emit(Socket.ServerEvents.NotifyGamer, RoleType.PlayerB);
   }
@@ -184,19 +189,19 @@ export default class Bingo extends Game {
     }
 
     for (let i = 0; i < sum.length; ++i) {
-      if (sum[i] === 4) return CheckResultType.PlayerAWins;
-      if (sum[i] === -4) return CheckResultType.PlayerBWins;
+      if (sum[i] === 4) return GameResultType.PlayerAWins;
+      if (sum[i] === -4) return GameResultType.PlayerBWins;
     }
 
-    if (this.isBoardFilled()) return CheckResultType.Filled;
+    if (this.isBoardFilled()) return GameResultType.Filled;
 
-    return CheckResultType.NotOverYet;
+    return GameResultType.NotOverYet;
   }
 
-  end(result) {
+  end() {
     super.end();
 
-    this.room.emitAll(Socket.ServerEvents.NotifyGameEnd, { result });
+    this.room.emitAll(Socket.ServerEvents.NotifyGameEnd, this.serialize());
 
     this.room.saveRecord(this.record);
     this.room.afterGame();
@@ -206,13 +211,12 @@ export default class Bingo extends Game {
    * @param {RoleType} side
    */
   playerSurrender(side) {
-    const result = RoleType.is.PlayerA(side) ? CheckResultType.PlayerBWins : CheckResultType.PlayerAWins;
-    this.end(result);
+    this.result = RoleType.is.PlayerA(side) ? GameResultType.PlayerBWins : GameResultType.PlayerAWins;
+    this.end();
   }
 
   serialize() {
-    const { playing, turn, board, record } = this;
-    if (playing) return { turn, board, record };
-    return {};
+    const { turn, board, record, lastPiece, result } = this;
+    return { turn, board, record, lastPiece, result };
   }
 }

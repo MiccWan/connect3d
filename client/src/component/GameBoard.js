@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { PropTypes } from 'prop-types';
-import newLogger from 'knect-common/src/Logger.js';
+// import newLogger from 'knect-common/src/Logger.js';
 import SocketContext from '../socket/SocketContext.js';
 import Bingo from '../game/Bingo.js';
 
-const log = newLogger('GameBoard');
+// const log = newLogger('GameBoard');
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -19,7 +19,6 @@ function GameBoard({ gameState }) {
   const classes = useStyles();
   const elRef = useRef();
   const [bingo, setBingo] = useState();
-  log.info('bingo =', bingo);
 
   useEffect(() => {
     bingo?.setState(gameState);
