@@ -4,9 +4,12 @@ import Lobby from './Lobby.js';
 import PlayerList from './PlayerList.js';
 import RoomList from './RoomList.js';
 import Player from './Player.js';
+import newLogger from 'knect-common/src/Logger.js';
 
 /** @typedef {import('socket.io').Server} SocketIO */
 /** @typedef {import('./Room').default} Room */
+
+const log = newLogger('gc');
 
 export class GameCenter {
   /**
@@ -26,15 +29,10 @@ export class GameCenter {
       const player = new Player(this, _socket);
       this.allPlayers.add(player);
 
-      this.lobby.join(player.id);
-
       _socket.on('disconnect', () => {
         this.disconnect(player);
       });
     });
-
-    // TODO: listen on disconnect
-    // TODO: remove on allPlayers, room.allPlayers, room.players
   }
 
   /**
@@ -86,6 +84,10 @@ export class GameCenter {
    */
   disconnect(player) {
     const room = this.getRoomById(player.roomId);
+    if (!room) {
+      log.error(`Can't find room for user`);
+      return;
+    }
     room.remove(player.id);
     this.allPlayers.remove(player.id);
   }

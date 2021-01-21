@@ -66,7 +66,6 @@ function App() {
     if (!socket) {
       const funcs = { setChatContent, setPlayerList, setRoomList, setRoomInfo, setGamers, setGameState };
       const _socket = new ClientSocketWrapper(funcs);
-      setSocket(_socket);
       try {
         const { name, players, rooms, token } = await _socket.request(ClientRequests.Login, { name: inputName, token: inputToken });
         setUserName(name);
@@ -78,9 +77,11 @@ function App() {
         if (token) {
           localStorage.setItem(loginTokenKey, token);
         }
+
+        setSocket(_socket);
       }
       catch (err) {
-        showToast('Login failed');
+        showToast(`Login failed: ${err.message}`);
         log.error(err);
       }
     }

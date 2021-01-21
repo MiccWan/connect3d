@@ -15,10 +15,10 @@ export default class Player {
    */
   constructor(gc, _socket) {
     this.gc = gc;
-    this.name = getUniqueName();
+    this.name = null;
     this.roomId = null;
     this.socket = new ServerSocketWrapper(gc, this, _socket);
-    this.socket.emit(ServerEvents.SetPlayerName, this.name);
+    // this.socket.emit(ServerEvents.SetPlayerName, this.name);
 
     this.status = PlayerStatusType.Lobby;
   }
@@ -34,6 +34,7 @@ export default class Player {
   login(name) {
     if (!name) throw new TypeError(`Cannot login with falsy name ${name}`);
     this.name = name;
+    this.gc.lobby.join(this.id);
   }
 
   sendChat(msg) {
