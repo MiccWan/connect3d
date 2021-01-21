@@ -5,6 +5,8 @@ import { PropTypes } from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
+import PlayerSideType from 'knect-common/src/PlayerSideType.js';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
@@ -22,22 +24,31 @@ const useStyles = makeStyles((theme) => ({
     margin: '1px 0px',
     width: '100%'
   },
-  online: {
+  playerTwo: {
     color: theme.palette.player.two,
   },
-  offline: {
+  playerOne: {
     color: theme.palette.player.one,
+  },
+  playerOther: {
+    color: theme.palette.text.primary,
   },
 }));
 
-function PlayerListInRoom({ playerList }) {
+function PlayerListInRoom({ playerList, gamers }) {
   const classes = useStyles();
+  console.log(gamers);
+  const playerSideList = playerList.map(({ name }) => {
+    if (name === gamers[PlayerSideType.A]?.name) return [name, classes.playerOne];
+    if (name === gamers[PlayerSideType.B]?.name) return [name, classes.playerTwo];
+    return [name, classes.playerOther];
+  });
   return (
     <div className={classes.root}>
-      { playerList.map(({ name }) => (
+      { playerSideList.map(([name, classesOf]) => (
         <div key={name} className={classes.body}>
           <Typography variant="body1" align="left">
-            <span className={classes.online}>●&nbsp;&nbsp;</span> {name}
+            <span className={classesOf}>●&nbsp;&nbsp;</span> {name}
           </Typography>
         </div>
       ))}
@@ -47,6 +58,7 @@ function PlayerListInRoom({ playerList }) {
 
 PlayerListInRoom.propTypes = {
   playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
+  gamers: PropTypes.object.isRequired,
 };
 
 export default PlayerListInRoom;
