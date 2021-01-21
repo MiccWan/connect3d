@@ -1,7 +1,11 @@
+import { v4 as uuidv4 } from 'uuid';
 import SocketWrapper from 'knect-common/src/SocketWrapper.js';
 import { ClientRequests, ClientEvents } from 'knect-common/src/SocketEvents.js';
 import * as Bingo from 'knect-common/src/BingoEvents.js';
+import ForbiddenError from 'knect-common/src/ForbiddenError.js';
 import { lobbyId } from './Lobby.js';
+import getUniqueName from './util/generateName.js';
+import User from '../db/models/user.js';
 
 /** @typedef {import('socket.io').Socket} Socket */
 /** @typedef {import('./index.js').GameCenter} GameCenter */
@@ -20,6 +24,35 @@ export default class ServerSocketWrapper extends SocketWrapper {
      * Add handlers here to response to client requests.
      */
     const requestsHandler = {
+      async [ClientRequests.Login]({ name, token }) {
+        let user;
+        if (token) {
+          user = await User.findOne({ token });
+          if (!user) throw new ForbiddenError('Token is not valid');
+        }
+        else if (name) {
+          user = await User.findOne({ name });
+          if (user) throw new ForbiddenError('Username already taken');
+          user = new User({ name, token: uuidv4() });
+          user = await user.save();
+        }
+        else {
+          user = { name: getUniqueName() };
+        }
+        player.login(user.name);
+        return {
+          name: user.name,
+          token: user.token,
+          rooms: gc.rooms.serialize(),
+          players: gc.lobby.allPlayers.serialize()
+        };
+      },
+      async [ClientRequests.Logout]({ token } = {}) {
+        if (!token) throw new ForbiddenError('Token is not provided');
+        const user = await User.findOne({ token });
+        if (!user) throw new ForbiddenError('Trying to logout with non-existing token');
+        await user.delete();
+      },
       [ClientRequests.GetPlayerName]() {
         return player.name;
       },
@@ -53,7 +86,10 @@ export default class ServerSocketWrapper extends SocketWrapper {
       },
       ...Object.fromEntries(Object.values(Bingo.ClientRequests).map(evt => [evt, (...args) => {
         const room = gc.rooms.getById(player.roomId);
-        return room.game.requestHandlers[evt](player.id, ...args);
+        if (room) {
+          return room.game.requestHandlers[evt](player.id, ...args);
+        }
+        throw new ForbiddenError(`Player not in a room.`);
       }]))
     };
 

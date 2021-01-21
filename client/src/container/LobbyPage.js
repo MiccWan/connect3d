@@ -3,8 +3,8 @@ import React, { useState, useContext } from 'react';
 import { PropTypes } from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -12,6 +12,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 import DeleteIcon from '@material-ui/icons/Delete';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import Typography from '@material-ui/core/Typography';
 
 import { ClientEvents } from 'knect-common/src/SocketEvents.js';
 
@@ -54,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-function LobbyPage({ userName, createRoom, joinRoom, chatContent, playerList, roomList }) {
+function LobbyPage({ userName, createRoom, joinRoom, chatContent, playerList, roomList, logout }) {
   const classes = useStyles();
   const socket = useContext(SocketContext);
   const [roomFilter, setRoomFilter] = useState('');
@@ -67,6 +69,10 @@ function LobbyPage({ userName, createRoom, joinRoom, chatContent, playerList, ro
 
   const deleteRoomFilterClick = () => {
     setRoomFilter('');
+  };
+
+  const logoutClick = () => {
+    logout();
   };
 
   const createRoomClick = () => {
@@ -118,24 +124,33 @@ function LobbyPage({ userName, createRoom, joinRoom, chatContent, playerList, ro
             InputProps={{
               endAdornment: (
                 (roomFilter !== '')
-                   && (
-                   <InputAdornment position="end">
-                     <IconButton edge="end" size="small" onClick={deleteRoomFilterClick} visibility="hidden">
-                       <DeleteIcon color="primary" />
-                     </IconButton>
-                   </InputAdornment>
-                   )
+                && (
+                  <InputAdornment position="end">
+                    <IconButton edge="end" size="small" onClick={deleteRoomFilterClick} visibility="hidden">
+                      <DeleteIcon color="primary" />
+                    </IconButton>
+                  </InputAdornment>
+                )
               ),
             }}
           />
         </Grid>
-        <Grid item xs={7}>
+        <Grid item xs={4}>
           {null}
         </Grid>
-        <Grid item xs={1} container justify="flex-end">
-          <Avatar className={classes.chooseBar}>
-            {userName}
-          </Avatar>
+        <Grid item xs={4} container justify="flex-end" alignItems="center">
+          <Box mx={2}>
+            <Typography>{`Hi! ${userName}`}</Typography>
+          </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.chooseBar}
+            onClick={logoutClick}
+            endIcon={<ExitToAppIcon />}
+          >
+            logout
+          </Button>
         </Grid>
         <Grid item xs={8} sm={8}>
           <div className={classes.roomList}>
@@ -202,6 +217,7 @@ LobbyPage.propTypes = {
   userName: PropTypes.string.isRequired,
   createRoom: PropTypes.func.isRequired,
   joinRoom: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
   roomList: PropTypes.arrayOf(PropTypes.object).isRequired,
 };

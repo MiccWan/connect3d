@@ -13,6 +13,8 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import iconing from '../img/loginIcon.png';
+import showToast from '../helper/Toast.js';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -24,42 +26,42 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    width: theme.spacing(7),
+    height: theme.spacing(7),
   },
   submit: {
     margin: theme.spacing(2, 0, 2),
   },
 }));
 
-function LoginPage({ login }) {
+function LoginPage({ login, loginAsGuest }) {
   const classes = useStyles();
 
-  const [password, setPassword] = useState('');
   const [tempUserName, setTempUserName] = useState('');
-
-  const passwordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
+  const [userNameIsEmpty, setUserNameIsEmpty] = useState(false);
   const tempUserNameChange = (event) => {
     setTempUserName(event.target.value);
+    setUserNameIsEmpty(false);
   };
 
   const loginClick = () => {
-    const msg = [tempUserName, password];
-    return msg;
+    if (tempUserName === '') {
+      setUserNameIsEmpty(true);
+      showToast('Username can not be empty');
+    }
+    else {
+      login(tempUserName);
+    }
   };
 
   const loginGuestClick = async () => {
-    await login();
+    await loginAsGuest();
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <p>knect</p>
-        </Avatar>
+        <Avatar className={classes.avatar} src={iconing} />
         <Typography component="h1" variant="h5">
           Log in
         </Typography>
@@ -68,28 +70,19 @@ function LoginPage({ login }) {
           margin="normal"
           required
           fullWidth
-          disabled
           id="tempUserName"
           label="User Name"
           name="tempUserName"
-          autoComplete="tempUserName"
+          autoComplete="off"
           autoFocus
           value={tempUserName}
           onChange={tempUserNameChange}
-        />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          disabled
-          name="password"
-          label="Password"
-          type="password"
-          id="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={passwordChange}
+          error={userNameIsEmpty}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              loginClick();
+            }
+          }}
         />
 
         <Grid container spacing={3}>
@@ -101,7 +94,6 @@ function LoginPage({ login }) {
               color="primary"
               className={classes.submit}
               onClick={loginClick}
-              disabled
             >
               Login
             </Button>
@@ -125,7 +117,8 @@ function LoginPage({ login }) {
 }
 
 LoginPage.propTypes = {
-  login: PropTypes.func.isRequired
+  login: PropTypes.func.isRequired,
+  loginAsGuest: PropTypes.func.isRequired,
 };
 
 export default LoginPage;

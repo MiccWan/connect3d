@@ -1,11 +1,15 @@
 import { ServerEvents } from 'knect-common/src/SocketEvents.js';
+import ForbiddenError from 'knect-common/src/ForbiddenError.js';
 import Lobby from './Lobby.js';
 import PlayerList from './PlayerList.js';
 import RoomList from './RoomList.js';
 import Player from './Player.js';
+import newLogger from 'knect-common/src/Logger.js';
 
 /** @typedef {import('socket.io').Server} SocketIO */
 /** @typedef {import('./Room').default} Room */
+
+const log = newLogger('gc');
 
 export class GameCenter {
   /**
@@ -25,15 +29,10 @@ export class GameCenter {
       const player = new Player(this, _socket);
       this.allPlayers.add(player);
 
-      this.lobby.join(player.id);
-
       _socket.on('disconnect', () => {
         this.disconnect(player);
       });
     });
-
-    // TODO: listen on disconnect
-    // TODO: remove on allPlayers, room.allPlayers, room.players
   }
 
   /**
@@ -42,7 +41,7 @@ export class GameCenter {
   getRoomById(roomId, { throwOnError = false } = {}) {
     const room = roomId === this.lobby.id ? this.lobby : this.rooms.getById(roomId);
     if (room === undefined && throwOnError) {
-      throw new Error(`Room ${roomId} doesn't exist`);
+      throw new ForbiddenError(`Room ${roomId} doesn't exist`);
     }
     return room;
   }
@@ -53,7 +52,7 @@ export class GameCenter {
   getPlayerById(playerId, { throwOnError = false } = {}) {
     const player = this.allPlayers.getById(playerId);
     if (!player && throwOnError) {
-      throw new Error(`Player ${playerId} doesn't exist`);
+      throw new ForbiddenError(`Player ${playerId} doesn't exist`);
     }
     return player;
   }
@@ -85,6 +84,10 @@ export class GameCenter {
    */
   disconnect(player) {
     const room = this.getRoomById(player.roomId);
+    if (!room) {
+      log.error(`Can't find room for user`);
+      return;
+    }
     room.remove(player.id);
     this.allPlayers.remove(player.id);
   }

@@ -52,7 +52,7 @@ TabPanel.propTypes = {
   value: PropTypes.number.isRequired,
 };
 
-function ChatAndRecord({ setIsChatMode, roomId, chatContent, playerList, gameState }) {
+function ChatAndRecord({ setIsChatMode, roomId, chatContent, playerList, gameState, gamers }) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
 
@@ -109,7 +109,7 @@ function ChatAndRecord({ setIsChatMode, roomId, chatContent, playerList, gameSta
         <Record recordContent={gameState.record || []} />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <PlayerListInRoom playerList={playerList} />
+        <PlayerListInRoom playerList={playerList} gameState={gameState} gamers={gamers} />
       </TabPanel>
     </div>
   );
@@ -121,6 +121,7 @@ ChatAndRecord.propTypes = {
   chatContent: PropTypes.arrayOf(PropTypes.object).isRequired,
   playerList: PropTypes.arrayOf(PropTypes.object).isRequired,
   gameState: PropTypes.object.isRequired,
+  gamers: PropTypes.object.isRequired,
 };
 
 export default ChatAndRecord;

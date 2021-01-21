@@ -91,6 +91,7 @@ function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo, playerLi
                   chatContent={chatContent}
                   playerList={playerList}
                   gameState={gameState}
+                  gamers={gamers}
                 />
               </div>
               <div className={classes.chatInput} hidden={!isChatMode}>
