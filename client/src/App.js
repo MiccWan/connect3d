@@ -60,7 +60,7 @@ function App() {
 
   const [roomInfo, setRoomInfo] = useState({});
 
-  const initSocket = async ({ name }) => {
+  const initSocket = async ({ name } = {}) => {
     if (!socket) {
       const funcs = { setChatContent, setPlayerList, setRoomList, setRoomInfo, setGamers, setGameState };
       const _socket = new ClientSocketWrapper(funcs);
@@ -82,6 +82,15 @@ function App() {
 
   const login = async (name) => {
     await initSocket({ name });
+  };
+
+  const loginAsGuest = async () => {
+    await initSocket();
+  };
+
+  const logout = async () => {
+    showToast('Logged out');
+    setIsNotLogin(true);
   };
 
   const createRoom = asyncWrapper(async (roomName) => {
@@ -119,7 +128,7 @@ function App() {
 
   const returnPage = () => {
     if (phase === PhaseType.Login) {
-      return (<LoginPage login={login} />);
+      return (<LoginPage login={login} loginAsGuest={loginAsGuest} />);
     }
     if (phase === PhaseType.Lobby) {
       return (
@@ -131,6 +140,7 @@ function App() {
           roomList={roomList}
           createRoom={createRoom}
           joinRoom={joinRoom}
+          logout={logout}
         />
       );
     }
