@@ -1,10 +1,10 @@
+import newLogger from 'knect-common/src/Logger.js';
 import { ServerEvents } from 'knect-common/src/SocketEvents.js';
 import ForbiddenError from 'knect-common/src/ForbiddenError.js';
 import Lobby from './Lobby.js';
 import PlayerList from './PlayerList.js';
 import RoomList from './RoomList.js';
 import Player from './Player.js';
-import newLogger from 'knect-common/src/Logger.js';
 
 /** @typedef {import('socket.io').Server} SocketIO */
 /** @typedef {import('./Room').default} Room */
@@ -55,6 +55,20 @@ export class GameCenter {
       throw new ForbiddenError(`Player ${playerId} doesn't exist`);
     }
     return player;
+  }
+
+  /**
+   * @param {string} id
+   */
+  joinLobby(id) {
+    this.lobby.join(id);
+  }
+
+  /**
+   * @param {string} name 
+   */
+  isPlayerNameExist(name) {
+    return this.allPlayers.isPlayerNameExist(name);
   }
 
   /**
