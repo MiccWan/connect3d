@@ -14,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import iconing from '../img/loginIcon.png';
+import showToast from '../helper/Toast.js';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -46,6 +47,7 @@ function LoginPage({ login, loginAsGuest }) {
   const loginClick = () => {
     if (tempUserName === '') {
       setUserNameIsEmpty(true);
+      showToast('Username can not be empty');
     }
     else {
       login(tempUserName);
