@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  playerName: {
+  name: {
     type: String,
-    required: [true, 'Player name field is required.'],
+    required: [true, 'Name field is required.'],
   },
   token: {
     type: String,

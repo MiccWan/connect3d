@@ -22,6 +22,7 @@ let ServerEvents = {
 
 let ClientRequests = {
   Login: 'login',
+  Logout: 'logout',
   GetPlayerName: 'get_player_name',
   GetPlayerList: 'get_player_list',
   GetRoomList: 'get_room_list',
