@@ -71,7 +71,14 @@ function App() {
     }
   };
 
-  const login = async () => {
+  const login = async (name) => {
+    showToast('Logged in');
+    console.log(name);
+    await initSocket();
+    setIsNotLogin(false);
+  };
+
+  const loginAsGuest = async () => {
     showToast('Logged in as guest');
     await initSocket();
     setIsNotLogin(false);
@@ -112,7 +119,7 @@ function App() {
 
   const returnPage = () => {
     if (isNotLogin) {
-      return (<LoginPage login={login} />);
+      return (<LoginPage login={login} loginAsGuest={loginAsGuest} />);
     }
     if (isNotEnterRoom) {
       return (

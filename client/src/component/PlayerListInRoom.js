@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
 
 function PlayerListInRoom({ playerList, gamers }) {
   const classes = useStyles();
-  console.log(gamers);
   const playerSideList = playerList.map(({ name }) => {
     if (name === gamers[PlayerSideType.A]?.name) return [name, classes.playerOne];
     if (name === gamers[PlayerSideType.B]?.name) return [name, classes.playerTwo];
