@@ -1,5 +1,6 @@
 import PieceType from 'knect-common/src/games/PieceType.js';
 import * as Socket from 'knect-common/src/SocketEvents.js';
+import ForbiddenError from 'knect-common/src/ForbiddenError.js';
 import { ClientEvents, ServerEvents } from 'knect-common/src/BingoEvents.js';
 import RoleType, { getPieceType } from 'knect-common/src/RoleType.js';
 import CheckResultType from './CheckResultType.js';
@@ -21,15 +22,15 @@ export default class Bingo extends Game {
     this.eventHandlers = {
       [ClientEvents.Place]: (playerId, { x, y, z }) => {
         if (playerId !== this.gamers.get(this.turn)) {
-          throw new Error(`Forbidden Operation: Authentication check failed.`);
+          throw new ForbiddenError(`Authentication check failed.`);
         }
 
         if (!this.isPlacible(x, y, z)) {
-          throw new Error(`Forbidden Operation: Invalid place.`);
+          throw new ForbiddenError(`Invalid place.`);
         }
 
         if (this.playing === false) {
-          throw new Error(`Forbidden Operation: Game is not playing.`);
+          throw new ForbiddenError(`Game is not playing.`);
         }
 
         this.setBoard(x, y, z, this.getCurrentPiece());
@@ -49,7 +50,7 @@ export default class Bingo extends Game {
       },
       [ClientEvents.Surrender]: (playerId) => {
         if (this.playing === false) {
-          throw new Error(`Forbidden Operation: Game is not playing.`);
+          throw new ForbiddenError(`Game is not playing.`);
         }
 
         this.turn = RoleType.None;

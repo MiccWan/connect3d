@@ -2,6 +2,7 @@ import SocketWrapper from 'knect-common/src/SocketWrapper.js';
 import { ClientRequests, ClientEvents } from 'knect-common/src/SocketEvents.js';
 import * as Bingo from 'knect-common/src/BingoEvents.js';
 import { lobbyId } from './Lobby.js';
+import getUniqueName from './util/generateName.js';
 
 /** @typedef {import('socket.io').Socket} Socket */
 /** @typedef {import('./index.js').GameCenter} GameCenter */
@@ -20,6 +21,14 @@ export default class ServerSocketWrapper extends SocketWrapper {
      * Add handlers here to response to client requests.
      */
     const requestsHandler = {
+      [ClientRequests.Login]({ name }) {
+        player.login(name || getUniqueName());
+        return {
+          name: player.name,
+          rooms: gc.rooms.serialize(),
+          players: gc.lobby.allPlayers.serialize()
+        };
+      },
       [ClientRequests.GetPlayerName]() {
         return player.name;
       },

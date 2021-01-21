@@ -1,5 +1,6 @@
 /** @typedef {import('./index.js').GameCenter} GameCenter */
 
+import ForbiddenError from 'knect-common/src/ForbiddenError.js';
 import Room from './Room.js';
 
 export default class RoomList {
@@ -33,7 +34,7 @@ export default class RoomList {
       this._all.delete(room.id);
     }
     else {
-      throw new Error(`Trying to remove non empty room#${id}`);
+      throw new ForbiddenError(`Trying to remove non empty room#${id}`);
     }
   }
 

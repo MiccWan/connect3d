@@ -1,4 +1,5 @@
 import { ServerEvents } from 'knect-common/src/SocketEvents.js';
+import ForbiddenError from 'knect-common/src/ForbiddenError.js';
 import Lobby from './Lobby.js';
 import PlayerList from './PlayerList.js';
 import RoomList from './RoomList.js';
@@ -42,7 +43,7 @@ export class GameCenter {
   getRoomById(roomId, { throwOnError = false } = {}) {
     const room = roomId === this.lobby.id ? this.lobby : this.rooms.getById(roomId);
     if (room === undefined && throwOnError) {
-      throw new Error(`Room ${roomId} doesn't exist`);
+      throw new ForbiddenError(`Room ${roomId} doesn't exist`);
     }
     return room;
   }
@@ -53,7 +54,7 @@ export class GameCenter {
   getPlayerById(playerId, { throwOnError = false } = {}) {
     const player = this.allPlayers.getById(playerId);
     if (!player && throwOnError) {
-      throw new Error(`Player ${playerId} doesn't exist`);
+      throw new ForbiddenError(`Player ${playerId} doesn't exist`);
     }
     return player;
   }
