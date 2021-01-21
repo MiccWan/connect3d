@@ -15,6 +15,14 @@ import showToast from './helper/Toast.js';
 const log = newLogger('App');
 
 const theme = createMuiTheme({
+  spacing: (factor) => {
+    const width = window.innerWidth;
+    if (width > 1280) {
+      return (width / 1280) * 8 * factor;
+    }
+    return 8 * factor;
+  },
+
   palette: {
     primary: {
       main: '#40798C',

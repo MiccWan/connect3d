@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
     alignItems: 'center',
     padding: theme.spacing(0, 4),
+    maxHeight: '1080px',
   },
   roomList: {
     background: theme.palette.background.paper,
@@ -49,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
   },
   chooseBar: {
-    height: theme.spacing(5),
+    height: "40px",
     margin: theme.spacing(2, 0, 2),
   },
 
@@ -94,7 +95,7 @@ function LobbyPage({ userName, createRoom, joinRoom, chatContent, playerList, ro
   };
 
   return (
-    <Container className={classes.paper}>
+    <Container className={classes.paper} maxWidth="xl">
       <Grid container spacing={2} justify="center" direction="row">
         <Grid item xs={2}>
           <Button

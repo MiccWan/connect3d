@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(4),
     alignItems: 'center',
     padding: theme.spacing(0, 3),
+    maxHeight: '1080px',
   },
   gameBoard: {
     background: theme.palette.background.paper,
@@ -69,7 +70,7 @@ function roomPage({ userName, roomId, leaveRoom, chatContent, roomInfo, playerLi
   };
 
   return (
-    <Container className={classes.paper}>
+    <Container className={classes.paper} maxWidth="xl">
       <Grid container spacing={2} justify="center" direction="row">
         <Grid item xs={9} sm={8}>
           <div className={classes.gameBoard}>
