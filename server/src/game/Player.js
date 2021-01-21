@@ -33,8 +33,9 @@ export default class Player {
 
   login(name) {
     if (!name) throw new TypeError(`Cannot login with falsy name ${name}`);
+    if (this.gc.isPlayerNameExist(name)) throw new ForbiddenError(`Name ${name} already logined in another place`);
     this.name = name;
-    this.gc.lobby.join(this.id);
+    this.gc.joinLobby(this.id);
   }
 
   sendChat(msg) {

@@ -89,7 +89,7 @@ function App() {
         setSocket(_socket);
       }
       catch (err) {
-        showToast(`Login failed: ${err.message}`);
+        showToast(`Login failed: ${err.message}`, { duration: 5000 });
         log.error(err);
       }
     }
