@@ -123,7 +123,6 @@ export default class Bingo extends Game {
         }
       }
     }
-    this.refreshPiecesMaterial();
 
     // icons
     this.icons = [
@@ -146,6 +145,8 @@ export default class Bingo extends Game {
     this.el.addEventListener('mousemove', this.onMouseMove.bind(this), false);
     this.el.addEventListener('resize', this.onResize.bind(this), false);
     this.el.addEventListener('click', this.onClick.bind(this), false);
+
+    this.refreshPiecesMaterial();
   }
 
   onDidMount() {
