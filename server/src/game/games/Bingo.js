@@ -55,12 +55,15 @@ export default class Bingo extends Game {
           throw new ForbiddenError(`Game is not playing.`);
         }
 
-        this.turn = RoleType.None;
-
-        const room = gc.rooms.getById(roomId);
-        room.emitAll(ServerEvents.NotifyPlaced, { board: this.board, turn: this.turn });
-
-        this.playerSurrender(this.gamers.get(RoleType.PlayerA) === playerId ? RoleType.PlayerA : RoleType.PlayerB);
+        if (playerId === this.gamers.get(RoleType.PlayerA)) {
+          this.playerSurrender(RoleType.PlayerA);
+        }
+        else if (playerId === this.gamers.get(RoleType.PlayerB)) {
+          this.playerSurrender(RoleType.PlayerB);
+        }
+        else {
+          throw new ForbiddenError(`Not a player in game.`);
+        }
       },
     };
 
@@ -212,6 +215,7 @@ export default class Bingo extends Game {
    */
   playerSurrender(side) {
     this.result = RoleType.is.PlayerA(side) ? GameResultType.PlayerBWins : GameResultType.PlayerAWins;
+    this.turn = RoleType.None;
     this.end();
   }
 
