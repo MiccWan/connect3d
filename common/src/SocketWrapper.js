@@ -1,8 +1,12 @@
 import newLogger from './Logger.js';
+import ResponseType, { isResponseSuccessType } from './ResponseType.js';
+import ForbiddenError from './ForbiddenError.js';
+import RemoteError from './RemoteError.js';
+import TimeoutError from './TimeoutError.js';
 
-const log = newLogger('SocketWrapper', true);
+const log = newLogger('SocketWrapper');
 
-const RequestTimeOut = 10 * 1000;
+const RequestTimeout = 10;
 
 export default class SocketWrapper {
   constructor(socket) {
@@ -14,63 +18,85 @@ export default class SocketWrapper {
   }
 
   init(requestsHandler, eventsHandler) {
-    for (const [event, cb] of Object.entries(requestsHandler)) {
+    for (const [event, cb] of Object.entries(eventsHandler)) {
       this._socket.on(event, async (arg, ack) => {
         try {
-          const result = await cb(arg);
-          log.debug('Get Request', event, arg, result);
-          ack({ result });
+          log.debug(`Get event '${event}'`, arg);
+          await cb(arg);
+          ack({ type: ResponseType.Success });
         }
         catch (err) {
-          log.error(`SocketError: Failed to process request ${event}.`, err);
-          ack({ error: `SocketRemoteError: Remote failed to process request '${event}'` });
+          if (err instanceof ForbiddenError) {
+            ack({ type: ResponseType.Forbidden, message: err.message });
+          }
+          else {
+            log.error(`Error: Failed to process event ${event}.`, err);
+            ack({ type: ResponseType.RemoteError, message: `Failed to process event '${event}'` });
+          }
         }
       });
     }
 
-    for (const [event, cb] of Object.entries(eventsHandler)) {
+    for (const [event, cb] of Object.entries(requestsHandler)) {
       this._socket.on(event, async (arg, ack) => {
         try {
-          await cb(arg);
-          ack({ result: `Event '${event}' successfully processed.` });
-          log.debug('Get Event', event, arg);
+          log.debug('Get Request', event, arg);
+          const result = await cb(arg);
+          ack({ type: ResponseType.Success, result });
         }
         catch (err) {
-          log.error(err);
-          ack({ error: `SocketRemoteError: Remote failed to process event '${event}'` });
+          if (err instanceof ForbiddenError) {
+            ack({ type: ResponseType.Forbidden, message: err.message });
+          }
+          else {
+            log.error(`Error: Failed to process request ${event}.`, err);
+            ack({ type: ResponseType.RemoteError, message: `Failed to process request '${event}'` });
+          }
         }
       });
     }
   }
 
   emit(event, arg) {
-    if (!event) throw new Error(`Cannot emit empty event: ${event}`);
+    if (!event) throw new TypeError(`Cannot emit empty event: ${event}`);
 
-    this._socket.emit(event, arg, ({ result, error }) => {
-      if (!error) {
-        log.debug(`Server response: ${result}`);
+    this._socket.emit(event, arg, ({ type, message }) => {
+      if (isResponseSuccessType(type)) {
+        log.debug(`Event '${event}' handled successfully.`);
+      }
+      else if (type === ResponseType.Forbidden) {
+        log.error(new ForbiddenError(message));
+      }
+      else if (type === ResponseType.RemoteError) {
+        log.error(new RemoteError(message));
       }
       else {
-        log.error(error);
+        log.error(new Error(message));
       }
     });
   }
 
   async request(event, arg) {
-    if (!event) throw new Error(`Cannot emit empty event: ${event}`);
+    if (!event) throw new TypeError(`Cannot emit empty event '${event}'`);
 
     return new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        reject(new Error(`Request has not received response for ${RequestTimeOut / 1000} second(s).`));
-      }, RequestTimeOut);
-      this._socket.emit(event, arg, (response) => {
+        reject(new TimeoutError(`Request is not handled in ${RequestTimeout} second(s).`));
+      }, RequestTimeout * 1000);
+      this._socket.emit(event, arg, ({ type, result, message }) => {
         clearTimeout(timeout);
-        if (!response.error) {
-          resolve(response.result);
-          log.debug('Get Response from event', event, response.result);
+        if (isResponseSuccessType(type)) {
+          log.debug('Received response from request', event, result);
+          resolve(result);
+        }
+        else if (type === ResponseType.Forbidden) {
+          reject(new ForbiddenError(message));
+        }
+        else if (type === ResponseType.RemoteError) {
+          reject(new RemoteError(message));
         }
         else {
-          reject(new Error(`Error processing request: ${response.error}`));
+          reject(new Error(message));
         }
       });
     });

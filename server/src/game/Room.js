@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ServerEvents } from 'knect-common/src/SocketEvents.js';
+import ForbiddenError from 'knect-common/src/ForbiddenError.js';
 import Bingo from './games/Bingo.js';
 import PlayerIdList from './PlayerIdList.js';
 import Save from '../db/models/save.js';
@@ -42,7 +43,7 @@ export default class Room {
    */
   join(id) {
     if (this.allPlayers.has(id)) {
-      throw new Error(`Player ${id} already in this room`);
+      throw new ForbiddenError(`Player ${id} already in this room`);
     }
     const player = this.gc.getPlayerById(id);
     this.allPlayers.add(id);
@@ -65,7 +66,7 @@ export default class Room {
         this.emitAll(ServerEvents.UpdatePlayerList, this.allPlayers.serialize());
       }
     }
-    else throw new Error(`Trying to remove non-existing player from room#${this.id}`);
+    else throw new ForbiddenError(`Trying to remove non-existing player from room#${this.id}`);
   }
 
   /**
@@ -75,11 +76,11 @@ export default class Room {
    */
   joinGame(playerId, side) {
     if (!this.allPlayers.has(playerId)) {
-      throw new Error(`This player is not in this room`);
+      throw new ForbiddenError(`This player is not in this room`);
     }
 
     if (this.gamers.has(side)) {
-      throw new Error(`This side is not joinable`);
+      throw new ForbiddenError(`This side is not joinable`);
     }
 
     const oldSide = this.getPlayerSide(playerId);
@@ -101,12 +102,12 @@ export default class Room {
 
   leaveGame(id) {
     if (!this.allPlayers.has(id)) {
-      throw new Error(`Player ${id} is not in this room`);
+      throw new ForbiddenError(`Player ${id} is not in this room`);
     }
 
     const side = this.getPlayerSide(id);
     if (side === null) {
-      throw new Error(`Player ${id} is not in game`);
+      throw new ForbiddenError(`Player ${id} is not in game`);
     }
 
     this.gamers.delete(side);

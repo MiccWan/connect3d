@@ -1,4 +1,5 @@
 import { ServerEvents } from 'knect-common/src/SocketEvents.js';
+import ForbiddenError from 'knect-common/src/ForbiddenError.js';
 import PlayerStatusType from './constant/PlayerStatusType.js';
 import ServerSocketWrapper from './ServerSocketWrapper.js';
 import getUniqueName from './util/generateName.js';
@@ -22,12 +23,17 @@ export default class Player {
     this.status = PlayerStatusType.Lobby;
   }
 
+  get id() {
+    return this.socket.id;
+  }
+
   init() {
     this.gc.lobby.join(this.id);
   }
 
-  get id() {
-    return this.socket.id;
+  login(name) {
+    if (!name) throw new TypeError(`Cannot login with falsy name ${name}`);
+    this.name = name;
   }
 
   sendChat(msg) {
@@ -53,10 +59,10 @@ export default class Player {
   isInRoom({ throwOnTrue = false, throwOnFalse = false } = {}) {
     const result = this.roomId && this.roomId !== lobbyId;
     if (result && throwOnTrue) {
-      throw new Error(`Player is already in room ${this.roomId}`);
+      throw new ForbiddenError(`Player is already in room ${this.roomId}`);
     }
     if (!result && throwOnFalse) {
-      throw new Error('Player is not in any room');
+      throw new ForbiddenError('Player is not in any room');
     }
     return result;
   }

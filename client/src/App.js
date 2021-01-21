@@ -11,6 +11,7 @@ import ClientSocketWrapper from './socket/index.js';
 
 import SocketContext from './socket/SocketContext.js';
 import showToast from './helper/Toast.js';
+import PhaseType from './PhaseType.js';
 
 const log = newLogger('App');
 
@@ -48,8 +49,7 @@ function asyncWrapper(cb) {
 function App() {
   const [socket, setSocket] = useState();
   const [userName, setUserName] = useState('');
-  const [isNotLogin, setIsNotLogin] = useState(true);
-  const [isNotEnterRoom, setNotIsEnterRoom] = useState(true);
+  const [phase, setPhase] = useState(PhaseType.Login);
   const [roomId, setRoomId] = useState(0);
 
   const [chatContent, setChatContent] = useState([]);
@@ -60,61 +60,68 @@ function App() {
 
   const [roomInfo, setRoomInfo] = useState({});
 
-  const initSocket = async () => {
+  const initSocket = async ({ name }) => {
     if (!socket) {
       const funcs = { setChatContent, setPlayerList, setRoomList, setRoomInfo, setGamers, setGameState };
       const _socket = new ClientSocketWrapper(funcs);
       setSocket(_socket);
-      setUserName(await _socket.request(ClientRequests.GetPlayerName));
-      setPlayerList(await _socket.request(ClientRequests.GetPlayerList));
-      setRoomList(await _socket.request(ClientRequests.GetRoomList));
+      try {
+        const loginResponse = await _socket.request(ClientRequests.Login, { name });
+        setUserName(loginResponse.name);
+        setPlayerList(loginResponse.players);
+        setRoomList(loginResponse.rooms);
+        showToast(`Logged in as ${loginResponse.name}`);
+        setPhase(PhaseType.Lobby);
+      }
+      catch (err) {
+        showToast('Login failed');
+        log.error(err);
+      }
     }
   };
 
-  const login = async () => {
-    showToast('Logged in as guest');
-    await initSocket();
-    setIsNotLogin(false);
+  const login = async (name) => {
+    await initSocket({ name });
   };
 
   const createRoom = asyncWrapper(async (roomName) => {
     const tempRoomInfo = await socket.request(ClientRequests.CreateRoom, { name: roomName });
     setRoomInfo(tempRoomInfo);
     setRoomId(tempRoomInfo.id);
-    setNotIsEnterRoom(false);
     setPlayerList(tempRoomInfo.allPlayers);
     setRoomList([]);
     setChatContent([]);
+    setPhase(PhaseType.Room);
   });
 
   const joinRoom = asyncWrapper(async (id) => {
     const tempRoomInfo = await socket.request(ClientRequests.JoinRoom, { roomId: id });
     setRoomInfo(tempRoomInfo);
     setRoomId(id);
-    setNotIsEnterRoom(false);
     setPlayerList(tempRoomInfo.allPlayers);
     setGamers(tempRoomInfo.gamers);
     setGameState(tempRoomInfo.game);
     setRoomList([]);
     setChatContent([]);
+    setPhase(PhaseType.Room);
   });
 
   const leaveRoom = asyncWrapper(async () => {
     const tempRoomInfo = await socket.request(ClientRequests.LeaveRoom);
     setRoomInfo(tempRoomInfo);
     setRoomId(tempRoomInfo.roomId);
-    setNotIsEnterRoom(true);
     setPlayerList(tempRoomInfo.players);
     setRoomList(tempRoomInfo.rooms);
     setChatContent([]);
     setGameState({});
+    setPhase(PhaseType.Lobby);
   });
 
   const returnPage = () => {
-    if (isNotLogin) {
+    if (phase === PhaseType.Login) {
       return (<LoginPage login={login} />);
     }
-    if (isNotEnterRoom) {
+    if (phase === PhaseType.Lobby) {
       return (
         <LobbyPage
           userName={userName}
@@ -127,18 +134,22 @@ function App() {
         />
       );
     }
-    return (
-      <RoomPage
-        userName={userName}
-        roomId={roomId}
-        leaveRoom={leaveRoom}
-        chatContent={chatContent}
-        roomInfo={roomInfo}
-        playerList={playerList}
-        gamers={gamers}
-        gameState={gameState}
-      />
-    );
+    if (phase === PhaseType.Room) {
+      return (
+        <RoomPage
+          userName={userName}
+          roomId={roomId}
+          leaveRoom={leaveRoom}
+          chatContent={chatContent}
+          roomInfo={roomInfo}
+          playerList={playerList}
+          gamers={gamers}
+          gameState={gameState}
+        />
+      );
+    }
+    log.error(`Unknown phase ${phase}`);
+    return null;
   };
 
   return (
