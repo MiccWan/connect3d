@@ -38,6 +38,13 @@ export default class PlayerList {
     return Array.from(this._all.values());
   }
 
+  /**
+   * @param {string} name
+   */
+  isPlayerNameExist(name) {
+    return this.getAll().reduce((prev, player) => prev || player.name === name, false);
+  }
+
   serialize() {
     return this.getAll().map(player => player.serialize());
   }
