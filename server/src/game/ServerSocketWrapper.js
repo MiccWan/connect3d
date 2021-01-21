@@ -86,7 +86,10 @@ export default class ServerSocketWrapper extends SocketWrapper {
       },
       ...Object.fromEntries(Object.values(Bingo.ClientRequests).map(evt => [evt, (...args) => {
         const room = gc.rooms.getById(player.roomId);
-        return room.game.requestHandlers[evt](player.id, ...args);
+        if (room) {
+          return room.game.requestHandlers[evt](player.id, ...args);
+        }
+        throw new ForbiddenError(`Player not in a room.`);
       }]))
     };
 

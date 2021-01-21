@@ -16,6 +16,7 @@ import PieceType from 'knect-common/src/games/PieceType.js';
 import RoleType from 'knect-common/src/RoleType';
 // import newLogger from 'knect-common/src/Logger.js';
 import { ClientEvents } from 'knect-common/src/BingoEvents';
+import GameResultType, { isGameEnd } from 'knect-common/src/GameResultType.js';
 import Game from './Game.js';
 
 // const log = newLogger('Bingo');
@@ -45,6 +46,7 @@ export default class Bingo extends Game {
     this.role = RoleType.None;
     this.turn = RoleType.None;
     this.lastPiece = null;
+    this.result = GameResultType.NotOverYet;
     this.board = Array.from({ length: 64 }, () => PieceType.Empty);
     this.t = 0;
 
@@ -57,6 +59,10 @@ export default class Bingo extends Game {
 
   get el() {
     return this.elRef.current;
+  }
+
+  get end() {
+    return isGameEnd(this.result);
   }
 
   setup() {
@@ -117,7 +123,6 @@ export default class Bingo extends Game {
         }
       }
     }
-    this.refreshPiecesMaterial();
 
     // icons
     this.icons = [
@@ -140,6 +145,8 @@ export default class Bingo extends Game {
     this.el.addEventListener('mousemove', this.onMouseMove.bind(this), false);
     this.el.addEventListener('resize', this.onResize.bind(this), false);
     this.el.addEventListener('click', this.onClick.bind(this), false);
+
+    this.refreshPiecesMaterial();
   }
 
   onDidMount() {
@@ -263,7 +270,7 @@ export default class Bingo extends Game {
           if (PieceType.is.PlayerB(status)) piece.material = Materials.Green;
           if (PieceType.is.Empty(status)) {
             piece.material = Materials.TransGray;
-            if (y !== 0 && PieceType.is.Empty(this.getBoard(x, y - 1, z))) {
+            if (this.end || (y !== 0 && PieceType.is.Empty(this.getBoard(x, y - 1, z)))) {
               piece.visible = false;
             }
           }
@@ -271,13 +278,48 @@ export default class Bingo extends Game {
       }
     }
 
-    if (this.lastPiece) {
+    if (!this.end && this.lastPiece) {
       const { x, y, z } = this.lastPiece;
       const piece = this.getPiece(x, y, z);
       const status = this.getBoard(x, y, z);
 
       if (PieceType.is.PlayerA(status)) piece.material = Materials.BlinkRed;
       if (PieceType.is.PlayerB(status)) piece.material = Materials.BlinkGreen;
+    }
+
+    this.refreshIcons();
+  }
+
+  refreshIcons() {
+    if (this.result === GameResultType.PlayerAWins) {
+      this.icons[0][0].material = Materials.Red;
+      this.icons[0][1].material = Materials.Red;
+      this.icons[1][0].material = Materials.Red;
+      this.icons[1][1].material = Materials.Red;
+      this.icons[0][0].geometry = Geometries.BigBox;
+      this.icons[0][1].geometry = Geometries.BigBox;
+      this.icons[1][0].geometry = Geometries.BigBox;
+      this.icons[1][1].geometry = Geometries.BigBox;
+    }
+    else if (this.result === GameResultType.PlayerBWins) {
+      this.icons[0][0].material = Materials.Green;
+      this.icons[0][1].material = Materials.Green;
+      this.icons[1][0].material = Materials.Green;
+      this.icons[1][1].material = Materials.Green;
+      this.icons[0][0].geometry = Geometries.BigBox;
+      this.icons[0][1].geometry = Geometries.BigBox;
+      this.icons[1][0].geometry = Geometries.BigBox;
+      this.icons[1][1].geometry = Geometries.BigBox;
+    }
+    else {
+      this.icons[0][0].material = Materials.Red;
+      this.icons[0][1].material = Materials.Red;
+      this.icons[1][0].material = Materials.Green;
+      this.icons[1][1].material = Materials.Green;
+      this.icons[0][0].geometry = Geometries.SmallBox;
+      this.icons[0][1].geometry = Geometries.SmallBox;
+      this.icons[1][0].geometry = Geometries.SmallBox;
+      this.icons[1][1].geometry = Geometries.SmallBox;
     }
   }
 

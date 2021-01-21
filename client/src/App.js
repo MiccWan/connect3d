@@ -128,6 +128,8 @@ function App() {
     setRoomInfo(tempRoomInfo);
     setRoomId(tempRoomInfo.id);
     setPlayerList(tempRoomInfo.allPlayers);
+    setGamers(tempRoomInfo.gamers);
+    setGameState(tempRoomInfo.game);
     setRoomList([]);
     setChatContent([]);
     setPhase(PhaseType.Room);

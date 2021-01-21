@@ -93,7 +93,7 @@ export default class Room {
     this.emitAll(ServerEvents.NotifyPlayerJoinGame, this.serializedGamers());
     this.gc.lobby.emitAll(ServerEvents.UpdateRoomList, this.gc.rooms.serialize());
 
-    // TODO: exported constant // is `PlayerSideType.size` broken?
+    // TODO: exported constant
     if (this.gamers.size === 2) {
       this.game.init();
       this.game.start();
