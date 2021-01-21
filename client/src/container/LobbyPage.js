@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react';
 import { PropTypes } from 'prop-types';
 
 import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Button from '@material-ui/core/Button';
@@ -123,13 +124,13 @@ function LobbyPage({ userName, createRoom, joinRoom, chatContent, playerList, ro
             InputProps={{
               endAdornment: (
                 (roomFilter !== '')
-                   && (
-                   <InputAdornment position="end">
-                     <IconButton edge="end" size="small" onClick={deleteRoomFilterClick} visibility="hidden">
-                       <DeleteIcon color="primary" />
-                     </IconButton>
-                   </InputAdornment>
-                   )
+                && (
+                  <InputAdornment position="end">
+                    <IconButton edge="end" size="small" onClick={deleteRoomFilterClick} visibility="hidden">
+                      <DeleteIcon color="primary" />
+                    </IconButton>
+                  </InputAdornment>
+                )
               ),
             }}
           />
@@ -137,12 +138,10 @@ function LobbyPage({ userName, createRoom, joinRoom, chatContent, playerList, ro
         <Grid item xs={4}>
           {null}
         </Grid>
-        <Grid item xs={2}>
-          <div>
-            <Typography className={classes.chooseBar}>Hi! {userName}</Typography>
-          </div>
-        </Grid>
-        <Grid item xs={2} container justify="flex-end">
+        <Grid item xs={4} container justify="flex-end" alignItems="center">
+          <Box mx={2}>
+            <Typography>{`Hi! ${userName}`}</Typography>
+          </Box>
           <Button
             variant="contained"
             color="primary"

@@ -74,7 +74,7 @@ function ShowRoomList({ roomList, selectRoom, roomFilter }) {
               <TableCell align="left" className={classes.cellPlayers}>
                 <div>
                   <Typography variant="inherit">
-                    <span nowrap className={classes.player1}>●&nbsp;&nbsp;</span>
+                    <span className={classes.player1}>●&nbsp;&nbsp;</span>
                     {room.gamers[PlayerSideType.A]?.name}
                     {!(room.gamers[PlayerSideType.A]?.name) && "-"}
                   </Typography>

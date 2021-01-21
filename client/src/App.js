@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import newLogger from 'knect-common/src/Logger.js';
@@ -14,6 +14,8 @@ import showToast from './helper/Toast.js';
 import PhaseType from './PhaseType.js';
 
 const log = newLogger('App');
+
+const loginTokenKey = 'login_token';
 
 const theme = createMuiTheme({
   palette: {
@@ -49,29 +51,33 @@ function asyncWrapper(cb) {
 function App() {
   const [socket, setSocket] = useState();
   const [userName, setUserName] = useState('');
-  const [phase, setPhase] = useState(PhaseType.Login);
+  const [phase, setPhase] = useState(PhaseType.WaitForLogin);
   const [roomId, setRoomId] = useState(0);
 
   const [chatContent, setChatContent] = useState([]);
   const [playerList, setPlayerList] = useState([]);
-  const [roomList, setRoomList] = useState({});
+  const [roomList, setRoomList] = useState([]);
   const [gamers, setGamers] = useState({});
   const [gameState, setGameState] = useState({});
 
   const [roomInfo, setRoomInfo] = useState({});
 
-  const initSocket = async ({ name } = {}) => {
+  const initSocket = async ({ name: inputName, token: inputToken } = {}) => {
     if (!socket) {
       const funcs = { setChatContent, setPlayerList, setRoomList, setRoomInfo, setGamers, setGameState };
       const _socket = new ClientSocketWrapper(funcs);
       setSocket(_socket);
       try {
-        const loginResponse = await _socket.request(ClientRequests.Login, { name });
-        setUserName(loginResponse.name);
-        setPlayerList(loginResponse.players);
-        setRoomList(loginResponse.rooms);
-        showToast(`Logged in as ${loginResponse.name}`);
+        const { name, players, rooms, token } = await _socket.request(ClientRequests.Login, { name: inputName, token: inputToken });
+        setUserName(name);
+        setPlayerList(players);
+        setRoomList(rooms);
+        showToast(`Logged in as ${name}`);
         setPhase(PhaseType.Lobby);
+
+        if (token) {
+          localStorage.setItem(loginTokenKey, token);
+        }
       }
       catch (err) {
         showToast('Login failed');
@@ -88,10 +94,33 @@ function App() {
     await initSocket();
   };
 
-  const logout = async () => {
+  const loginByToken = asyncWrapper(async (token) => {
+    await initSocket({ token });
+  });
+
+  useEffect(() => {
+    if (phase === PhaseType.WaitForLogin) {
+      const token = localStorage.getItem(loginTokenKey);
+      if (token) {
+        loginByToken(token);
+      }
+      else {
+        setPhase(PhaseType.Login);
+      }
+    }
+  }, []);
+
+  const logout = asyncWrapper(async () => {
+    const token = localStorage.getItem(loginTokenKey);
+    if (token) {
+      await socket.request(ClientRequests.Logout, { token });
+      localStorage.removeItem(loginTokenKey);
+    }
+    socket.disconnect();
+    setSocket(null);
+    setPhase(PhaseType.Login);
     showToast('Logged out');
-    setIsNotLogin(true);
-  };
+  });
 
   const createRoom = asyncWrapper(async (roomName) => {
     const tempRoomInfo = await socket.request(ClientRequests.CreateRoom, { name: roomName });
@@ -127,6 +156,9 @@ function App() {
   });
 
   const returnPage = () => {
+    if (phase === PhaseType.WaitForLogin) {
+      return (<div />);
+    }
     if (phase === PhaseType.Login) {
       return (<LoginPage login={login} loginAsGuest={loginAsGuest} />);
     }

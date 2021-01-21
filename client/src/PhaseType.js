@@ -2,9 +2,10 @@ import Enum from 'knect-common/src/Enum.js';
 
 /* eslint-disable import/no-mutable-exports */
 let PhaseType = {
-  Login: 1,
-  Lobby: 2,
-  Room: 3
+  WaitForLogin: 1,
+  Login: 2,
+  Lobby: 3,
+  Room: 4
 };
 
 PhaseType = new Enum(PhaseType);

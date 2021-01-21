@@ -58,6 +58,10 @@ export default class ClientSocketWrapper extends SocketWrapper {
 
     this.init(requestsHandler, eventsHandler);
   }
+
+  disconnect() {
+    this._socket.disconnect();
+  }
 }
 
 /**

@@ -33,7 +33,7 @@ export default class ServerSocketWrapper extends SocketWrapper {
         else if (name) {
           user = await User.findOne({ name });
           if (user) throw new ForbiddenError('Username already taken');
-          user = new User({ user, token: uuidv4() });
+          user = new User({ name, token: uuidv4() });
           user = await user.save();
         }
         else {
@@ -47,7 +47,7 @@ export default class ServerSocketWrapper extends SocketWrapper {
           players: gc.lobby.allPlayers.serialize()
         };
       },
-      async [ClientRequests.Logout]({ token }) {
+      async [ClientRequests.Logout]({ token } = {}) {
         if (!token) throw new ForbiddenError('Token is not provided');
         const user = await User.findOne({ token });
         if (!user) throw new ForbiddenError('Trying to logout with non-existing token');
