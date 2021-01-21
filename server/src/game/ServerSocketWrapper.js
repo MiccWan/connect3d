@@ -2,10 +2,10 @@ import { v4 as uuidv4 } from 'uuid';
 import SocketWrapper from 'knect-common/src/SocketWrapper.js';
 import { ClientRequests, ClientEvents } from 'knect-common/src/SocketEvents.js';
 import * as Bingo from 'knect-common/src/BingoEvents.js';
+import ForbiddenError from 'knect-common/src/ForbiddenError.js';
 import { lobbyId } from './Lobby.js';
 import getUniqueName from './util/generateName.js';
 import User from '../db/models/user.js';
-import ForbiddenError from 'knect-common/src/ForbiddenError';
 
 /** @typedef {import('socket.io').Socket} Socket */
 /** @typedef {import('./index.js').GameCenter} GameCenter */
@@ -52,7 +52,6 @@ export default class ServerSocketWrapper extends SocketWrapper {
         const user = await User.findOne({ token });
         if (!user) throw new ForbiddenError('Trying to logout with non-existing token');
         await user.delete();
-        return;
       },
       [ClientRequests.GetPlayerName]() {
         return player.name;
