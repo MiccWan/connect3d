@@ -84,6 +84,11 @@ function App() {
     setIsNotLogin(false);
   };
 
+  const logout = async () => {
+    showToast('Logged out');
+    setIsNotLogin(true);
+  };
+
   const createRoom = asyncWrapper(async (roomName) => {
     const tempRoomInfo = await socket.request(ClientRequests.CreateRoom, { name: roomName });
     setRoomInfo(tempRoomInfo);
@@ -131,6 +136,7 @@ function App() {
           roomList={roomList}
           createRoom={createRoom}
           joinRoom={joinRoom}
+          logout={logout}
         />
       );
     }
