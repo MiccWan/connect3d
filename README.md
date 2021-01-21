@@ -3,7 +3,7 @@
 
 * Deploy 連結：http://knect.csie.org
 
-* Demo 連結：
+* Demo 連結：https://youtu.be/-8s2DVfsI7M
 
 ### 簡介
 
