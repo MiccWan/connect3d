@@ -9,13 +9,22 @@
 
 一個線上平台，讓使用者可於線上遊玩 Connect Four 的 3D 版本。
 
-### 如何佈署
+### 如何測試
 
+1. 要在開發環境測試，需要於 server 資料夾新增 .env 內容如下
 ```
-$ yarn deploy
+MONGO_URL=<YOUR TESTING MONGO URL>
 ```
 
-需要在環境變數中加入 `MONGO_URL`。
+2. 第一次執行前請於 root folder 使用 yarn 安裝 dependency
+```
+$ yarn
+```
+
+3. 於 root folder 使用 yarn start 將自動啟動前後端
+```
+$ yarn start
+```
 
 ### 使用說明
 
