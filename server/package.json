@@ -8,7 +8,7 @@
     "express": "^4.17.1",
     "knect-client": "0.1.0",
     "knect-common": "0.1.0",
-    "mongoose": "^5.11.4",
+    "mongoose": "^5.13.15",
     "socket.io": "^3.0.3",
     "unique-names-generator": "^4.3.1",
     "uuid": "^8.3.2"
